@@ -5,6 +5,8 @@ services:
     image: postgres:16-alpine
     container_name: postgredb
     restart: always
+    networks:
+      - fastapi-net
     deploy:
       resources:
         limits:
@@ -27,6 +29,8 @@ services:
     image: edoburu/pgbouncer:v1.25.1-p0
     container_name: pgbouncer
     restart: always
+    networks:
+      - fastapi-net
     deploy:
       resources:
         limits:
@@ -57,6 +61,8 @@ services:
     image: redis:7-alpine
     container_name: redis
     restart: always
+    networks:
+      - fastapi-net
     deploy:
       resources:
         limits:
@@ -75,6 +81,8 @@ services:
     image: adminer:5.4.2-standalone
     container_name: adminer
     restart: always
+    networks:
+      - fastapi-net
     ports:
       - 8080:8080
     environment:
@@ -90,11 +98,13 @@ services:
     image: ghcr.io/builtbyrb/fastapi-template:latest
     container_name: fastapi
     restart: unless-stopped
+    networks:
+      - fastapi-net
     deploy:
       resources:
         limits:
-          cpus: "4"
-          memory: 1024M
+          cpus: "1"
+          memory: 512M
     healthcheck:
       test: python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5)"
       interval: 1m30s
@@ -105,6 +115,10 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`fastapi.localhost`)"
+      - "traefik.http.routers.backend.entrypoints=web"
     depends_on:
       pgbouncer:
         condition: service_healthy
@@ -112,3 +126,21 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+
+  traefik:
+    image: traefik:latest
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    networks:
+      - fastapi-net
+    depends_on:
+      fastapi:
+        condition: service_healthy
+
+networks:
+  fastapi-net:
