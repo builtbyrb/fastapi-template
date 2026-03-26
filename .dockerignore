@@ -1,0 +1,44 @@
+# Security: Sensitive files and secrets
+**/.env
+**/.aws
+**/.ssh
+**/.netrc
+
+# Version Control
+**/.git
+**/.gitignore
+**/.gitattributes
+
+# Python: Bytecode and cache
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.pytest_cache
+**/.ruff_cache
+**/.mypy_cache
+**/coverage
+
+# Virtual Environments
+**/venv
+**/env
+**/.venv
+
+# IDE and System files
+**/.vscode
+**/.idea
+**/.DS_Store
+**/Thumbs.db
+
+# Docker configuration
+Dockerfile
+docker-compose.yml
+**/.dockerignore
+
+# Package manager (uv)
+.uv
+uv.lock.tmp
+
+# Logs and Documentation
+README.md
+**/*.log

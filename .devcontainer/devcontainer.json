@@ -1,0 +1,90 @@
+{
+  "name": "Python + uv",
+  "dockerComposeFile": "./docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/uv:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2.16.1": {
+      "enableNonRootDocker": "true"
+    },
+    "ghcr.io/devcontainers-extra/features/curl-apt-get:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2.5.7": {
+      "installZsh": true
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        // --- Interpreter & Analysis ---
+        "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
+        "python.languageServer": "Pylance",
+        "python.analysis.diagnosticMode": "workspace",
+        "python.analysis.typeCheckingMode": "standard",
+        "python.analysis.autoImportCompletions": true,
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        // --- Formatting & Linting ---
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+            "source.fixAll.ruff": "explicit"
+          }
+        },
+        "ruff.nativeServer": true,
+        "ruff.configurationPreference": "filesystemFirst",
+        "mypy-type-checker.args": [
+          "--config-file=pyproject.toml"
+        ],
+        // --- Hadolint (Docker Linter) ---
+        "hadolint.hadolintPath": "/usr/local/bin/hadolint",
+        "hadolint.cliOptions": [
+          "--no-color"
+        ],
+        "hadolint.maxNumberOfProblems": 100,
+        "hadolint.outputLevel": "warning",
+        // --- Interface & Comfort ---
+        "files.eol": "\n",
+        "files.autoSave": "afterDelay",
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/.ruff_cache": true,
+          "**/.venv": false
+        },
+        "[json]": {
+          "editor.tabSize": 2
+        },
+        "[yaml]": {
+          "editor.tabSize": 2
+        }
+      },
+      "extensions": [
+        "streetsidesoftware.code-spell-checker",
+        "ms-azuretools.vscode-containers",
+        "ms-azuretools.vscode-docker",
+        "docker.docker",
+        "redhat.vscode-yaml",
+        "FastAPILabs.fastapi-vscode",
+        "github.vscode-github-actions",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "ms-python.debugpy",
+        "ms-python.vscode-python-envs",
+        "ms-python.mypy-type-checker",
+        "charliermarsh.ruff",
+        "exiasr.hadolint",
+        "tamasfe.even-better-toml"
+      ]
+    }
+  },
+  "remoteEnv": {
+    "PROJECT_NAME": "Python + uv",
+    "PYTHON_VERSION": "3.14",
+    "UV_INIT_BARE": "false",
+    "INSTALL_IPYKERNEL": "false"
+  },
+  "postCreateCommand": "make post-create",
+  "mounts": []
+}

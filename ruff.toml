@@ -1,0 +1,131 @@
+# ==============================================================================
+# RUFF CONFIGURATION FILE
+# ==============================================================================
+# This file configures Ruff, a fast Python linter and formatter written in Rust.
+# It replaces multiple tools like Flake8, isort, Black, and others.
+
+# ==============================================================================
+# EXCLUSIONS
+# ==============================================================================
+# Directories and files to exclude from linting and formatting
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "pypackages",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+# ==============================================================================
+# FORMATTING CONFIGURATION
+# ==============================================================================
+# Same as Black formatter for consistency
+line-length = 85 # Maximum line length (Black standard)
+indent-width = 4 # Number of spaces per indentation level
+
+# ==============================================================================
+# LINTING RULES
+# ==============================================================================
+[lint]
+# Rule selection and ignoring
+select = ["ALL"] # Enable all available rules by default
+ignore = [
+    "D",      # pydocstyle - docstring conventions (too strict for most projects)
+    "COM812", # trailing-comma-missing (conflicts with formatter)
+    "N818",   # error-suffix-on-exception-name (allow custom exception naming)
+    "ANN401", # any-type (allow Any type when necessary)
+    "SLF001", # private-member-access (allow access to private members in same package)
+    "FA102",  # missing `from __future__ import annotations` when using PEP 604 union types
+    "UP046",  # Generic class uses Generic subclass instead of type parameters
+    "TC001",  # move-to-type-checking - Breaks FastAPI/Pydantic runtime evaluation
+    "TC002",  # move-to-type-checking - Breaks FastAPI/Pydantic runtime evaluation
+    "TC003",  # move-to-type-checking - Breaks FastAPI/Pydantic runtime evaluation
+    "EXE002",
+]
+
+# Auto-fixing configuration
+fixable = ["ALL"] # Allow auto-fix for all enabled rules
+unfixable = [
+    "T201", # print-found (require manual review before removing print statements)
+]
+
+# Variable naming patterns
+# Allow unused variables when prefixed with underscore(s)
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# ==============================================================================
+# ISORT CONFIGURATION
+# ==============================================================================
+[lint.isort]
+case-sensitive = false
+combine-as-imports = true
+lines-after-imports = 2
+order-by-type = true
+known-first-party = ["src"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+
+# ==============================================================================
+# PER-FILE IGNORES
+# ==============================================================================
+[lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",    # allow `assert` in test files
+    "PLR2004", # allow magic numbers in test files
+    "S105",    # allow hardcoded passwords in test files
+    "S106",    # allow hardcoded passwords assignement in test files
+]
+
+# ==============================================================================
+# CODE FORMATTING
+# ==============================================================================
+[format]
+# String quote style
+quote-style = "double" # Use double quotes for strings (Black standard)
+
+# Indentation style
+indent-style = "space" # Use spaces instead of tabs
+
+# Trailing comma behavior
+skip-magic-trailing-comma = false # Respect Black's magic trailing comma rules
+
+# Line ending detection
+line-ending = "auto" # Automatically detect appropriate line endings (LF/CRLF)
+
+# Docstring code formatting
+docstring-code-format = true # Format code examples in docstrings
+
+# Docstring code line length
+# Set line length limit for code snippets in docstrings
+# "dynamic" adapts to the docstring context
+docstring-code-line-length = "dynamic"
