@@ -6,5 +6,4 @@ networks:
   docker-proxy-net:
     internal: true
   fastapi-net:
-    internal: true
   public-net:
