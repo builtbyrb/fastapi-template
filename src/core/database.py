@@ -72,10 +72,10 @@ class RedisManager:
 
 session_manager = DatabaseSessionManager(
     URL.create(
-        APP_ENV.POSTGRES_DRIVER_NAME,
+        drivername=APP_ENV.POSTGRES_DRIVER_NAME,
         username=APP_ENV.POSTGRES_USER,
         password=APP_ENV.POSTGRES_PASSWORD,
-        host=APP_ENV.POSTGRES_HOST,
+        host=APP_ENV.PG_BOUNCER_HOST,
         port=APP_ENV.PG_BOUNCER_PORT,
         database=APP_ENV.POSTGRES_DB,
     ),

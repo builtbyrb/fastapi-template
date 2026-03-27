@@ -8,6 +8,9 @@ networks:
   docker-proxy-net:
     internal: true
     name: docker-proxy-net
+  pgbouncer-net:
+    internal: true
+    name: pgbouncer-net
   fastapi-net:
     name: fastapi-net
   public-net:
