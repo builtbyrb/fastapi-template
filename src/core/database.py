@@ -80,8 +80,8 @@ session_manager = DatabaseSessionManager(
         database=APP_ENV.POSTGRES_DB,
     ),
     engine_kwargs={
-        "pool_size": 20,
-        "max_overflow": 10,
+        "pool_size": 50,
+        "max_overflow": 20,
         "pool_timeout": 30,
         "pool_recycle": 1800,
         "pool_pre_ping": True,
