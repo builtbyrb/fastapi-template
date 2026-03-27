@@ -16,7 +16,7 @@ class AppEnv(BaseSettings):
     POSTGRES_PASSWORD: str = Field(default=...)
     POSTGRES_DB: str = Field(default=...)
     PG_BOUNCER_HOST: str = Field(default=...)
-    PG_BOUNCER_PORT: int = Field(default=6432)
+    PG_BOUNCER_PORT: int = Field(default=5432)
 
     REDIS_HOST: str = Field(default=...)
     REDIS_PORT: int = Field(default=6369)
