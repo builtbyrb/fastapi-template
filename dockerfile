@@ -5,9 +5,9 @@ WORKDIR /app
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 RUN apt-get update && \
-apt-get install -y --no-install-recommends gcc && \
-apt-get clean \
-&& rm -rf /var/lib/apt/lists/*
+  apt-get install -y --no-install-recommends gcc && \
+  apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml uv.lock ./
 
@@ -20,7 +20,7 @@ FROM python:3.14-slim
 LABEL org.opencontainers.image.source="https://github.com/builtbyrb/fastapi-template"
 
 RUN addgroup --gid 1001 --system app && \
-    adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app
+  adduser --no-create-home --shell /bin/false --disabled-password --uid 1001 --system --group app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -37,7 +37,7 @@ COPY . .
 RUN chown -R app:app /app
 USER app
 
-ENTRYPOINT ["uvicorn", "--host", "0.0.0.0", "--port", "8080", \
+ENTRYPOINT ["uvicorn",  "src.app:app", "--host", "0.0.0.0", "--port", "8080", \
   "--loop", "uvloop", "--http", "httptools", \
   "--timeout-keep-alive", "5", \
   "--limit-concurrency", "1000", \
