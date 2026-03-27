@@ -9,7 +9,7 @@ services:
       resources:
         limits:
           cpus: "1.0"
-          memory: 512M
+          memory: 1024M
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -43,7 +43,7 @@ services:
       ADMIN_USERS: postgres,admin
       POOL_MODE: transaction
       MAX_CLIENT_CONN: 1000
-      DEFAULT_POOL_SIZE: 50
+      DEFAULT_POOL_SIZE: 90
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "${POSTGRES_HOST}"]
       interval: 1m30s

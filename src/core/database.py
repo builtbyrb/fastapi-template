@@ -3,7 +3,7 @@ from collections.abc import AsyncIterator
 from typing import Any
 
 import redis.asyncio as redis
-from sqlalchemy import URL, NullPool
+from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
     AsyncSession,
@@ -79,7 +79,13 @@ session_manager = DatabaseSessionManager(
         port=APP_ENV.PG_BOUNCER_PORT,
         database=APP_ENV.POSTGRES_DB,
     ),
-    engine_kwargs={"poolclass": NullPool},
+    engine_kwargs={
+        "pool_size": 50,
+        "max_overflow": 20,
+        "pool_timeout": 30,
+        "pool_recycle": 1800,
+        "pool_pre_ping": True,
+    },
 )
 
 redis_manager = RedisManager(

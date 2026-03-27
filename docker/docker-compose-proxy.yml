@@ -39,8 +39,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "1.5"
-          memory: 512M
+          cpus: "1"
+          memory: 1024M
     healthcheck:
       test: traefik healthcheck --ping
       interval: 1m30s
