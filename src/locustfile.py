@@ -1,9 +1,7 @@
-from locust import FastHttpUser, between, task
+from locust import FastHttpUser, task
 
 
 class HelloWorldUser(FastHttpUser):
-    wait_time = between(0.1, 0.5)
-
     @task
     def hello_world(self) -> None:
         payload = {
