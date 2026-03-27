@@ -1,0 +1,34 @@
+services:
+  fastapi:
+    image: ghcr.io/builtbyrb/fastapi-template:latest
+    restart: unless-stopped
+    networks:
+      - redis-net
+      - database-net
+      - fastapi-net
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+    env_file:
+      - ../.env
+    healthcheck:
+      test: python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5)"
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`fastapi.localhost`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.api.loadbalancer.server.port=8000"
+      - "traefik.docker.network=fastapi-net"
+    depends_on:
+      pgbouncer:
+        condition: service_healthy
+      postgredb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy

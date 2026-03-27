@@ -39,4 +39,4 @@ USER app
 
 ENTRYPOINT ["gunicorn", "src.app:app", "-k", "src.worker.ProductionWorker", "-w", "3", "--max-requests", "5000", "--max-requests-jitter", "500", "--graceful-timeout", "30", "--timeout", "60", "--keep-alive", "5", "--bind", "0.0.0.0:8000"]
 
-HEALTHCHECK  --start-period=10s --interval=1m30s --timeout=30s --retries=5 CMD python3 -c  "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5)" || exit 1
+HEALTHCHECK  --start-period=20s --interval=1m30s --timeout=30s --retries=5 CMD python3 -c  "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5)" || exit 1
