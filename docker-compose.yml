@@ -1,10 +1,8 @@
-version: "3.8"
-
 services:
   postgredb:
     image: postgres:16-alpine
     container_name: postgredb
-    restart: always
+    restart: unless-stopped
     networks:
       - fastapi-net
     deploy:
@@ -28,14 +26,14 @@ services:
   pgbouncer:
     image: edoburu/pgbouncer:v1.25.1-p0
     container_name: pgbouncer
-    restart: always
+    restart: unless-stopped
     networks:
       - fastapi-net
     deploy:
       resources:
         limits:
-          cpus: "0.5"
-          memory: 512M
+          cpus: "0.25"
+          memory: 64M
     ports:
       - "5432:${PG_BOUNCER_PORT}"
     environment:
@@ -60,7 +58,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: redis
-    restart: always
+    restart: unless-stopped
     networks:
       - fastapi-net
     deploy:
@@ -80,11 +78,16 @@ services:
   adminer:
     image: adminer:5.4.2-standalone
     container_name: adminer
-    restart: always
+    restart: unless-stopped
     networks:
       - fastapi-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 64M
     ports:
-      - 8080:8080
+      - 8081:8080
     environment:
       ADMINER_DEFAULT_SERVER: pgbouncer
       ADMINER_DEFAULT_SYSTEM: pgsql
@@ -96,10 +99,11 @@ services:
 
   fastapi:
     image: ghcr.io/builtbyrb/fastapi-template:latest
-    container_name: fastapi
     restart: unless-stopped
     networks:
       - fastapi-net
+    ports:
+      - :8000
     deploy:
       resources:
         limits:
@@ -111,14 +115,13 @@ services:
       timeout: 30s
       retries: 5
       start_period: 10s
-    ports:
-      - "8000:8000"
     env_file:
       - .env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`fastapi.localhost`)"
       - "traefik.http.routers.backend.entrypoints=web"
+      - "--providers.docker.exposedbydefault=false"
     depends_on:
       pgbouncer:
         condition: service_healthy
@@ -127,19 +130,56 @@ services:
       redis:
         condition: service_healthy
 
+  docker-proxy:
+    image: tecnativa/docker-socket-proxy:v0.4.2
+    container_name: docker-proxy
+    restart: unless-stopped
+    environment:
+      - CONTAINERS=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - fastapi-net
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+    healthcheck:
+      test: wget --spider http://docker-proxy:2375/version || exit 1
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 10s
+
   traefik:
-    image: traefik:latest
+    image: traefik:v3.6.12
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
+      - "--providers.docker.endpoint=tcp://docker-proxy:2375"
+      - "--providers.docker.exposedbydefault=false"
     ports:
       - "80:80"
       - "8080:8080"
     networks:
       - fastapi-net
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+    healthcheck:
+      test: traefik healthcheck --ping
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 10s
     depends_on:
       fastapi:
+        condition: service_healthy
+      docker-proxy:
         condition: service_healthy
 
 networks:
