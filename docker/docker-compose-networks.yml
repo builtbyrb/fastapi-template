@@ -1,9 +1,14 @@
 networks:
   database-net:
     internal: true
+    name: database-net
   redis-net:
     internal: true
+    name: redis-net
   docker-proxy-net:
     internal: true
+    name: docker-proxy-net
   fastapi-net:
+    name: fastapi-net
   public-net:
+    name: public-net

@@ -37,6 +37,10 @@ COPY . .
 RUN chown -R app:app /app
 USER app
 
-ENTRYPOINT ["gunicorn", "src.app:app", "-k", "src.worker.ProductionWorker", "-w", "3", "--access-logfile", "-", "--error-logfile", "-", "--max-requests", "5000", "--max-requests-jitter", "500", "--graceful-timeout", "30", "--timeout", "60", "--keep-alive", "5", "--bind", "0.0.0.0:8000"]
+ENTRYPOINT ["uvicorn", "--host", "0.0.0.0", "--port", "8080", \
+  "--loop", "uvloop", "--http", "httptools", \
+  "--timeout-keep-alive", "5", \
+  "--limit-concurrency", "1000", \
+  "--backlog", "2048"]
 
 HEALTHCHECK  --start-period=20s --interval=1m30s --timeout=30s --retries=5 CMD python3 -c  "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5)" || exit 1
