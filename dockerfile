@@ -42,5 +42,3 @@ ENTRYPOINT ["uvicorn",  "src.app:app", "--host", "0.0.0.0", "--port", "8080", \
   "--timeout-keep-alive", "5", \
   "--limit-concurrency", "1000", \
   "--backlog", "2048"]
-
-HEALTHCHECK  --start-period=20s --interval=1m30s --timeout=30s --retries=5 CMD python3 -c  "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5)" || exit 1
