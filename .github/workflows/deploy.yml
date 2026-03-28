@@ -39,11 +39,24 @@ jobs:
           password: ${{ inputs.password }}
           port: ${{ inputs.port }}
           script: |
+            set -e
+
+            echo "Step 1 : Retrieving code"
             cd ~/fastapi-template
             git pull
+
+            echo "Step 2: Shutdown old docker container"
             docker compose --env-file .env.prod down
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username ${{ github.repository_owner }} --password-stdin
+
+            echo "Step 3: Login to ghcr.io"
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
+
+            echo "Step 4: Pull docker image"
             docker compose pull
+
+            echo "Step 5: Logout of ghcr.io"
             docker logout ghcr.io
             rm ~/.docker/config.json
+
+            echo "Step 6: Launching the containers"
             docker compose --env-file .env.prod up -d --scale fastapi=${{ inputs.fastapi_scale }}
