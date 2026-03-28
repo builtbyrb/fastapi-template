@@ -40,7 +40,7 @@ services:
       resources:
         limits:
           cpus: "1"
-          memory: 1024M
+          memory: 512M
     healthcheck:
       test: traefik healthcheck --ping
       interval: 1m30s

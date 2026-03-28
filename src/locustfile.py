@@ -1,7 +1,9 @@
-from locust import FastHttpUser, task
+from locust import FastHttpUser, between, task
 
 
 class HelloWorldUser(FastHttpUser):
+    wait_time = between(1, 2)
+
     @task
     def hello_world(self) -> None:
         payload = {
@@ -22,4 +24,4 @@ class HelloWorldUser(FastHttpUser):
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
         }
 
-        self.client.post("users/register", json=json)
+        self.client.post("token/", data=payload, headers=headers)

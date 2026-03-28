@@ -33,7 +33,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.2"
+          cpus: "0.1"
           memory: 64M
     environment:
       DB_USER: ${POSTGRES_USER}

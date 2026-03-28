@@ -1,3 +1,5 @@
+from fastapi.concurrency import run_in_threadpool
+
 from src.auth.config.env import AUTH_ENV
 from src.auth.domain import (
     authenticate_user,
@@ -69,7 +71,7 @@ async def authenticate_user_service(
     except UserNotFoundException:
         user = None
 
-    return authenticate_user(user, params.password)
+    return await run_in_threadpool(authenticate_user, user, params.password)
 
 
 async def user_login_service(
