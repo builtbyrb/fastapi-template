@@ -1,38 +1,49 @@
 name: Docker Image CI for GHCR
 on: 
-  push
+  workflow_dispatch:
+    inputs:
+      fastapi_scale:
+        description: 'The number of api replication in docker'
+        required: true
+        default: 1
+        type: number
+      host:
+        description: 'The ssh host'
+        required: true
+        type: string
+      username:
+        description: 'The ssh username'
+        required: true
+        type: string
+      password:
+        description: 'The ssh password'
+        required: true
+        type: string
+      port:
+        description: 'The ssh port'
+        required: true
+        default: 22
+        type: number
+      
 jobs:
-  build_and_publish:
+  deploy:
     permissions:
-      contents: read
-      packages: write
+      packages: read
     runs-on: ubuntu-latest
-    steps: 
-      - uses: actions/checkout@v3
+    steps:
+      - name: Deploy project over SSH
+        uses: appleboy/ssh-action@v1
         with:
-          fetch-depth: 0
-      
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.14'
-          cache: 'pip'
-      
-      - name: Install Commitizen
-        run: pip install commitizen
-      
-      - name: Get version
-        id: get_version
-        run: echo "project_version=$(cz version --project)" >> $GITHUB_OUTPUT
-
-      - name: Login to docker
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username ${{ github.actor }} --password-stdin ghcr.io
-  
-      - name: Build and push the image
-        run : |          
-          docker build . \
-            --tag ghcr.io/builtbyrb/fastapi-template:${{ steps.get_version.outputs.project_version }} \
-            --tag ghcr.io/builtbyrb/fastapi-template:latest
-
-          docker push ghcr.io/builtbyrb/fastapi-template:${{steps.get_version.outputs.project_version}}
-          docker push ghcr.io/builtbyrb/fastapi-template:latest
+          host: ${{ inputs.host }}
+          username: ${{ inputs.username }}
+          password: ${{ inputs.password }}
+          port: ${{ inputs.port }}
+          script: |
+            cd ~/fastapi-template
+            git pull
+            docker compose --env-file .env.prod down
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username ${{ github.repository_owner }} --password-stdin
+            docker compose pull
+            docker logout ghcr.io
+            rm ~/.docker/config.json
+            docker compose --env-file .env.prod up -d --scale fastapi=${{ inputs.fastapi_scale }}
