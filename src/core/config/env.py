@@ -4,11 +4,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from src.core.constants import Environment
 
 
-class AppEnv(BaseSettings):
+class BaseEnvSettings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+        env_file=(".env.prod", ".env"), env_file_encoding="utf-8", extra="ignore"
     )
 
+
+class AppEnv(BaseEnvSettings):
     ENVIRONMENT: Environment = Field(default=...)
 
     POSTGRES_DRIVER_NAME: str = Field(default="postgresql+asyncpg")

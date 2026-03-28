@@ -1,14 +1,10 @@
 from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.auth.types.internal import TokenConfig
+from src.core.config.env import BaseEnvSettings
 
 
-class RefreshTokenConfigEnv(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore"
-    )
-
+class RefreshTokenConfigEnv(BaseEnvSettings):
     REFRESH_TOKEN_SECRET_KEY: str = Field(default=...)
     REFRESH_TOKEN_ALGORITHM: str = Field(default=...)
     REFRESH_TOKEN_EXPIRE_MINUTES: int = Field(default=...)

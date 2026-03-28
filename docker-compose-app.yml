@@ -12,7 +12,7 @@ services:
           cpus: "1"
           memory: 512M
     env_file:
-      - ../.env
+      - .env.prod
     healthcheck:
       test: python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5)"
       interval: 30s

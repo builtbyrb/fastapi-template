@@ -25,7 +25,7 @@ class HelloWorldUser(FastHttpUser):
         }
 
         login_headers = {
-            "ssq": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNzFhNGIxMi04M2QxLTQ0NWEtODUzYi1jNzhhN2MzMjdlOWUiLCJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzc0NjY0OTgzfQ.sAfvrOaTPO1ZMKk1iGJ4NCA2E1zYV8W-ksZPWzF2mqs"
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyMGRmMjMzMS04ZGYxLTRmYmYtYmJiYy1kNTk1MmY2Y2Q1MjkiLCJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzc0NjY1NTE4fQ.21SD1g6PAy1jJ3B-9NIflF0Esw9qoeMMPsdjxNlefKA"
         }
 
-        self.client.post("users/profile", data=payload, headers=headers)
+        self.client.get("users/profile", headers=login_headers)

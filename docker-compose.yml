@@ -1,5 +1,5 @@
 include:
-  - docker/docker-compose-networks.yml
-  - docker/docker-compose-db.yml
-  - docker/docker-compose-app.yml
-  - docker/docker-compose-proxy.yml
+  - docker-compose-networks.yml
+  - docker-compose-db.yml
+  - docker-compose-app.yml
+  - docker-compose-proxy.yml
