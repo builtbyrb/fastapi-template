@@ -24,4 +24,8 @@ class HelloWorldUser(FastHttpUser):
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
         }
 
-        self.client.post("token/", data=payload, headers=headers)
+        login_headers = {
+            "ssq": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNzFhNGIxMi04M2QxLTQ0NWEtODUzYi1jNzhhN2MzMjdlOWUiLCJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzc0NjY0OTgzfQ.sAfvrOaTPO1ZMKk1iGJ4NCA2E1zYV8W-ksZPWzF2mqs"
+        }
+
+        self.client.post("users/profile", data=payload, headers=headers)

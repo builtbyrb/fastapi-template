@@ -19,7 +19,7 @@ class AppEnv(BaseSettings):
     PG_BOUNCER_PORT: int = Field(default=5432)
 
     REDIS_HOST: str = Field(default=...)
-    REDIS_PORT: int = Field(default=6369)
+    REDIS_PORT: int = Field(default=6379)
     REDIS_DB: int = Field(default=...)
 
 
