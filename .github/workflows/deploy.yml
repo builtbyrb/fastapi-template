@@ -7,23 +7,6 @@ on:
         required: true
         default: 1
         type: number
-      host:
-        description: 'The ssh host'
-        required: true
-        type: string
-      username:
-        description: 'The ssh username'
-        required: true
-        type: string
-      password:
-        description: 'The ssh password'
-        required: true
-        type: string
-      port:
-        description: 'The ssh port'
-        required: true
-        default: 22
-        type: number
       
 jobs:
   deploy:
@@ -34,10 +17,11 @@ jobs:
       - name: Deploy project over SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ inputs.host }}
-          username: ${{ inputs.username }}
-          password: ${{ inputs.password }}
-          port: ${{ inputs.port }}
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_KEY }}
+          passphrase: ${{ secrets.VPS_PASSPHRASE }}
+          port: ${{ secrets.VPS_PORT }}
           script: |
             set -e
 
