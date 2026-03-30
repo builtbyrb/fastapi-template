@@ -18,10 +18,10 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_IP }}
+          port: ${{ secrets.VPS_PORT }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_KEY }}
           passphrase: ${{ secrets.VPS_PASSPHRASE }}
-          port: ${{ secrets.VPS_PORT }}
           script: |
             set -e
 
@@ -44,7 +44,3 @@ jobs:
 
             echo "Step 6: Launching the containers"
             docker compose --env-file .env.prod up -d --scale fastapi=${{ inputs.fastapi_scale }}
-
-            echo "Step 7: Cleanup history"
-            history -c
-            rm ~/.bash_history
