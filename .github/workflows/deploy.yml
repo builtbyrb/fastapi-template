@@ -60,3 +60,7 @@ jobs:
 
             echo "Step 6: Launching the containers"
             docker compose --env-file .env.prod up -d --scale fastapi=${{ inputs.fastapi_scale }}
+
+            echo "Step 7: Cleanup history"
+            history -c
+            rm ~/.bash_history
