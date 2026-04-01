@@ -1,4 +1,8 @@
+import asyncio
+import logging
+import sys
 from collections.abc import Mapping
+from types import TracebackType
 from typing import Any
 
 from fastapi import HTTPException, Request, status
@@ -128,6 +132,44 @@ async def with_http_exception_handler(
         content={"detail": http_exception.detail},
         headers=http_exception.headers,
     )
+
+
+def handle_uncaught_exception(
+    exc_type: type[BaseException],
+    exc_value: BaseException,
+    exc_traceback: TracebackType | None,
+) -> None:
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+
+    logging.getLogger("system.uncaught").critical(
+        "Sync uncaught exception",
+        extra={"type": "sync_uncaught_exception"},
+        exc_info=(exc_type, exc_value, exc_traceback),
+    )
+
+
+def handle_async_uncaught_exception(
+    _loop: asyncio.AbstractEventLoop, context: dict
+) -> None:
+    message = context["message"]
+    exception = context.get("exception")
+
+    logging.getLogger("system.async.uncaught").critical(
+        "Async uncaught exception",
+        extra={"type": "async_uncaught_exception", "async_msg": message},
+        exc_info=exception,
+    )
+
+
+def setup_sync_uncaught_exception_handler() -> None:
+    sys.excepthook = handle_uncaught_exception
+
+
+def setup_async_uncaught_exception_handler() -> None:
+    loop = asyncio.get_event_loop()
+    loop.set_exception_handler(handle_async_uncaught_exception)
 
 
 # endregion

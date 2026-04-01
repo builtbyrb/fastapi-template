@@ -5,8 +5,8 @@ import redis.asyncio as redis
 from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.core.config.constants import Environment
 from src.core.config.env import APP_ENV
-from src.core.constants import Environment
 from src.core.database import redis_manager, session_manager
 from src.core.exceptions import AppClientIpNotFound
 from src.core.types.internal import DatabaseProviders

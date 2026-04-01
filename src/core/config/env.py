@@ -1,12 +1,12 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from src.core.constants import Environment
+from src.core.config.constants import ENV_FILE, Environment
 
 
 class BaseEnvSettings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=(".env.prod", ".env"), env_file_encoding="utf-8", extra="ignore"
+        env_file=ENV_FILE, env_file_encoding="utf-8", extra="ignore"
     )
 
 
