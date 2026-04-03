@@ -5,8 +5,8 @@ docker_host = "tcp://docker-proxy:2375"
 [sinks.axiom]
 type = "axiom"
 inputs = ["docker_logs"]
-dataset = "${AXIOM_TOKEN}"
-token = "${AXIOM_DATASET_NAME}"
+token = "${AXIOM_TOKEN}"
+dataset = "${AXIOM_DATASET_NAME}"
 region = "${AXIOM_REGION}"
 
 [api]
