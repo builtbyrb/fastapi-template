@@ -6,10 +6,22 @@ services:
       - ./vector.toml:/etc/vector/vector.toml
     environment:
       - VECTOR_CONFIG=/etc/vector/vector.toml
+      - AXIOM_TOKEN=${AXIOM_TOKEN}
+      - AXIOM_DATASET_NAME=${AXIOM_DATASET_NAME}
+      - AXIOM_REGION=${AXIOM_REGION}
     networks:
       - docker-proxy-net
-    env_file:
-      - .env.prod
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 128M
+    healthcheck:
+      test: wget --spider http://127.0.0.1:8686/health || exit 1
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
     depends_on:
       docker-proxy:
         condition: service_healthy
