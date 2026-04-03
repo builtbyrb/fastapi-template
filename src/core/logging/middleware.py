@@ -34,19 +34,25 @@ class AccessLoggingMiddleware(BaseHTTPMiddleware):
         else:
             return response
         finally:
-            elapsed = time.perf_counter() - start_time
             client_host = await get_client_ip(request)
+            client_port = APP_ENV.ENTRYPOINT_PORT
+            http_method = request.method
+            url = str(request.url)
+            http_version = request.scope["http_version"]
+            status_code = response.status_code
+            elapsed = time.perf_counter() - start_time
 
-            access_logger.info(
+            await access_logger.ainfo(
+                f"{client_host}:{client_port} - "
+                f'"{http_method} {url} HTTP/{http_version}" '
+                f"{status_code}",
                 http={
-                    "url": str(request.url),
-                    "status_code": response.status_code,
-                    "method": request.method,
+                    "url": url,
+                    "status_code": status_code,
+                    "method": http_method,
                     "request_id": request_id,
-                    "version": request.scope["http_version"],
+                    "version": http_version,
                 },
-                network={
-                    "client": {"ip": client_host, "port": APP_ENV.ENTRYPOINT_PORT}
-                },
+                network={"client": {"ip": client_host, "port": client_port}},
                 duration=elapsed,
             )
