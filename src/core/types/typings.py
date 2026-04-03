@@ -21,6 +21,10 @@ type IpAnyAddress = Annotated[IPvAnyAddress, PlainSerializer(str, return_type=st
 
 ANY_IP_ADAPTER = TypeAdapter(IpAnyAddress)
 
+type AnyPort = Annotated[int, Field(ge=0, le=65535)]
+
+ANY_PORT_ADAPTER = TypeAdapter(AnyPort)
+
 type OpenApiSchemaType = Literal[
     "string", "number", "integer", "boolean", "array", "object"
 ]

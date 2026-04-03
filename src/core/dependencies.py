@@ -2,15 +2,13 @@ from collections.abc import AsyncIterator
 from typing import Annotated
 
 import redis.asyncio as redis
-from fastapi import Depends, Request
+from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.config.constants import Environment
-from src.core.config.env import APP_ENV
 from src.core.database import redis_manager, session_manager
-from src.core.exceptions import AppClientIpNotFound
+from src.core.domain import get_client_ip
 from src.core.types.internal import DatabaseProviders
-from src.core.types.typings import ANY_IP_ADAPTER, IpAnyAddress
+from src.core.types.typings import IpAnyAddress
 
 
 async def get_session() -> AsyncIterator[AsyncSession]:
@@ -31,21 +29,6 @@ async def get_database_providers(
     client: RedisDep,
 ) -> DatabaseProviders:
     return DatabaseProviders(session=session, client=client)
-
-
-async def get_client_ip(request: Request) -> IpAnyAddress:
-    if APP_ENV.ENVIRONMENT == Environment.DEV:
-        return ANY_IP_ADAPTER.validate_python("123.1.1.1")
-
-    ip = request.headers.get("X-Real-Ip")
-
-    if not ip and request.client:
-        return ANY_IP_ADAPTER.validate_python(request.client.host)
-
-    if not ip:
-        raise AppClientIpNotFound
-
-    return ANY_IP_ADAPTER.validate_python(ip)
 
 
 IpDep = Annotated[IpAnyAddress, Depends(get_client_ip)]

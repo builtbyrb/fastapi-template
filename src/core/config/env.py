@@ -24,5 +24,7 @@ class AppEnv(BaseEnvSettings):
     REDIS_PORT: int = Field(default=6379)
     REDIS_DB: int = Field(default=...)
 
+    ENTRYPOINT_PORT: int = Field(default=...)
+
 
 APP_ENV = AppEnv()

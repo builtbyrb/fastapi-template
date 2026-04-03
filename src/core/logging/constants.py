@@ -5,7 +5,9 @@ from structlog.typing import Processor
 
 
 # region -------------------------- PreChain -------------------------
-FOREIGN_PRE_CHAIN: list[Processor] = [structlog.stdlib.ExtraAdder()]
+FOREIGN_PRE_CHAIN: list[Processor] = [
+    structlog.stdlib.ExtraAdder(),
+]
 
 PRE_CHAIN: list[Processor] = [
     structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
@@ -27,6 +29,7 @@ SHARED_PRE_CHAIN: list[Processor] = [
 ]
 # endregion
 
+
 # region -------------------------- Chain -------------------------
 _SHARED_CHAIN: list[Processor] = [
     structlog.stdlib.ProcessorFormatter.remove_processors_meta,
@@ -41,7 +44,7 @@ PROD_CHAIN: list[Processor] = [
 ]
 # endregion
 
-
+# region -------------------------- Other -------------------------
 LOGGERS_TO_CLEAR = ["uvicorn", "uvicorn.error", "uvicorn.asgi"]
 
 
@@ -51,3 +54,6 @@ class LogLevel(Enum):
     WARNING = 30
     INFO = 20
     DEBUG = 10
+
+
+# endregion
