@@ -1,0 +1,14 @@
+services:
+  vector:
+    image: timberio/vector:0.54.0-alpine
+    volumes:
+      - ./vector.toml:/etc/vector/vector.toml
+    environment:
+      - VECTOR_CONFIG=/etc/vector/vector.toml
+    networks:
+      - docker-proxy-net
+    env_file:
+      - .env.prod
+    depends_on:
+      docker-proxy:
+        condition: service_healthy

@@ -3,3 +3,4 @@ include:
   - docker-compose-db.yml
   - docker-compose-app.yml
   - docker-compose-proxy.yml
+  - docker-compose-logs.yml
