@@ -44,7 +44,7 @@ class AccessLoggingMiddleware(BaseHTTPMiddleware):
 
             await access_logger.ainfo(
                 f"{client_host}:{client_port} - "
-                f'"{http_method} {url} HTTP/{http_version}" '
+                f"{http_method} {url} HTTP/{http_version}"
                 f"{status_code}",
                 http={
                     "url": url,

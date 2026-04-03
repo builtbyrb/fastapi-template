@@ -3,6 +3,8 @@ from enum import Enum
 import structlog
 from structlog.typing import Processor
 
+from src.core.logging.processors import drop_color_message_key
+
 
 # region -------------------------- PreChain -------------------------
 FOREIGN_PRE_CHAIN: list[Processor] = [
@@ -39,6 +41,7 @@ DEV_CHAIN: list[Processor] = [*_SHARED_CHAIN, structlog.dev.ConsoleRenderer()]
 PROD_CHAIN: list[Processor] = [
     *_SHARED_CHAIN,
     structlog.processors.dict_tracebacks,
+    drop_color_message_key,
     structlog.processors.EventRenamer("msg"),
     structlog.processors.JSONRenderer(),
 ]
