@@ -15,6 +15,8 @@ access_logger = structlog.stdlib.get_logger("api.access")
 
 
 class AccessLoggingMiddleware(BaseHTTPMiddleware):
+    access_logger = structlog.stdlib.get_logger("api.access")
+
     async def dispatch(
         self,
         request: Request[State],
@@ -44,7 +46,7 @@ class AccessLoggingMiddleware(BaseHTTPMiddleware):
 
             await access_logger.ainfo(
                 f"{client_host}:{client_port} - "
-                f"{http_method} {url} HTTP/{http_version}"
+                f"{http_method} {url} HTTP/{http_version} "
                 f"{status_code}",
                 http={
                     "url": url,

@@ -1,9 +1,9 @@
-from enum import Enum
+from enum import StrEnum
 
 
 ENV_FILE = (".env.prod", ".env")
 
 
-class Environment(Enum):
+class Environment(StrEnum):
     DEV = "DEV"
     PROD = "PROD"

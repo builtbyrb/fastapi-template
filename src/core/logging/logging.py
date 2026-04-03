@@ -11,7 +11,6 @@ from src.core.logging.constants import (
     PRE_CHAIN,
     PROD_CHAIN,
     SHARED_PRE_CHAIN,
-    LogLevel,
 )
 
 
@@ -22,9 +21,7 @@ def clear_logger_handler(loggers: list[str]) -> None:
         logger.propagate = True
 
 
-def config_logging(
-    formatter: logging.Formatter, log_level: LogLevel = LogLevel.INFO
-) -> None:
+def config_logging(formatter: logging.Formatter) -> None:
     structlog.configure(
         processors=[*SHARED_PRE_CHAIN, *PRE_CHAIN],
         logger_factory=structlog.stdlib.LoggerFactory(),
@@ -37,10 +34,10 @@ def config_logging(
     root_logger = logging.getLogger()
     root_logger.handlers.clear()
     root_logger.addHandler(handler)
-    root_logger.setLevel(log_level.value)
+    root_logger.setLevel(APP_ENV.LOGGING_LEVEL.value)
 
 
-def setup_logging(log_level: LogLevel = LogLevel.INFO) -> None:
+def setup_logging() -> None:
     chain = DEV_CHAIN if APP_ENV.ENVIRONMENT == Environment.DEV else PROD_CHAIN
 
     formatter = structlog.stdlib.ProcessorFormatter(
@@ -49,4 +46,4 @@ def setup_logging(log_level: LogLevel = LogLevel.INFO) -> None:
     )
 
     clear_logger_handler(LOGGERS_TO_CLEAR)
-    config_logging(formatter, log_level)
+    config_logging(formatter)

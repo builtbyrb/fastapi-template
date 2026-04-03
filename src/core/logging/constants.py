@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import IntEnum
 
 import structlog
 from structlog.typing import Processor
@@ -51,7 +51,7 @@ PROD_CHAIN: list[Processor] = [
 LOGGERS_TO_CLEAR = ["uvicorn", "uvicorn.error", "uvicorn.asgi"]
 
 
-class LogLevel(Enum):
+class LogLevel(IntEnum):
     CRITICAL = 50
     ERROR = 40
     WARNING = 30

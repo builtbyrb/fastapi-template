@@ -2,6 +2,7 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.core.config.constants import ENV_FILE, Environment
+from src.core.logging.constants import LogLevel
 
 
 class BaseEnvSettings(BaseSettings):
@@ -12,6 +13,7 @@ class BaseEnvSettings(BaseSettings):
 
 class AppEnv(BaseEnvSettings):
     ENVIRONMENT: Environment = Field(default=...)
+    LOGGING_LEVEL: LogLevel = Field(default=...)
 
     POSTGRES_DRIVER_NAME: str = Field(default="postgresql+asyncpg")
     POSTGRES_USER: str = Field(default=...)
