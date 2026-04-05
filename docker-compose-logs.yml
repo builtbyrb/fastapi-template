@@ -6,7 +6,7 @@ services:
     volumes:
       - ./vector.yaml:/etc/vector/vector.yaml:ro
     environment:
-      - VECTOR_CONFIG=${/etc/vector/vector.yaml}
+      - VECTOR_CONFIG=/etc/vector/vector.yaml
       - AXIOM_TOKEN=${AXIOM_TOKEN}
       - AXIOM_DATASET_NAME=${AXIOM_DATASET_NAME}
       - AXIOM_REGION=${AXIOM_REGION}
