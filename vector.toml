@@ -5,7 +5,6 @@ address = "0.0.0.0:8686"
 [sources.docker_logs]
 type = "docker_logs"
 docker_host = "tcp://docker-proxy:2375"
-scrape_interval_secs = 15
 
 [sources.host_metrics]
 type = "host_metrics"
