@@ -25,9 +25,7 @@ pipeline:
       tag: docker.logs
       parser: docker
 
-    - name: docker_metrics
-      host: docker-proxy
-      port: 2375
+    - name: docker
       interval_sec: 20
       tag: docker.stats
 
