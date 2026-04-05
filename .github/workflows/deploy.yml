@@ -30,7 +30,7 @@ jobs:
             git pull
 
             echo "Step 2: Shutdown old docker container"
-            docker compose --env-file .env.prod down
+            docker compose --env-file .env.prod --remove-orphans down 
 
             echo "Step 3: Login to ghcr.io"
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
