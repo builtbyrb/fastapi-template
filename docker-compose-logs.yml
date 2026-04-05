@@ -12,6 +12,7 @@ services:
       - AXIOM_REGION=${AXIOM_REGION}
     networks:
       - public-net
+      - docker-proxy
     deploy:
       resources:
         limits:
