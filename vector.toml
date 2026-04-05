@@ -11,6 +11,28 @@ type = "host_metrics"
 collectors = ["load"]
 scrape_interval_secs = 15
 
+[transforms.to_json]
+type = "remap"
+inputs = ["docker_logs"]
+source = '''
+. = parse_json!(string!(.message))
+
+if exists(.timestamp) {
+    parsed_timestamp, err = to_timestamp(.timestamp)
+    if err == null {
+        .timestamp = parsed_timestamp
+    } else {
+        .timestamp = now()
+    }
+} else {
+    .timestamp = now()
+}
+
+if exists(.msg) && is_string(.msg) {
+    .msg = downcase(.msg)
+}
+'''
+
 [sinks.axiom]
 type = "axiom"
 inputs = ["docker_logs", "host_metrics"]
