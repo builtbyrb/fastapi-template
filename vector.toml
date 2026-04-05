@@ -15,22 +15,17 @@ scrape_interval_secs = 15
 type = "remap"
 inputs = ["docker_logs"]
 source = '''
-. = parse_json!(string!(.message))
+parsed_message, err = parse_json(.message)
 
-if exists(.timestamp) {
-    parsed_timestamp, err = timestamp(.timestamp)
-    if err == null {
-        .timestamp = parsed_timestamp
-    } else {
-        .timestamp = now()
-    }
-} else {
-    .timestamp = now()
+
+if err != null || !is_object(parsed_message){
+    .vector_to_json_processed = false
+    return .
 }
 
-if exists(.msg) && is_string(.msg) {
-    .msg = downcase!(.msg)
-}
+.json_message = parsed_message
+.vector_to_json_processed = true
+del(.message)
 '''
 
 [sinks.axiom]
