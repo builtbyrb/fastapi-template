@@ -15,7 +15,7 @@ scrape_interval_secs = 15
 type = "remap"
 inputs = ["docker_logs"]
 source = '''
-. = parse_json!(string!(.log))
+. = parse_json!(string!(.message))
 
 if exists(.timestamp) {
     parsed_timestamp, err = timestamp(.timestamp)
@@ -35,7 +35,7 @@ if exists(.msg) && is_string(.msg) {
 
 [sinks.axiom]
 type = "axiom"
-inputs = ["docker_logs", "host_metrics"]
+inputs = ["to_json", "host_metrics"]
 token = "${AXIOM_TOKEN}"
 dataset = "${AXIOM_DATASET_NAME}"
 region = "${AXIOM_REGION}"
