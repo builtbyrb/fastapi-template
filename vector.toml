@@ -10,7 +10,7 @@ docker_host = "tcp://docker-proxy:2375"
 type = "host_metrics"
 scrape_interval_secs = 15
 
-[sinks.SINK_ID]
+[sinks.axiom]
 type = "axiom"
 inputs = ["docker_logs, host_metrics"]
 token = "${AXIOM_TOKEN}"
