@@ -4,9 +4,9 @@ services:
     restart: unless-stopped
     image: timberio/vector:0.54.0-debian
     volumes:
-      - ./vector.yaml:/etc/vector/vector.yaml:ro
+      - ./vector.toml:/etc/vector/vector.toml:ro
     environment:
-      - VECTOR_CONFIG=/etc/vector/vector.yaml
+      - VECTOR_CONFIG=/etc/vector/vector.toml
       - AXIOM_TOKEN=${AXIOM_TOKEN}
       - AXIOM_DATASET_NAME=${AXIOM_DATASET_NAME}
       - AXIOM_REGION=${AXIOM_REGION}
