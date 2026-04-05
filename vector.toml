@@ -18,7 +18,7 @@ source = '''
 . = parse_json!(string!(.message))
 
 if exists(.timestamp) {
-    parsed_timestamp, err = to_timestamp(.timestamp)
+    parsed_timestamp, err = timestamp(.timestamp)
     if err == null {
         .timestamp = parsed_timestamp
     } else {
