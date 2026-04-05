@@ -15,7 +15,7 @@ scrape_interval_secs = 15
 type = "remap"
 inputs = ["docker_logs"]
 source = '''
-. = parse_json!(string!(.message))
+. = parse_json!(string!(.log))
 
 if exists(.timestamp) {
     parsed_timestamp, err = timestamp(.timestamp)
