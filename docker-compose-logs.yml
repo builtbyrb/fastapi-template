@@ -3,6 +3,7 @@ services:
     container_name: fluent-bit
     restart: unless-stopped
     image: fluent/fluent-bit:5.0.2-amd64
+    user: root
     volumes:
       - ./fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml
       - /var/lib/docker/containers/:/var/lib/docker/containers/
