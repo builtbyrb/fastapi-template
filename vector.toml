@@ -8,8 +8,8 @@ docker_host = "tcp://docker-proxy:2375"
 
 [sources.host_metrics]
 type = "host_metrics"
-collectors = ["load"]
-scrape_interval_secs = 15
+collectors = ["cpu", "memory"]
+scrape_interval_secs = 60
 
 [transforms.to_json]
 type = "remap"
