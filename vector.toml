@@ -15,5 +15,5 @@ scrape_interval_secs = 15
 type = "axiom"
 inputs = ["VECTOR_SOURCE_ID"]
 token = "${AXIOM_TOKEN}"
-dataset = "${AXIOM8_DATASET_NAME}"
+dataset = "${AXIOM_DATASET_NAME}"
 region = "${AXIOM_REGION}"
