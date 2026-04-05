@@ -1,0 +1,19 @@
+[api]
+enabled = true
+address = "0.0.0.0:8686"
+
+[sources.docker_logs]
+type = "docker_logs"
+docker_host = "tcp://docker-proxy:2375"
+scrape_interval_secs = 15
+
+[sources.host_metrics]
+type = "host_metrics"
+scrape_interval_secs = 15
+
+[sinks.SINK_ID]
+type = "axiom"
+inputs = ["VECTOR_SOURCE_ID"]
+token = "${AXIOM_TOKEN}"
+dataset = "${AXIOM8_DATASET_NAME}"
+region = "${AXIOM_REGION}"

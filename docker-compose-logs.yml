@@ -1,13 +1,12 @@
 services:
-  fluent-bit:
-    container_name: fluent-bit
+  vector:
+    container_name: vector
     restart: unless-stopped
-    image: fluent/fluent-bit:5.0.2-amd64
-    user: root
+    image: timberio/vector:0.54.0-debian
     volumes:
-      - ./fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml
-    command: /fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.yaml
+      - ./vector.yaml:/etc/vector/vector.yaml:ro
     environment:
+      - VECTOR_CONFIG=${/etc/vector/vector.yaml}
       - AXIOM_TOKEN=${AXIOM_TOKEN}
       - AXIOM_DATASET_NAME=${AXIOM_DATASET_NAME}
       - AXIOM_REGION=${AXIOM_REGION}
@@ -19,7 +18,7 @@ services:
           cpus: "0.1"
           memory: 128M
     healthcheck:
-      test: wget --spider http://127.0.0.1:2020/api/v2/health || exit 1
+      test: wget --spider http://localhost:8686/health || exit 1
       interval: 1m30s
       timeout: 30s
       retries: 5
