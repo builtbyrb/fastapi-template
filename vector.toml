@@ -29,7 +29,7 @@ if exists(.timestamp) {
 }
 
 if exists(.msg) && is_string(.msg) {
-    .msg = downcase(.msg)
+    .msg = downcase!(.msg)
 }
 '''
 
