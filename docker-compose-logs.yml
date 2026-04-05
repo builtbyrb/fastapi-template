@@ -5,6 +5,7 @@ services:
     image: fluent/fluent-bit:5.0.2-amd64
     volumes:
       - ./fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml
+      - /var/lib/docker/containers/:/var/lib/docker/containers/
     command: /fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.yaml
     environment:
       - AXIOM_TOKEN=${AXIOM_TOKEN}
