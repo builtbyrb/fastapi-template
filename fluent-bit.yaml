@@ -21,19 +21,11 @@ pipeline:
       tag: host.memory
       interval_sec: 20
 
-    - name: tail
-      path: /var/lib/docker/containers/*/*.log
-      tag: docker.logs
-      parser: docker
-
     - name: docker
       interval_sec: 20
       tag: docker.stats
 
   outputs:
-    - name: stdout
-      match: "docker.logs"
-
     - name: http
       match: "*"
       host: ${AXIOM_REGION}
