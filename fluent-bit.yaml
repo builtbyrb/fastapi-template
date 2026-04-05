@@ -31,6 +31,9 @@ pipeline:
       tag: docker.stats
 
   outputs:
+    - name: stdout
+      match: "docker.logs"
+
     - name: http
       match: "*"
       host: ${AXIOM_REGION}
