@@ -5,9 +5,6 @@ services:
     image: fluent/fluent-bit:5.0.2-amd64
     volumes:
       - ./fluent-bit.yaml:/fluent-bit/etc/fluent-bit.yaml
-    configs:
-      - source: fluent-bit
-        target: /fluent-bit/etc/fluent-bit.yaml
     environment:
       - AXIOM_TOKEN=${AXIOM_TOKEN}
       - AXIOM_DATASET_NAME=${AXIOM_DATASET_NAME}
