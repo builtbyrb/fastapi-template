@@ -8,6 +8,7 @@ docker_host = "tcp://docker-proxy:2375"
 
 [sources.host_metrics]
 type = "host_metrics"
+collectors = ["cpu", "memory", "network", "disk"]
 scrape_interval_secs = 15
 
 [sinks.axiom]
