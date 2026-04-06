@@ -2,7 +2,7 @@ services:
   cadvisor:
     container_name: cadvisor
     restart: unless-stopped
-    image: gcr.io/cadvisor/cadvisor:0.56
+    image: gcr.io/google/cadvisor:0.56
     privileged: true
     devices:
       - /dev/kmsg
