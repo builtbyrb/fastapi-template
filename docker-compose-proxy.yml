@@ -7,8 +7,11 @@ services:
       - CONTAINERS=1
     networks:
       - docker-proxy-net
-    cpus: "0.1"
-    memory: 64M
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 64M
     healthcheck:
       test: wget --spider http://docker-proxy:2375/version || exit 1
       interval: 1m30s
@@ -35,8 +38,11 @@ services:
     ports:
       - "80:80"
       - "8080:8080"
-    cpus: "0.5"
-    memory: 128M
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
     healthcheck:
       test: traefik healthcheck --ping
       interval: 1m30s

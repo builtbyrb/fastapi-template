@@ -11,8 +11,11 @@ services:
       POSTGRES_INITDB_ARGS: --auth=md5
     networks:
       - pgbouncer-net
-    cpus: "1.0"
-    memory: 512M
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-d", "${POSTGRES_DB}"]
       interval: 1m30s
@@ -38,8 +41,11 @@ services:
     networks:
       - database-net
       - pgbouncer-net
-    cpus: "0.1"
-    memory: 64M
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 64M
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "${POSTGRES_HOST}"]
       interval: 1m30s
@@ -58,8 +64,11 @@ services:
       - REDIS_ARGS=--appendonly yes
     networks:
       - database-net
-    cpus: "0.1"
-    memory: 512M
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 512M
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 1m30s
@@ -81,8 +90,11 @@ services:
       - public-net
     ports:
       - 8081:8080
-    cpus: "0.1"
-    memory: 64M
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 64M
     depends_on:
       pgbouncer:
         condition: service_healthy

@@ -10,8 +10,11 @@ services:
       - public-net
     ports:
       - 8082:8080
-    cpus: "0.1"
-    memory: 128M
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 128M
     healthcheck:
       test: wget --spider http://localhost:8080/cadvisor/healthz || exit 1
       interval: 1m30s
@@ -37,8 +40,11 @@ services:
     networks:
       - public-net
       - docker-proxy-net
-    cpus: "0.1"
-    memory: 128M
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 128M
     healthcheck:
       test: wget --spider http://localhost:8686/health || exit 1
       interval: 1m30s
