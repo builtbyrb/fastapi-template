@@ -93,6 +93,35 @@ services:
       postgredb:
         condition: service_healthy
 
+  cadvisor:
+    container_name: cadvisor
+    restart: unless-stopped
+    image: ghcr.io/google/cadvisor:v0.53.0
+    volumes:
+      - /:/rootfs:ro
+      - /sys:/sys:ro
+      - /var/run:/var/run:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 128M
+    networks:
+      - fastapi-net
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: wget --spider http://localhost:8080/cadvisor/healthz || exit 1
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+
   vector:
     container_name: vector
     restart: unless-stopped
@@ -115,6 +144,9 @@ services:
       timeout: 30s
       retries: 5
       start_period: 20s
+    depends_on:
+      cadvisor:
+        condition: service_healthy
 
   fastapi:
     build: .
