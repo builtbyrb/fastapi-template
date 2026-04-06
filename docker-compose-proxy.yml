@@ -33,11 +33,12 @@ services:
       - "--providers.docker.exposedbydefault=false"
     networks:
       - public-net
+      - vpn-net
       - docker-proxy-net
       - fastapi-net
     ports:
-      - "80:80"
-      - "8080:8080"
+      - 80:80
+      - 10.66.66.1:8080:8080
     deploy:
       resources:
         limits:

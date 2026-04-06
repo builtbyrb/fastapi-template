@@ -14,5 +14,7 @@ networks:
   fastapi-net:
     internal: true
     name: fastapi-net
+  vpn-net:
+    name: vpn-net
   public-net:
     name: public-net

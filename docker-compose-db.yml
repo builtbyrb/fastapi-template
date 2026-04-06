@@ -87,9 +87,9 @@ services:
       ADMINER_DEFAULT_SYSTEM: pgsql
     networks:
       - database-net
-      - public-net
+      - vpn-net
     ports:
-      - 8081:8080
+      - 10.66.66.1:8081:8080
     deploy:
       resources:
         limits:
