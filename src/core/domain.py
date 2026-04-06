@@ -5,7 +5,7 @@ from typing import Any
 
 from fastapi import Request
 
-from src.core.config.constants import Environment
+from src.core.constants import Environment
 from src.core.config.env import APP_ENV
 from src.core.exceptions import (
     AppClientIpNotFound,

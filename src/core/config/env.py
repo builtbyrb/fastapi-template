@@ -1,7 +1,7 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from src.core.config.constants import ENV_FILE, Environment
+from src.core.constants import ENV_FILE, Environment
 from src.core.logging.constants import LogLevel
 
 

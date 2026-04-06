@@ -7,6 +7,11 @@ on:
         required: true
         default: 1
         type: number
+      env_file:
+        description: 'The env file to load'
+        required: true
+        default: ".env.prod"
+        type: string
       
 jobs:
   deploy:
@@ -43,4 +48,4 @@ jobs:
             rm ~/.docker/config.json
 
             echo "Step 6: Launching the containers"
-            docker compose --env-file .env.prod up -d --scale fastapi=${{ inputs.fastapi_scale }}
+            docker compose --env-file ${{ inputs.env_file }} up -d --scale fastapi=${{ inputs.fastapi_scale }}

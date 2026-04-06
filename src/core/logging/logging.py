@@ -2,7 +2,7 @@ import logging
 
 import structlog
 
-from src.core.config.constants import Environment
+from src.core.constants import Environment
 from src.core.config.env import APP_ENV
 from src.core.logging.constants import (
     DEV_CHAIN,

@@ -93,6 +93,29 @@ services:
       postgredb:
         condition: service_healthy
 
+  vector:
+    container_name: vector
+    restart: unless-stopped
+    image: timberio/vector:0.54.0-debian
+    volumes:
+      - ./vector_dev.toml:/etc/vector/vector_dev.toml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - VECTOR_CONFIG=/etc/vector/vector_dev.toml
+    networks:
+      - fastapi-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 128M
+    healthcheck:
+      test: wget --spider http://localhost:8686/health || exit 1
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
+
   fastapi:
     build: .
     entrypoint:
@@ -123,7 +146,7 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - .:/app
+      - ./src:/app/src
 
 networks:
   fastapi-net:

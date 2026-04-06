@@ -1,0 +1,39 @@
+
+[api]
+enabled = true
+address = "0.0.0.0:8686"
+
+[sources.docker_logs]
+type = "docker_logs"
+docker_host = "/var/run/docker.sock"
+
+[sources.host_metrics]
+type = "host_metrics"
+collectors = ["cpu", "memory"]
+scrape_interval_secs = 60
+
+
+[transforms.to_json]
+type = "remap"
+inputs = ["docker_logs"]
+source = '''
+parsed_message, err = parse_json(.message)
+
+
+if err != null || !is_object(parsed_message){
+    .vector_to_json_processed = false
+    return .
+}
+
+.json_message = parsed_message
+.vector_to_json_processed = true
+del(.message)
+'''
+
+[sinks.console]
+type = "console"
+target = "stdout"
+inputs = ["exclude_watchfiles", "host_metrics"]
+
+[sinks.console.encoding]
+codec = "text"
