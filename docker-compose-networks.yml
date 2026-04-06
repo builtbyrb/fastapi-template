@@ -12,6 +12,7 @@ networks:
     internal: true
     name: pgbouncer-net
   fastapi-net:
+    internal: true
     name: fastapi-net
   public-net:
     name: public-net
