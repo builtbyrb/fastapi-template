@@ -1,21 +1,18 @@
 services:
   postgredb:
-    image: postgres:16-alpine
     container_name: postgredb
     restart: unless-stopped
-    networks:
-      - pgbouncer-net
-    deploy:
-      resources:
-        limits:
-          cpus: "1.0"
-          memory: 1024M
+    image: postgres:16-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_HOST_AUTH_METHOD: md5
       POSTGRES_INITDB_ARGS: --auth=md5
+    networks:
+      - pgbouncer-net
+    cpus: "1.0"
+    memory: 512M
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-d", "${POSTGRES_DB}"]
       interval: 1m30s
@@ -26,17 +23,9 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
 
   pgbouncer:
-    image: edoburu/pgbouncer:v1.25.1-p0
     container_name: pgbouncer
     restart: unless-stopped
-    networks:
-      - database-net
-      - pgbouncer-net
-    deploy:
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 64M
+    image: edoburu/pgbouncer:v1.25.1-p0
     environment:
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
@@ -46,6 +35,11 @@ services:
       POOL_MODE: transaction
       MAX_CLIENT_CONN: 1000
       DEFAULT_POOL_SIZE: 90
+    networks:
+      - database-net
+      - pgbouncer-net
+    cpus: "0.1"
+    memory: 64M
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "${POSTGRES_HOST}"]
       interval: 1m30s
@@ -57,18 +51,15 @@ services:
         condition: service_healthy
 
   redis:
-    image: redis:7-alpine
     container_name: redis
     restart: unless-stopped
-    networks:
-      - database-net
-    deploy:
-      resources:
-        limits:
-          cpus: "0.2"
-          memory: 512M
+    image: redis:7-alpine
     environment:
       - REDIS_ARGS=--appendonly yes
+    networks:
+      - database-net
+    cpus: "0.1"
+    memory: 512M
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 1m30s
@@ -79,22 +70,19 @@ services:
       - ./redis-data:/data
 
   adminer:
-    image: adminer:5.4.2-standalone
     container_name: adminer
     restart: unless-stopped
-    networks:
-      - database-net
-      - public-net
-    deploy:
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 64M
-    ports:
-      - 8081:8080
+    image: adminer:5.4.2-standalone
     environment:
       ADMINER_DEFAULT_SERVER: pgbouncer
       ADMINER_DEFAULT_SYSTEM: pgsql
+    networks:
+      - database-net
+      - public-net
+    ports:
+      - 8081:8080
+    cpus: "0.1"
+    memory: 64M
     depends_on:
       pgbouncer:
         condition: service_healthy

@@ -2,38 +2,33 @@ services:
   cadvisor:
     container_name: cadvisor
     restart: unless-stopped
-    image: gcr.io/cadvisor/cadvisor:latest
-    volumes:
-      - /:/rootfs:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-      - /var/run:/var/run:ro
+    image: gcr.io/cadvisor/cadvisor:v0.33.0
     privileged: true
     devices:
       - /dev/kmsg
-    deploy:
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 128M
     networks:
       - public-net
     ports:
       - 8082:8080
+    cpus: "0.1"
+    memory: 128M
     healthcheck:
       test: wget --spider http://localhost:8080/cadvisor/healthz || exit 1
       interval: 1m30s
       timeout: 30s
       retries: 5
       start_period: 20s
+    volumes:
+      - /:/rootfs:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - /var/run:/var/run:ro
 
   vector:
     container_name: vector
     restart: unless-stopped
     image: timberio/vector:0.54.0-debian
-    volumes:
-      - ./vector.toml:/etc/vector/vector.toml:ro
     environment:
       - VECTOR_CONFIG=/etc/vector/vector.toml
       - AXIOM_TOKEN=${AXIOM_TOKEN}
@@ -42,17 +37,16 @@ services:
     networks:
       - public-net
       - docker-proxy-net
-    deploy:
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 128M
+    cpus: "0.1"
+    memory: 128M
     healthcheck:
       test: wget --spider http://localhost:8686/health || exit 1
       interval: 1m30s
       timeout: 30s
       retries: 5
       start_period: 20s
+    volumes:
+      - ./vector.toml:/etc/vector/vector.toml:ro
     depends_on:
       docker-proxy:
         condition: service_healthy

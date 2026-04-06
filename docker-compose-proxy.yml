@@ -1,17 +1,14 @@
 services:
   docker-proxy:
-    image: tecnativa/docker-socket-proxy:v0.4.2
     container_name: docker-proxy
     restart: unless-stopped
-    networks:
-      - docker-proxy-net
-    deploy:
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 64M
+    image: tecnativa/docker-socket-proxy:v0.4.2
     environment:
       - CONTAINERS=1
+    networks:
+      - docker-proxy-net
+    cpus: "0.1"
+    memory: 64M
     healthcheck:
       test: wget --spider http://docker-proxy:2375/version || exit 1
       interval: 1m30s
@@ -22,6 +19,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   traefik:
+    container_name: traefik
+    restart: unless-stopped
     image: traefik:v3.6.12
     command:
       - "--api.insecure=true"
@@ -29,18 +28,15 @@ services:
       - "--entrypoints.web.address=:${ENTRYPOINT_PORT}"
       - "--providers.docker.endpoint=tcp://docker-proxy:2375"
       - "--providers.docker.exposedbydefault=false"
-    ports:
-      - "80:80"
-      - "8080:8080"
     networks:
       - public-net
       - docker-proxy-net
       - fastapi-net
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 512M
+    ports:
+      - "80:80"
+      - "8080:8080"
+    cpus: "0.5"
+    memory: 128M
     healthcheck:
       test: traefik healthcheck --ping
       interval: 1m30s

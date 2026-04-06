@@ -1,18 +1,15 @@
 services:
   fastapi:
-    image: ghcr.io/builtbyrb/fastapi-template:latest
     restart: unless-stopped
+    image: ghcr.io/builtbyrb/fastapi-template:latest
+    env_file:
+      - ${ENV_FILE_NAME}
     networks:
       - redis-net
       - database-net
       - fastapi-net
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 512M
-    env_file:
-      - ${ENV_FILE_NAME}
+    cpus: "1"
+    memory: 512M
     healthcheck:
       test: python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5)"
       interval: 30s
