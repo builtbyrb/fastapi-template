@@ -39,9 +39,25 @@ type = "filter"
 inputs = ["cadvisor_metrics"]
 condition = """ .name == "container_spec_memory_limit_bytes" """
 
+[transforms.cadvisor_current_memory]
+type = "filter"
+inputs = ["cadvisor_metrics"]
+condition = """ .name == "container_memory_working_set_bytes" """
+
+[transforms.cadvisor_cpu_usage_seconds]
+type = "filter"
+inputs = ["cadvisor_metrics"]
+condition = """ .name == "container_cpu_usage_seconds_total" """
+
 [sinks.axiom]
 type = "axiom"
-inputs = ["json_docker_logs", "host_metrics", "cadvisor_max_memory"]
+inputs = [
+    "json_docker_logs",
+    "host_metrics",
+    "cadvisor_current_memory",
+    "cadvisor_max_memory",
+    "cadvisor_cpu_usage_seconds",
+]
 token = "${AXIOM_TOKEN}"
 dataset = "${AXIOM_DATASET_NAME}"
 region = "${AXIOM_REGION}"
