@@ -34,10 +34,14 @@ if err != null || !is_object(parsed_message){
 del(.message)
 '''
 
+[transforms.cadvisor_max_memory]
+type = "filter"
+inputs = ["cadvisor_metrics"]
+condition = """ .name == "container_spec_memory_limit_bytes" """
 
 [sinks.axiom]
 type = "axiom"
-inputs = ["json_docker_logs", "host_metrics", "cadvisor_metrics"]
+inputs = ["json_docker_logs", "host_metrics", "cadvisor_max_memory"]
 token = "${AXIOM_TOKEN}"
 dataset = "${AXIOM_DATASET_NAME}"
 region = "${AXIOM_REGION}"
