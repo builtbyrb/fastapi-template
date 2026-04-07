@@ -6,12 +6,13 @@ services:
     command:
       - --docker_only=true
       - --docker="tcp://docker-proxy:2375"
-      - "--disable_metrics=advtcp,app,cpu_topology,cpuset,disk,diskIO,hugetlb,memory_numa,network,oom_event,perf_event,process,referenced_memory,resctrl,sched,tcp,udp"
+      - --enable_metrics=cpu,cpuLoad,memory
     privileged: true
     devices:
       - /dev/kmsg
     networks:
       - vpn-net
+      - docker-proxy-net
     ports:
       - 10.66.66.1:8082:8080
     deploy:
