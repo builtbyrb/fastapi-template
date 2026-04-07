@@ -32,8 +32,8 @@ services:
       - /dev/disk/:/dev/disk:ro
       - /var/run:/var/run:ro
     depends_on:
-      - docker-proxy:
-          condition: service_healthy
+      docker-proxy:
+        condition: service_healthy
 
   vector:
     container_name: vector
