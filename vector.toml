@@ -13,7 +13,7 @@ scrape_interval_secs = 60
 
 [sources.cadvisor_metrics]
 type = "prometheus_scrape"
-scrape_interval_secs = 60
+scrape_interval_secs = 30
 scrape_timeout_secs = 5
 endpoints = ["http://10.66.66.1:8082/metrics"]
 
@@ -48,6 +48,17 @@ condition = """ .name == "container_memory_working_set_bytes" """
 type = "filter"
 inputs = ["cadvisor_metrics"]
 condition = """ .name == "container_cpu_usage_seconds_total" """
+
+[transforms.cadvisor_cpu_quota]
+type = "filter"
+inputs = ["cadvisor_metrics"]
+condition = """ .name == "container_spec_cpu_quota" """
+
+[transforms.cadvisor_cpu_period]
+type = "filter"
+inputs = ["cadvisor_metrics"]
+condition = """ .name == "container_spec_cpu_period" """
+
 
 [sinks.axiom]
 type = "axiom"
