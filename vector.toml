@@ -68,6 +68,8 @@ inputs = [
     "cadvisor_current_memory",
     "cadvisor_max_memory",
     "cadvisor_cpu_usage_seconds",
+    "cadvisor_cpu_quota",
+    "cadvisor_cpu_period",
 ]
 token = "${AXIOM_TOKEN}"
 dataset = "${AXIOM_DATASET_NAME}"
