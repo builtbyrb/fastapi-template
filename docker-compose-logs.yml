@@ -5,7 +5,7 @@ services:
     image: ghcr.io/google/cadvisor:0.56
     command:
       - --docker_only=true
-      - --docker="tcp://docker-proxy:2375"
+      - --docker=tcp://docker-proxy:2375
       - --enable_metrics=cpu,cpuLoad,memory
     privileged: true
     devices:
