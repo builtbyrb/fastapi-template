@@ -11,7 +11,13 @@ type = "host_metrics"
 collectors = ["cpu", "memory"]
 scrape_interval_secs = 60
 
-[transforms.to_json]
+[sources.cadvisor_metrics]
+type = "prometheus_scrape"
+scrape_interval_secs = 60
+scrape_timeout_secs = 5
+endpoints = ["http://10.66.66.1:8082/metrics"]
+
+[transforms.json_docker_logs]
 type = "remap"
 inputs = ["docker_logs"]
 source = '''
@@ -28,9 +34,10 @@ if err != null || !is_object(parsed_message){
 del(.message)
 '''
 
+
 [sinks.axiom]
 type = "axiom"
-inputs = ["to_json", "host_metrics"]
+inputs = ["json_docker_logs", "host_metrics", "cadvisor_metrics"]
 token = "${AXIOM_TOKEN}"
 dataset = "${AXIOM_DATASET_NAME}"
 region = "${AXIOM_REGION}"
