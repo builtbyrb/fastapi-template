@@ -17,7 +17,7 @@ services:
       resources:
         limits:
           cpus: "0.1"
-          memory: 128M
+          memory: 64M
     healthcheck:
       test: wget --spider http://localhost:8080/cadvisor/healthz || exit 1
       interval: 1m30s

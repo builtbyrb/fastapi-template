@@ -15,7 +15,7 @@ services:
       resources:
         limits:
           cpus: "1.0"
-          memory: 512M
+          memory: 256M
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-d", "${POSTGRES_DB}"]
       interval: 1m30s
@@ -45,7 +45,7 @@ services:
       resources:
         limits:
           cpus: "0.1"
-          memory: 64M
+          memory: 16M
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "${POSTGRES_HOST}"]
       interval: 1m30s
@@ -94,7 +94,7 @@ services:
       resources:
         limits:
           cpus: "0.1"
-          memory: 64M
+          memory: 16M
     depends_on:
       pgbouncer:
         condition: service_healthy
