@@ -41,7 +41,7 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username ${{ github.repository_owner }} --password-stdin ghcr.io
 
             echo "Step 4: Pull docker image"
-            docker compose pull
+            docker compose --env-file ${{ inputs.env_file }} pull
 
             echo "Step 5: Logout of ghcr.io"
             docker logout ghcr.io
