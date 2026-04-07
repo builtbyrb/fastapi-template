@@ -28,4 +28,4 @@ class HelloWorldUser(FastHttpUser):
             "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyMGRmMjMzMS04ZGYxLTRmYmYtYmJiYy1kNTk1MmY2Y2Q1MjkiLCJzdWIiOiJ1c2VyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzc0NjY1NTE4fQ.21SD1g6PAy1jJ3B-9NIflF0Esw9qoeMMPsdjxNlefKA"
         }
 
-        self.client.get("users/profile", headers=login_headers)
+        self.client.post("users/register", json=json)
