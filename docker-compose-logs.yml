@@ -5,14 +5,12 @@ services:
     image: ghcr.io/google/cadvisor:0.56
     command:
       - --docker_only=true
-      - --docker=tcp://docker-proxy:2375
       - --enable_metrics=cpu,cpuLoad,memory
     privileged: true
     devices:
       - /dev/kmsg
     networks:
       - vpn-net
-      - docker-proxy-net
     ports:
       - 10.66.66.1:8082:8080
     deploy:
@@ -32,9 +30,6 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
       - /var/run:/var/run:ro
-    depends_on:
-      docker-proxy:
-        condition: service_healthy
 
   vector:
     container_name: vector
