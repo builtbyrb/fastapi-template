@@ -5,6 +5,8 @@ services:
     image: tecnativa/docker-socket-proxy:v0.4.2
     environment:
       - CONTAINERS=1
+      - INFO=1
+      - VERSION=1
     networks:
       - docker-proxy-net
     deploy:
