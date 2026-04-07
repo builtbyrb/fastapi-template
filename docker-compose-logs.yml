@@ -3,6 +3,10 @@ services:
     container_name: cadvisor
     restart: unless-stopped
     image: ghcr.io/google/cadvisor:0.56
+    command:
+      - --docker_only=true
+      - --docker="tcp://docker-proxy:2375"
+      - "--disable_metrics=advtcp,app,cpu_topology,cpuset,disk,diskIO,hugetlb,memory_numa,network,oom_event,perf_event,process,referenced_memory,resctrl,sched,tcp,udp"
     privileged: true
     devices:
       - /dev/kmsg
@@ -27,6 +31,9 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
       - /var/run:/var/run:ro
+    depends_on:
+      - docker-proxy:
+          condition: service_healthy
 
   vector:
     container_name: vector
