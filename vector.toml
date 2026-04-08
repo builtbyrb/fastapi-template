@@ -59,6 +59,10 @@ type = "filter"
 inputs = ["cadvisor_metrics"]
 condition = """ .name == "container_spec_cpu_period" """
 
+[transforms.cadvisor_machine_cores]
+type = "filter"
+inputs = ["cadvisor_metrics"]
+condition = """ .name == "machine_cpu_cores" """
 
 [sinks.axiom]
 type = "axiom"
@@ -70,6 +74,7 @@ inputs = [
     "cadvisor_cpu_usage_seconds",
     "cadvisor_cpu_quota",
     "cadvisor_cpu_period",
+    "cadvisor_machine_cores",
 ]
 token = "${AXIOM_TOKEN}"
 dataset = "${AXIOM_DATASET_NAME}"
