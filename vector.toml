@@ -6,11 +6,6 @@ address = "0.0.0.0:8686"
 type = "docker_logs"
 docker_host = "tcp://docker-proxy:2375"
 
-[sources.host_metrics]
-type = "host_metrics"
-collectors = ["cpu", "memory"]
-scrape_interval_secs = 60
-
 [sources.cadvisor_metrics]
 type = "prometheus_scrape"
 scrape_interval_secs = 30
