@@ -1,5 +1,6 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy import URL
 
 from src.core.constants import ENV_FILE, Environment
 from src.core.logging.constants import LogLevel
@@ -21,6 +22,19 @@ class AppEnv(BaseEnvSettings):
     POSTGRES_DB: str = Field(default=...)
     PG_BOUNCER_HOST: str = Field(default=...)
     PG_BOUNCER_PORT: int = Field(default=5432)
+
+    @property
+    def postgres_database_url(self) -> str:
+        return str(
+            URL.create(
+                drivername=self.POSTGRES_DRIVER_NAME,
+                username=self.POSTGRES_USER,
+                password=self.POSTGRES_PASSWORD,
+                host=self.PG_BOUNCER_HOST,
+                port=self.PG_BOUNCER_PORT,
+                database=self.POSTGRES_DB,
+            ),
+        )
 
     REDIS_HOST: str = Field(default=...)
     REDIS_PORT: int = Field(default=6379)

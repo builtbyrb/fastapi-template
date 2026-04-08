@@ -48,7 +48,13 @@ PROD_CHAIN: list[Processor] = [
 # endregion
 
 # region -------------------------- Other -------------------------
-LOGGERS_TO_CLEAR = ["uvicorn", "uvicorn.error", "uvicorn.asgi"]
+LOGGERS_TO_CLEAR = [
+    "uvicorn",
+    "uvicorn.error",
+    "uvicorn.asgi",
+    "sqlalchemy.engine",
+    "alembic",
+]
 
 
 class LogLevel(IntEnum):

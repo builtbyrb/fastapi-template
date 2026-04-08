@@ -5,6 +5,7 @@ description = "High-performance FastAPI template featuring Pydantic V2, Argon2 s
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "alembic>=1.18.4",
     "asgi-correlation-id>=4.3.4",
     "asyncpg>=0.31.0",
     "commitizen>=4.13.9",

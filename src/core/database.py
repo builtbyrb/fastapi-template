@@ -13,7 +13,6 @@ from sqlalchemy.ext.asyncio import (
 
 import src.users.models  # noqa: F401
 from src.core.config.env import APP_ENV
-from src.core.models import Base
 
 
 class DatabaseSessionManager:
@@ -71,14 +70,7 @@ class RedisManager:
 
 
 session_manager = DatabaseSessionManager(
-    URL.create(
-        drivername=APP_ENV.POSTGRES_DRIVER_NAME,
-        username=APP_ENV.POSTGRES_USER,
-        password=APP_ENV.POSTGRES_PASSWORD,
-        host=APP_ENV.PG_BOUNCER_HOST,
-        port=APP_ENV.PG_BOUNCER_PORT,
-        database=APP_ENV.POSTGRES_DB,
-    ),
+    APP_ENV.postgres_database_url,
     engine_kwargs={
         "pool_size": 50,
         "max_overflow": 20,
@@ -91,8 +83,3 @@ session_manager = DatabaseSessionManager(
 redis_manager = RedisManager(
     f"redis://{APP_ENV.REDIS_HOST}:{APP_ENV.REDIS_PORT}/{APP_ENV.REDIS_DB}"
 )
-
-
-async def create_db_and_tables() -> None:
-    async with session_manager.connect() as conn:
-        await conn.run_sync(Base.metadata.create_all)

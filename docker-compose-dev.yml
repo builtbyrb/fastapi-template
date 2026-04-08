@@ -1,8 +1,14 @@
 services:
   postgredb:
-    image: postgres:16-alpine
     container_name: postgredb
     restart: unless-stopped
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST_AUTH_METHOD: md5
+      POSTGRES_INITDB_ARGS: --auth=md5
     networks:
       - fastapi-net
     deploy:
@@ -10,30 +16,17 @@ services:
         limits:
           cpus: "1.0"
           memory: 1024M
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_HOST_AUTH_METHOD: md5
-      POSTGRES_INITDB_ARGS: --auth=md5
     healthcheck:
       test: ["CMD-SHELL", "pg_isready", "-d", "${POSTGRES_DB}"]
-      interval: 1m30s
+      interval: 30s
       timeout: 30s
       retries: 5
       start_period: 20s
 
   pgbouncer:
-    image: edoburu/pgbouncer:v1.25.1-p0
     container_name: pgbouncer
     restart: unless-stopped
-    networks:
-      - fastapi-net
-    deploy:
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 64M
+    image: edoburu/pgbouncer:v1.25.1-p0
     environment:
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
@@ -43,9 +36,16 @@ services:
       POOL_MODE: transaction
       MAX_CLIENT_CONN: 1000
       DEFAULT_POOL_SIZE: 90
+    networks:
+      - fastapi-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 64M
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "${POSTGRES_HOST}"]
-      interval: 1m30s
+      interval: 30s
       timeout: 30s
       retries: 5
       start_period: 20s
@@ -54,9 +54,9 @@ services:
         condition: service_healthy
 
   redis:
-    image: redis:7-alpine
     container_name: redis
     restart: unless-stopped
+    image: redis:7-alpine
     networks:
       - fastapi-net
     deploy:
@@ -65,28 +65,28 @@ services:
           cpus: "0.2"
           memory: 512M
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 1m30s
+      test: ["CMD-SHELL", "redis-cli", "ping"]
+      interval: 30s
       timeout: 30s
       retries: 5
       start_period: 20s
 
   adminer:
-    image: adminer:5.4.2-standalone
     container_name: adminer
     restart: unless-stopped
+    image: adminer:5.4.2-standalone
+    environment:
+      ADMINER_DEFAULT_SERVER: pgbouncer
+      ADMINER_DEFAULT_SYSTEM: pgsql
     networks:
       - fastapi-net
+    ports:
+      - 8081:8080
     deploy:
       resources:
         limits:
           cpus: "0.1"
           memory: 64M
-    ports:
-      - 8081:8080
-    environment:
-      ADMINER_DEFAULT_SERVER: pgbouncer
-      ADMINER_DEFAULT_SYSTEM: pgsql
     depends_on:
       pgbouncer:
         condition: service_healthy
@@ -97,38 +97,37 @@ services:
     container_name: cadvisor
     restart: unless-stopped
     image: ghcr.io/google/cadvisor:0.56
+    privileged: true
+    devices:
+      - /dev/kmsg
+    networks:
+      - fastapi-net
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 128M
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --spider http://127.0.0.1:8080/cadvisor/healthz || exit 1",
+        ]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 20s
     volumes:
       - /:/rootfs:ro
       - /sys:/sys:ro
       - /var/run:/var/run:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
-    privileged: true
-    devices:
-      - /dev/kmsg
-    deploy:
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 128M
-    networks:
-      - fastapi-net
-    ports:
-      - 8080:8080
-    healthcheck:
-      test: wget --spider http://localhost:8080/cadvisor/healthz || exit 1
-      interval: 1m30s
-      timeout: 30s
-      retries: 5
-      start_period: 20s
 
   vector:
     container_name: vector
     restart: unless-stopped
-    image: timberio/vector:0.54.0-debian
-    volumes:
-      - ./vector_dev.toml:/etc/vector/vector_dev.toml:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+    image: timberio/vector:0.54.0-alpine
     environment:
       - VECTOR_CONFIG=/etc/vector/vector_dev.toml
     networks:
@@ -139,33 +138,40 @@ services:
           cpus: "0.1"
           memory: 128M
     healthcheck:
-      test: wget --spider http://localhost:8686/health || exit 1
-      interval: 1m30s
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --spider http://127.0.0.1:8686/health || exit 1",
+        ]
+      interval: 30s
       timeout: 30s
       retries: 5
       start_period: 20s
+    volumes:
+      - ./vector_dev.toml:/etc/vector/vector_dev.toml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       cadvisor:
         condition: service_healthy
 
   fastapi:
     build: .
+    restart: unless-stopped
     entrypoint:
       ["fastapi", "dev", "src/app.py", "--host", "0.0.0.0", "--port", "8000"]
-    restart: unless-stopped
+    env_file:
+      - ${ENV_FILE_NAME}
     networks:
       - fastapi-net
+    ports:
+      - 8000:8000
     deploy:
       resources:
         limits:
           cpus: "1"
           memory: 512M
-    ports:
-      - 8000:8000
-    env_file:
-      - .env
     healthcheck:
-      test: python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=5)"
+      test: python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/', timeout=5)"
       interval: 30s
       timeout: 15s
       retries: 5
@@ -177,8 +183,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      vector:
+        condition: service_healthy
     volumes:
-      - ./src:/app/src
+      - .:/app
+      - /app/.venv
 
 networks:
   fastapi-net:

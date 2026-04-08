@@ -19,7 +19,10 @@ services:
           cpus: "0.1"
           memory: 64M
     healthcheck:
-      test: wget --spider http://localhost:8080/cadvisor/healthz || exit 1
+      test: [
+          "CMD-SHELL",
+          "wget --quiet --spider http://127.0.0.1:8080/cadvisor/healthz || exit 1",
+        ]
       interval: 1m30s
       timeout: 30s
       retries: 5
@@ -34,7 +37,7 @@ services:
   vector:
     container_name: vector
     restart: unless-stopped
-    image: timberio/vector:0.54.0-debian
+    image: timberio/vector:0.54.0-alpine
     environment:
       - VECTOR_CONFIG=/etc/vector/vector.toml
       - AXIOM_TOKEN=${AXIOM_TOKEN}
@@ -49,7 +52,10 @@ services:
           cpus: "0.1"
           memory: 128M
     healthcheck:
-      test: wget --spider http://localhost:8686/health || exit 1
+      test: [
+          "CMD-SHELL",
+          "wget --quiet --spider http://127.0.0.1:8686/health || exit 1",
+        ]
       interval: 1m30s
       timeout: 30s
       retries: 5
