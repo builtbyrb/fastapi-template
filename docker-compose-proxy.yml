@@ -50,7 +50,11 @@ services:
           cpus: "0.4"
           memory: 128M
     healthcheck:
-      test: ["CMD", "traefik healthcheck --ping"]
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --spider http://127.0.0.1:8080/ping || exit 1",
+        ]
       interval: 1m30s
       timeout: 30s
       retries: 5
