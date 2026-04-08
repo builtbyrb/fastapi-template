@@ -63,7 +63,6 @@ condition = """ .name == "machine_cpu_cores" """
 type = "axiom"
 inputs = [
     "json_docker_logs",
-    "host_metrics",
     "cadvisor_current_memory",
     "cadvisor_max_memory",
     "cadvisor_cpu_usage_seconds",
