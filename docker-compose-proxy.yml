@@ -30,6 +30,7 @@ services:
     restart: unless-stopped
     image: traefik:v3.6.12
     command:
+      - "--ping=true"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--entrypoints.web.address=:${ENTRYPOINT_PORT}"
