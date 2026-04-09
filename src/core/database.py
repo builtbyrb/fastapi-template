@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+import src.refresh_token.models
 import src.users.models  # noqa: F401
 from src.core.config.env import APP_ENV
 
@@ -70,7 +71,7 @@ class RedisManager:
 
 
 session_manager = DatabaseSessionManager(
-    APP_ENV.postgres_database_url,
+    APP_ENV.pgbouncer_database_url,
     engine_kwargs={
         "pool_size": 50,
         "max_overflow": 20,

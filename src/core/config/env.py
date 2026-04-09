@@ -17,27 +17,39 @@ class AppEnv(BaseEnvSettings):
     LOGGING_LEVEL: LogLevel = Field(default=...)
 
     POSTGRES_DRIVER_NAME: str = Field(default="postgresql+asyncpg")
+    POSTGRES_HOST: str = Field(default=...)
+    POSTGRES_PORT: int = Field(default=...)
     POSTGRES_USER: str = Field(default=...)
     POSTGRES_PASSWORD: str = Field(default=...)
     POSTGRES_DB: str = Field(default=...)
+
     PG_BOUNCER_HOST: str = Field(default=...)
-    PG_BOUNCER_PORT: int = Field(default=5432)
+    PG_BOUNCER_PORT: int = Field(default=...)
 
     @property
-    def postgres_database_url(self) -> str:
-        return str(
-            URL.create(
-                drivername=self.POSTGRES_DRIVER_NAME,
-                username=self.POSTGRES_USER,
-                password=self.POSTGRES_PASSWORD,
-                host=self.PG_BOUNCER_HOST,
-                port=self.PG_BOUNCER_PORT,
-                database=self.POSTGRES_DB,
-            ),
+    def postgres_database_url(self) -> URL:
+        return URL.create(
+            drivername=self.POSTGRES_DRIVER_NAME,
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_HOST,
+            port=self.POSTGRES_PORT,
+            database=self.POSTGRES_DB,
+        )
+
+    @property
+    def pgbouncer_database_url(self) -> URL:
+        return URL.create(
+            drivername=self.POSTGRES_DRIVER_NAME,
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.PG_BOUNCER_HOST,
+            port=self.PG_BOUNCER_PORT,
+            database=self.POSTGRES_DB,
         )
 
     REDIS_HOST: str = Field(default=...)
-    REDIS_PORT: int = Field(default=6379)
+    REDIS_PORT: int = Field(default=...)
     REDIS_DB: int = Field(default=...)
 
     ENTRYPOINT_PORT: int = Field(default=...)

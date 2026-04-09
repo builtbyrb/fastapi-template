@@ -23,7 +23,7 @@ setup_logging()
 # for 'autogenerate' support
 target_metadata = Base.metadata
 
-url = APP_ENV.postgres_database_url
+url = APP_ENV.pgbouncer_database_url.render_as_string(hide_password=False)
 
 
 def run_migrations_offline() -> None:
