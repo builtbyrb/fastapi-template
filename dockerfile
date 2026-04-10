@@ -1,5 +1,7 @@
 FROM python:3.14-slim AS py-builder
 
+ARG ENVIRONMENT
+
 WORKDIR /app
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
@@ -11,7 +13,10 @@ RUN apt-get update && \
 
 COPY pyproject.toml uv.lock ./
 
-RUN uv export --no-dev --format requirements.txt --output-file ./requirements.txt
+RUN if [ "$ENVIRONMENT" = "DEV" ]; then \
+  uv export --format requirements.txt --output-file ./requirements.txt; else \
+  uv export --no-dev --format requirements.txt --output-file ./requirements.txt;\
+  fi
 
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r ./requirements.txt
 

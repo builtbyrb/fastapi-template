@@ -11,7 +11,7 @@ from src.core.types.internal import DatabaseProviders
 from src.core.types.typings import IpAnyAddress
 
 
-async def get_session() -> AsyncIterator[AsyncSession]:
+async def get_db_session() -> AsyncIterator[AsyncSession]:
     async with session_manager.session() as session:
         yield session
 
@@ -32,7 +32,7 @@ async def get_database_providers(
 
 
 IpDep = Annotated[IpAnyAddress, Depends(get_client_ip)]
-SessionDep = Annotated[AsyncSession, Depends(get_session)]
+SessionDep = Annotated[AsyncSession, Depends(get_db_session)]
 RedisDep = Annotated[redis.Redis, Depends(get_redis)]
 DataBaseProvidersDep = Annotated[
     DatabaseProviders,

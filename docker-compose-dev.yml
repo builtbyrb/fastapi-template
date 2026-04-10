@@ -163,7 +163,10 @@ services:
         condition: service_healthy
 
   fastapi:
-    build: .
+    build:
+      context: .
+      args:
+        - ENVIRONMENT=${ENVIRONMENT}
     restart: unless-stopped
     user: "${UID:-1000}:${GID:-1000}"
     entrypoint: ["bash", "/app/entrypoint_dev.sh"]
