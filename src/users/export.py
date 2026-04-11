@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from src.core.domain import enum_do_dict
 from src.core.exceptions import HTTPExceptionDefinition
-from src.core.rules import LengthRuleData
+from src.core.types.internal import LengthRuleData
 from src.users.constants import (
     USER_EMAIL_LENGTH_RULE_DATA,
     USER_FIRST_NAME_LENGTH_RULE_DATA,

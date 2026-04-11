@@ -2,8 +2,6 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict
 
-from src.users.types.schemas import UserEmailPassword
-
 
 if TYPE_CHECKING:
     from src.users.types.schemas import UserEmailPassword

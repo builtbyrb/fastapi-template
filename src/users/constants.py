@@ -1,6 +1,6 @@
 from enum import StrEnum
 
-from src.core.rules import CustomValidationRuleData, LengthRuleData
+from src.core.types.internal import CustomValidationRuleData, LengthRuleData
 
 
 class UserRole(StrEnum):
