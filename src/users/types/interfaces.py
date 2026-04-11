@@ -3,9 +3,8 @@ from typing import TYPE_CHECKING, Any, Protocol
 
 if TYPE_CHECKING:
     from src.users.models import User
-    from src.users.types.alias import UserGetter
     from src.users.types.internal import UserUniqueFields
-    from src.users.types.schemas import UserIdGetter
+    from src.users.types.schemas import UserGetter, UserIdGetter
     from src.users.types.typings import UserEmail, UserUsername
 
 

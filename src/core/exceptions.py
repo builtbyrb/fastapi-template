@@ -9,7 +9,7 @@ from fastapi import HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from src.core.types.typings import OpenApiSchemaType
+from src.core.types.alias import OpenApiSchemaType
 
 
 # region -------------------------- BaseClass -------------------------

@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from pydantic_core import Url
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.domain import get_utc_datetime
+from src.core.utils import get_utc_datetime
 from src.users.constants import UserRole
 from src.users.types.schemas import UserIdGetter
 

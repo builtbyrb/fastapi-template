@@ -1,16 +1,19 @@
-from typing import Annotated, Literal
+from typing import Annotated
 
 from pydantic import (
     AfterValidator,
     Field,
-    IPvAnyAddress,
-    PlainSerializer,
     TypeAdapter,
 )
+from pydantic.dataclasses import dataclass
 
-from src.core.constants import NO_SPACE_RULE_DATA, USER_AGENT_FORMAT_RULE_DATA
-from src.core.domain import serialize_ip
-from src.core.rules import NO_SPACE_RULE, USER_AGENT_FORMAT_RULE
+from src.core.constants import (
+    NO_SPACE_RULE,
+    NO_SPACE_RULE_DATA,
+    USER_AGENT_FORMAT_RULE,
+    USER_AGENT_FORMAT_RULE_DATA,
+)
+from src.core.types.alias import AnyPort, IpAnyAddress
 
 
 type UserAgent = Annotated[
@@ -25,16 +28,18 @@ type NoSpaceStr = Annotated[
     AfterValidator(NO_SPACE_RULE.validator),
 ]
 
-type IpAnyAddress = Annotated[
-    IPvAnyAddress, PlainSerializer(serialize_ip, return_type=str)
-]
-
-type AnyPort = Annotated[int, Field(ge=0, le=65535)]
-
 ANY_IP_ADAPTER = TypeAdapter(IpAnyAddress)
 
 ANY_PORT_ADAPTER = TypeAdapter(AnyPort)
 
-type OpenApiSchemaType = Literal[
-    "string", "number", "integer", "boolean", "array", "object"
-]
+
+@dataclass(frozen=True, kw_only=True)
+class RequestInfo:
+    ip: IpAnyAddress
+    user_agent: UserAgent
+
+
+@dataclass(frozen=True, kw_only=True)
+class OptionalAuthInfo:
+    ip: IpAnyAddress | None = None
+    user_agent: UserAgent | None = None

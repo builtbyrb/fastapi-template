@@ -1,14 +1,9 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
 import redis.asyncio as redis
 from alembic.environment import Any
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
-
-
-if TYPE_CHECKING:
-    from src.core.types.typings import IpAnyAddress, UserAgent
 
 
 class LengthRuleData(BaseModel):
@@ -24,18 +19,6 @@ class CustomValidationRuleData(BaseModel):
 
 class CustomValidationRuleRegexData(CustomValidationRuleData):
     REGEX: str
-
-
-@dataclass(frozen=True, kw_only=True)
-class RequestInfo:
-    ip: IpAnyAddress
-    user_agent: UserAgent
-
-
-@dataclass(frozen=True, kw_only=True)
-class OptionalAuthInfo:
-    ip: IpAnyAddress | None = None
-    user_agent: UserAgent | None = None
 
 
 @dataclass(frozen=True, kw_only=True)

@@ -5,10 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.users.exceptions import UserNotFoundException
 from src.users.models import User
-from src.users.types.alias import UserGetter
 from src.users.types.internal import UserUniqueFields
 from src.users.types.schemas import (
     UserEmailGetter,
+    UserGetter,
     UserIdGetter,
     UserUsernameGetter,
 )

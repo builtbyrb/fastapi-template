@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import Form
 from pydantic import BaseModel, Field, field_serializer
 
-from src.core.domain import to_seconds
+from src.core.utils import to_seconds
 from src.users.types.schemas import UserEmail
 
 

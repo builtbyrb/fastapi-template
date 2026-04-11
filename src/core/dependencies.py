@@ -9,10 +9,8 @@ from src.core.constants import Environment
 from src.core.database import redis_manager, session_manager
 from src.core.domain import resolve_ip_form_data
 from src.core.settings import APP_ENV_SETTINGS
+from src.core.types.alias import IpAnyAddress
 from src.core.types.internal import DatabaseProviders
-from src.core.types.typings import (
-    IpAnyAddress,
-)
 
 
 async def get_db_session() -> AsyncIterator[AsyncSession]:
@@ -31,7 +29,7 @@ async def get_redis() -> redis.Redis:
 async def get_client_ip(
     request: Request,
     environment: Environment = APP_ENV_SETTINGS.ENVIRONMENT,
-    default_dev_ip: IpAnyAddress = APP_ENV_SETTINGS.DEFAULT_DEV_IP,
+    default_dev_ip: str = APP_ENV_SETTINGS.DEFAULT_DEV_IP,
     resolve_ip_header: str = APP_ENV_SETTINGS.RESOLVE_IP_HEADER,
 ) -> IpAnyAddress:
     return resolve_ip_form_data(

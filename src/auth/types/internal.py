@@ -16,7 +16,8 @@ if TYPE_CHECKING:
         OAuth2PasswordRequestFormStrictTyped,
         TokenDataCreate,
     )
-    from src.core.types.internal import DatabaseProviders, RequestInfo
+    from src.core.types.internal import DatabaseProviders
+    from src.core.types.typings import RequestInfo
     from src.refresh_token.types.interfaces import (
         RefreshTokenDeleteAllByUserIdPort,
         RefreshTokenDeletePort,

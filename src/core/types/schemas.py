@@ -1,7 +1,9 @@
 from typing import Annotated, Literal
 
 from fastapi.params import Header
-from pydantic import BaseModel
+from pydantic import (
+    BaseModel,
+)
 
 from src.core.dependencies import IpDep
 from src.core.types.typings import UserAgent

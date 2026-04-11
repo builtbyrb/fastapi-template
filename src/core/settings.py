@@ -4,7 +4,6 @@ from sqlalchemy import URL
 
 from src.core.constants import ENV_FILE, Environment
 from src.core.logging.constants import LogLevel
-from src.core.types.typings import ANY_IP_ADAPTER, IpAnyAddress
 
 
 class BaseEnvSettings(BaseSettings):
@@ -16,9 +15,7 @@ class BaseEnvSettings(BaseSettings):
 class AppEnvSettings(BaseEnvSettings):
     ENVIRONMENT: Environment = Field(default=...)
     LOGGING_LEVEL: LogLevel = Field(default=...)
-    DEFAULT_DEV_IP: IpAnyAddress = Field(
-        default=ANY_IP_ADAPTER.validate_python("127.0.0.1")
-    )
+    DEFAULT_DEV_IP: str = Field(default="127.0.0.1")
     RESOLVE_IP_HEADER: str = Field(default="X-Real-Ip")
 
     POSTGRES_DRIVER_NAME: str = Field(default="postgresql+asyncpg")

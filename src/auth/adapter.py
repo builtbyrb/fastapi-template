@@ -4,7 +4,7 @@ from datetime import timedelta
 import redis.asyncio as redis
 
 from src.auth.config.env import AUTH_ENV
-from src.core.domain import to_seconds
+from src.core.utils import to_seconds
 from src.refresh_token.config.env import REFRESH_TOKEN_ENV
 
 

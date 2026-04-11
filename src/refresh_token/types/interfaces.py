@@ -1,11 +1,14 @@
 from collections.abc import Sequence
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
 
 from src.refresh_token.models import RefreshToken
-from src.refresh_token.types.schemas import (
-    RefreshTokenJtiGetter,
-    RefreshTokenUserIdGetter,
-)
+
+
+if TYPE_CHECKING:
+    from src.refresh_token.types.schemas import (
+        RefreshTokenJtiGetter,
+        RefreshTokenUserIdGetter,
+    )
 
 
 class RefreshTokenReadByJtiPort(Protocol):

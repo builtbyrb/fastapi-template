@@ -18,12 +18,13 @@ from src.auth.types.schemas import (
     AccessToken,
 )
 from src.core.dependencies import DataBaseProvidersDep, SessionDep
-from src.core.types.internal import DatabaseProviders, RequestInfo
+from src.core.types.internal import DatabaseProviders
 from src.core.types.schemas import RequestInfoInput
+from src.core.types.typings import RequestInfo
 from src.refresh_token.adapter import SQL_ALCHEMY_REFRESH_TOKEN_REPO
 from src.refresh_token.domain import set_refresh_token_cookie
 from src.refresh_token.types.internal import SetRefreshTokenCookieParams
-from src.refresh_token.types.request import RefreshTokenCookie
+from src.refresh_token.types.schemas import RefreshTokenCookie
 from src.users.adapter import SQL_ALCHEMY_USER_REPO
 
 

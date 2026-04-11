@@ -1,11 +1,22 @@
 from datetime import datetime
+from typing import Annotated
 from uuid import UUID
 
+from fastapi import Cookie
 from pydantic import BaseModel, Field
 
-from src.core.domain import get_utc_datetime, to_timedelta
 from src.core.types.typings import IpAnyAddress, UserAgent
+from src.core.utils import get_utc_datetime, to_timedelta
 from src.refresh_token.config.env import REFRESH_TOKEN_ENV
+
+
+type RefreshTokenCookie = Annotated[
+    str,
+    Cookie(
+        alias=REFRESH_TOKEN_ENV.REFRESH_TOKEN_COOKIE_KEY,
+        description="Token used to refresh access and maintain session persistence",
+    ),
+]
 
 
 class RefreshTokenUserIdGetter(BaseModel):
@@ -50,3 +61,6 @@ class RefreshTokenUpdateTimestamp(BaseModel):
             + to_timedelta(REFRESH_TOKEN_ENV.REFRESH_TOKEN_EXPIRE_MINUTES)
         ),
     )
+
+
+type RefreshTokenGetter = RefreshTokenJtiGetter | RefreshTokenUserIdGetter

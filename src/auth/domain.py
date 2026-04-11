@@ -17,7 +17,7 @@ from src.auth.types.internal import (
     DecodeTokenParams,
 )
 from src.auth.types.schemas import TokenData, TokenDataCreate, UsersTokens
-from src.core.domain import get_utc_datetime, to_timedelta
+from src.core.utils import get_utc_datetime, to_timedelta
 from src.refresh_token.config.env import REFRESH_TOKEN_ENV
 from src.users.models import User
 from src.users.types.schemas import UserOut

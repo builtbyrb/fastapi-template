@@ -2,22 +2,13 @@ from typing import LiteralString, cast
 
 from pydantic_core import PydanticCustomError
 
-from src.core.constants import (
-    NO_SPACE_RULE_DATA,
-    ONE_DIGIT_RULE_DATA,
-    ONE_SPECIAL_CHAR_RULE_DATA,
-    ONE_UPPERCASE_RULE_DATA,
-    USER_AGENT_FORMAT_RULE_DATA,
-)
 from src.core.types.interfaces import PredicateFn, ValidatorFn
 from src.core.types.internal import (
     CustomValidationRuleData,
     CustomValidationRuleRegexData,
 )
 from src.core.validators import (
-    contains_no_space,
     contains_regex,
-    is_valid_ua,
     make_custom_validator,
 )
 
@@ -65,21 +56,4 @@ class CustomValidationRuleRegex(
         super().__init__(data, lambda val: contains_regex(val, self.data.REGEX))
 
 
-# endregion
-
-# region -------------------------- Rules -------------------------
-USER_AGENT_FORMAT_RULE = CustomValidationRule(
-    data=USER_AGENT_FORMAT_RULE_DATA, predicate_fn=is_valid_ua
-)
-NO_SPACE_RULE = CustomValidationRule(
-    data=NO_SPACE_RULE_DATA, predicate_fn=contains_no_space
-)
-
-ONE_UPPERCASE_RULE = CustomValidationRuleRegex(data=ONE_UPPERCASE_RULE_DATA)
-
-ONE_LOWERCASE_RULE = CustomValidationRuleRegex(data=ONE_UPPERCASE_RULE_DATA)
-
-ONE_DIGIT_RULE = CustomValidationRuleRegex(data=ONE_DIGIT_RULE_DATA)
-
-ONE_SPECIAL_CHAR_RULE = CustomValidationRuleRegex(data=ONE_SPECIAL_CHAR_RULE_DATA)
 # endregion

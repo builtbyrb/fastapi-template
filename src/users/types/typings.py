@@ -8,16 +8,14 @@ from pydantic import (
 
 from src.core.constants import (
     NO_SPACE_RULE_DATA,
-    ONE_DIGIT_RULE_DATA,
-    ONE_LOWERCASE_RULE_DATA,
-    ONE_SPECIAL_CHAR_RULE_DATA,
-    ONE_UPPERCASE_RULE_DATA,
-)
-from src.core.rules import (
     ONE_DIGIT_RULE,
+    ONE_DIGIT_RULE_DATA,
     ONE_LOWERCASE_RULE,
+    ONE_LOWERCASE_RULE_DATA,
     ONE_SPECIAL_CHAR_RULE,
+    ONE_SPECIAL_CHAR_RULE_DATA,
     ONE_UPPERCASE_RULE,
+    ONE_UPPERCASE_RULE_DATA,
 )
 from src.core.types.typings import NoSpaceStr
 from src.users.constants import (

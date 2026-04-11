@@ -2,7 +2,7 @@ import datetime
 from enum import IntEnum, StrEnum
 
 from src.core.constants import Environment
-from src.core.domain import (
+from src.core.utils import (
     enum_do_dict,
     get_utc_datetime,
     to_seconds,
