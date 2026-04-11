@@ -12,7 +12,10 @@ from pydantic_core import Url
 
 from src.core.domain import get_utc_datetime
 from src.users.constants import UserRole
-from src.users.rules import USER_PASSWORD_EMAIL_RULE, UserNoEmailRuleConfig
+from src.users.rules import (
+    UserNoEmailRuleConfig,
+    UserPasswordEmailRule,
+)
 from src.users.types.typings import (
     UserEmail,
     UserFirstName,
@@ -57,15 +60,18 @@ class UserIdGetter(BaseModel):
         return str(self.id)
 
 
-class UserCreate(UserBase, UserNoEmailRuleConfig):
+class UserEmailPassword(UserNoEmailRuleConfig):
+    email: UserEmail
     password: UserPassword = Field(exclude=True)
 
+
+class UserCreate(UserBase, UserEmailPassword):
     @model_validator(mode="after")
     def validator(self) -> Self:
-        return USER_PASSWORD_EMAIL_RULE.validator(self)
+        return UserPasswordEmailRule[Self]().validator(self)
 
 
-class UserUpdate(UserNoEmailRuleConfig):
+class UserUpdate(BaseModel):
     first_name: UserFirstName | None = Field(default=None)
     last_name: UserLastName | None = Field(default=None)
     username: UserUsername | None = Field(default=None)
@@ -82,17 +88,13 @@ class UserUpdateTimestamp(BaseModel):
     )
 
 
-class UserUpdatePasswordInput(BaseModel):
-    password: UserPassword
-    new_password: UserPassword
-
-
-class UserUpdatePassword(UserUpdatePasswordInput, UserNoEmailRuleConfig):
-    email: UserEmail
+class UserUpdatePassword(UserEmailPassword):
+    old_password: UserPassword
 
     @model_validator(mode="after")
     def validator(self) -> Self:
-        return USER_PASSWORD_EMAIL_RULE.validator(self)
+        validator: Self = UserPasswordEmailRule[Self]().validator(self)
+        return validator
 
 
 class UserOut(UserBase):

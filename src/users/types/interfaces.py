@@ -1,18 +1,12 @@
 from typing import TYPE_CHECKING, Any, Protocol
 
-from src.users.models import User
-from src.users.types.alias import UserGetter
-from src.users.types.schemas import UserIdGetter
-from src.users.types.typings import UserEmail, UserPassword, UserUsername
-
 
 if TYPE_CHECKING:
+    from src.users.models import User
+    from src.users.types.alias import UserGetter
     from src.users.types.internal import UserUniqueFields
-
-
-class UserNoEmailRulePort(Protocol):
-    email: UserEmail
-    password: UserPassword
+    from src.users.types.schemas import UserIdGetter
+    from src.users.types.typings import UserEmail, UserUsername
 
 
 class UserUniqueFieldsPort(Protocol):

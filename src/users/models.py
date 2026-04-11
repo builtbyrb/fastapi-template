@@ -8,12 +8,12 @@ from sqlalchemy import TEXT, DateTime, Enum, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.models import Base
-from src.users.constants import UserRole
-from src.users.rules import (
-    USER_EMAIL_MIN_MAX_RULE,
-    USER_FIRST_NAME_MIN_MAX_RULE,
-    USER_LAST_NAME_MIN_MAX_RULE,
-    USER_USERNAME_MIN_MAX_RULE,
+from src.users.constants import (
+    USER_EMAIL_LENGTH_RULE_DATA,
+    USER_FIRST_NAME_LENGTH_RULE_DATA,
+    USER_LAST_NAME_LENGTH_RULE_DATA,
+    USER_USERNAME_LENGTH_RULE_DATA,
+    UserRole,
 )
 
 
@@ -27,18 +27,18 @@ class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
 
     first_name: Mapped[str] = mapped_column(
-        String(USER_FIRST_NAME_MIN_MAX_RULE.MAX_LENGTH)
+        String(USER_FIRST_NAME_LENGTH_RULE_DATA.MAX_LENGTH)
     )
     last_name: Mapped[str] = mapped_column(
-        String(USER_LAST_NAME_MIN_MAX_RULE.MAX_LENGTH)
+        String(USER_LAST_NAME_LENGTH_RULE_DATA.MAX_LENGTH)
     )
     username: Mapped[str] = mapped_column(
-        String(USER_USERNAME_MIN_MAX_RULE.MAX_LENGTH),
+        String(USER_USERNAME_LENGTH_RULE_DATA.MAX_LENGTH),
         unique=True,
         index=True,
     )
     email: Mapped[EmailStr] = mapped_column(
-        String(USER_EMAIL_MIN_MAX_RULE.MAX_LENGTH),
+        String(USER_EMAIL_LENGTH_RULE_DATA.MAX_LENGTH),
         unique=True,
         index=True,
     )

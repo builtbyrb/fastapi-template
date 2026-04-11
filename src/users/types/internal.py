@@ -14,7 +14,7 @@ from src.users.types.schemas import UserIdGetter
 
 
 if TYPE_CHECKING:
-    from src.users.interfaces import (
+    from src.users.types.interfaces import (
         UserRepoCreateUserPort,
         UserRepoDeleteUserPort,
         UserRepoUpdateUserPort,
