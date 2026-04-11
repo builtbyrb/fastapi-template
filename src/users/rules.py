@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict
 if TYPE_CHECKING:
     from src.users.types.schemas import UserEmailPassword
 
+from src.core.domain import remove_email_domain
 from src.core.rules import CustomValidationRule
 from src.core.validators import contains_value
 from src.users.constants import USER_PASSWORD_EMAIL_RULE_DATA
@@ -18,7 +19,7 @@ class UserPasswordEmailRule[T: UserEmailPassword](CustomValidationRule[T]):
         super().__init__(USER_PASSWORD_EMAIL_RULE_DATA, self.predicate_fn)
 
     def predicate_fn(self, val: T) -> bool:
-        return contains_value(val.password, val.email)
+        return contains_value(val.password, remove_email_domain(val.email))
 
 
 class UserNoEmailRuleConfig(BaseModel):

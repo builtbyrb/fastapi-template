@@ -5,6 +5,7 @@ from enum import Enum
 from typing import Any
 
 from fastapi import Request
+from pydantic import EmailStr
 
 from src.core.constants import Environment
 from src.core.exceptions import (
@@ -33,6 +34,10 @@ def to_timedelta(minutes: int) -> timedelta:
 
 def to_seconds(timedelta: timedelta) -> int:
     return int(timedelta.total_seconds())
+
+
+def remove_email_domain(val: EmailStr) -> EmailStr:
+    return val.split("@")[0]
 
 
 def resolve_ip_form_data(
