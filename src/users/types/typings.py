@@ -35,7 +35,8 @@ type UserFirstName = Annotated[
         min_length=USER_FIRST_NAME_LENGTH_RULE_DATA.MIN_LENGTH,
         max_length=USER_FIRST_NAME_LENGTH_RULE_DATA.MAX_LENGTH,
         description=(
-            f"First name must be between {USER_FIRST_NAME_LENGTH_RULE_DATA.MIN_LENGTH} "
+            f"First name must be between "
+            f"{USER_FIRST_NAME_LENGTH_RULE_DATA.MIN_LENGTH} "
             f"and {USER_FIRST_NAME_LENGTH_RULE_DATA.MAX_LENGTH} "
             "characters and contain no spaces"
         ),
@@ -48,7 +49,8 @@ type UserLastName = Annotated[
         min_length=USER_LAST_NAME_LENGTH_RULE_DATA.MIN_LENGTH,
         max_length=USER_LAST_NAME_LENGTH_RULE_DATA.MAX_LENGTH,
         description=(
-            f"Last name must be between {USER_LAST_NAME_LENGTH_RULE_DATA.MIN_LENGTH} "
+            f"Last name must be between "
+            f"{USER_LAST_NAME_LENGTH_RULE_DATA.MIN_LENGTH} "
             f"and {USER_LAST_NAME_LENGTH_RULE_DATA.MAX_LENGTH} "
             "characters and contain no spaces"
         ),
