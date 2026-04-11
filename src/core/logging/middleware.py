@@ -7,16 +7,14 @@ from fastapi import Request, Response
 from fastapi.datastructures import State
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from src.core.config.env import APP_ENV
 from src.core.domain import get_client_ip
+from src.core.settings import APP_ENV_SETTINGS
 
 
 access_logger = structlog.stdlib.get_logger("api.access")
 
 
 class AccessLoggingMiddleware(BaseHTTPMiddleware):
-    access_logger = structlog.stdlib.get_logger("api.access")
-
     async def dispatch(
         self,
         request: Request[State],
@@ -37,7 +35,7 @@ class AccessLoggingMiddleware(BaseHTTPMiddleware):
             return response
         finally:
             client_host = await get_client_ip(request)
-            client_port = APP_ENV.ENTRYPOINT_PORT
+            client_port = APP_ENV_SETTINGS.ENTRYPOINT_PORT
             http_method = request.method
             url = str(request.url)
             http_version = request.scope["http_version"]

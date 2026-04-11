@@ -12,7 +12,7 @@ class BaseEnvSettings(BaseSettings):
     )
 
 
-class AppEnv(BaseEnvSettings):
+class AppEnvSettings(BaseEnvSettings):
     ENVIRONMENT: Environment = Field(default=...)
     LOGGING_LEVEL: LogLevel = Field(default=...)
 
@@ -55,4 +55,4 @@ class AppEnv(BaseEnvSettings):
     ENTRYPOINT_PORT: int = Field(default=...)
 
 
-APP_ENV = AppEnv()
+APP_ENV_SETTINGS = AppEnvSettings()

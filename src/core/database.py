@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import (
 
 import src.refresh_token.models
 import src.users.models  # noqa: F401
-from src.core.config.env import APP_ENV
+from src.core.settings import APP_ENV_SETTINGS
 
 
 class DatabaseSessionManager:
@@ -71,7 +71,7 @@ class RedisManager:
 
 
 session_manager = DatabaseSessionManager(
-    APP_ENV.pgbouncer_database_url,
+    APP_ENV_SETTINGS.pgbouncer_database_url,
     engine_kwargs={
         "pool_size": 50,
         "max_overflow": 20,
@@ -82,5 +82,5 @@ session_manager = DatabaseSessionManager(
 )
 
 redis_manager = RedisManager(
-    f"redis://{APP_ENV.REDIS_HOST}:{APP_ENV.REDIS_PORT}/{APP_ENV.REDIS_DB}"
+    f"redis://{APP_ENV_SETTINGS.REDIS_HOST}:{APP_ENV_SETTINGS.REDIS_PORT}/{APP_ENV_SETTINGS.REDIS_DB}"
 )
