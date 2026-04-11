@@ -1,10 +1,9 @@
 import re
-from collections.abc import Callable
 
 from pydantic_core import PydanticCustomError
 from user_agents import parse
 
-from src.core.types.interfaces import PredicateFn
+from src.core.types.interfaces import PredicateFn, ValidatorFn
 
 
 def contains_no_space(val: str) -> bool:
@@ -30,7 +29,7 @@ def is_valid_ua(val: str) -> bool:
 def make_custom_validator[TVal](
     pydantic_custom_exception: PydanticCustomError,
     predicate: PredicateFn[TVal],
-) -> Callable[[TVal], TVal]:
+) -> ValidatorFn:
     def validator(val: TVal) -> TVal:
         if not predicate(val):
             raise pydantic_custom_exception

@@ -1,4 +1,3 @@
-from collections.abc import Callable
 from typing import LiteralString, cast
 
 from pydantic_core import PydanticCustomError
@@ -10,7 +9,7 @@ from src.core.constants import (
     ONE_UPPERCASE_RULE_DATA,
     USER_AGENT_FORMAT_RULE_DATA,
 )
-from src.core.types.interfaces import PredicateFn
+from src.core.types.interfaces import PredicateFn, ValidatorFn
 from src.core.types.internal import (
     CustomValidationRuleData,
     CustomValidationRuleRegexData,
@@ -40,7 +39,7 @@ class CustomValidationRuleBase[TVal, TData: CustomValidationRuleData]:
         )
 
     @property
-    def validator(self) -> Callable[[TVal], TVal]:
+    def validator(self) -> ValidatorFn:
         return make_custom_validator(
             self.pydantic_custom_exception, self.predicate_fn
         )
