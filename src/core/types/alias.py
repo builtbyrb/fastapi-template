@@ -1,3 +1,4 @@
+from enum import StrEnum
 from typing import Annotated, Literal
 
 from pydantic import (
@@ -20,3 +21,9 @@ type OpenApiSchemaType = Literal[
 
 
 type AnyPort = Annotated[int, Field(ge=0, le=65535)]
+
+
+class Environment(StrEnum):
+    DEV = "DEV"
+    PROD = "PROD"
+    STAG = "STAG"

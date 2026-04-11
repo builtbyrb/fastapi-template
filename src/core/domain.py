@@ -1,26 +1,25 @@
-from collections.abc import Mapping
+from pydantic import ValidationError
 
-from src.core.constants import Environment
 from src.core.exceptions import (
     AppClientIpNotFound,
 )
-from src.core.types.alias import IpAnyAddress
+from src.core.types.alias import Environment, IpAnyAddress
+from src.core.types.internal import ResolveIpFromDataParams
 from src.core.types.typings import ANY_IP_ADAPTER
 
 
-def resolve_ip_form_data(
-    headers: Mapping[str, str],
-    client_host: str | None,
-    environment: Environment,
-    default_dev_ip: str,
-    resolve_ip_header: str,
-) -> IpAnyAddress:
-    if environment == Environment.DEV:
-        return ANY_IP_ADAPTER.validate_python(default_dev_ip)
+def resolve_ip_form_data(params: ResolveIpFromDataParams) -> IpAnyAddress:
+    if params.environment == Environment.DEV:
+        return ANY_IP_ADAPTER.validate_python(params.default_dev_ip)
 
-    ip = headers.get(resolve_ip_header) or client_host
+    try:
+        ip = ANY_IP_ADAPTER.validate_python(
+            params.headers.get(params.resolve_ip_header) or params.client_host
+        )
+    except ValidationError:
+        ip = None
 
     if not ip:
         raise AppClientIpNotFound
 
-    return ANY_IP_ADAPTER.validate_python(ip)
+    return ip

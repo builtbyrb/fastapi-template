@@ -2,8 +2,9 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
-from src.core.constants import ENV_FILE, Environment
+from src.core.constants import ENV_FILE
 from src.core.logging.constants import LogLevel
+from src.core.types.alias import Environment
 
 
 class BaseEnvSettings(BaseSettings):

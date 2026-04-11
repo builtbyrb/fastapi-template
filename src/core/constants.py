@@ -11,12 +11,6 @@ from src.core.validators import contains_no_space, is_valid_ua
 ENV_FILE = (".env.prod", ".env.stag", ".env")
 
 
-class Environment(StrEnum):
-    DEV = "DEV"
-    PROD = "PROD"
-    STAG = "STAG"
-
-
 USER_AGENT_FORMAT_RULE_DATA = CustomValidationRuleData(
     ERROR_CODE="invalid_user_agent_format", ERROR_MESSAGE="Invalid User-Agent format"
 )

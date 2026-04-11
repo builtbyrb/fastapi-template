@@ -2,7 +2,6 @@ import logging
 
 import structlog
 
-from src.core.constants import Environment
 from src.core.logging.constants import (
     DEV_CHAIN,
     FOREIGN_PRE_CHAIN,
@@ -12,6 +11,7 @@ from src.core.logging.constants import (
     SHARED_PRE_CHAIN,
 )
 from src.core.settings import APP_ENV_SETTINGS
+from src.core.types.alias import Environment
 
 
 def clear_logger_handler(loggers: list[str]) -> None:

@@ -5,12 +5,11 @@ import redis.asyncio as redis
 from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.constants import Environment
 from src.core.database import redis_manager, session_manager
 from src.core.domain import resolve_ip_form_data
 from src.core.settings import APP_ENV_SETTINGS
-from src.core.types.alias import IpAnyAddress
-from src.core.types.internal import DatabaseProviders
+from src.core.types.alias import Environment, IpAnyAddress
+from src.core.types.internal import DatabaseProviders, ResolveIpFromDataParams
 
 
 async def get_db_session() -> AsyncIterator[AsyncSession]:
@@ -33,11 +32,13 @@ async def get_client_ip(
     resolve_ip_header: str = APP_ENV_SETTINGS.RESOLVE_IP_HEADER,
 ) -> IpAnyAddress:
     return resolve_ip_form_data(
-        request.headers,
-        request.client.host if request.client else None,
-        environment,
-        default_dev_ip,
-        resolve_ip_header,
+        ResolveIpFromDataParams(
+            environment=environment,
+            default_dev_ip=default_dev_ip,
+            client_host=request.client.host if request.client else None,
+            headers=request.headers,
+            resolve_ip_header=resolve_ip_header,
+        )
     )
 
 

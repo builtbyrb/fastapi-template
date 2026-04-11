@@ -25,7 +25,7 @@ async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
         yield ac
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 async def transactional_session() -> AsyncIterator[AsyncSession]:
     async with session_manager.connect() as connection:
         try:
@@ -45,6 +45,6 @@ async def db_session(
     return transactional_session
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 async def session_override(app: FastAPI, db_session: AsyncSession) -> None:
     app.dependency_overrides[get_db_session] = lambda: db_session
