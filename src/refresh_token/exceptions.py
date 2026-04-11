@@ -5,7 +5,7 @@ from src.core.exceptions import (
     HTTPExceptionDefinition,
     WithHttpException,
 )
-from src.core.interfaces import Identifiable
+from src.core.types.interfaces import Identifiable
 
 
 class RefreshTokenExceptionDetails(BaseExceptionDetails):

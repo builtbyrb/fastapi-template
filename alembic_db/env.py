@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 import src.refresh_token.models
 import src.users.models  # noqa: F401
-from src.core.config.env import APP_ENV
 from src.core.logging.logging import setup_logging
 from src.core.models import Base
+from src.core.settings import APP_ENV_SETTINGS
 
 
 # this is the Alembic Config object, which provides
@@ -23,7 +23,7 @@ setup_logging()
 # for 'autogenerate' support
 target_metadata = Base.metadata
 
-url = APP_ENV.pgbouncer_database_url.render_as_string(hide_password=False)
+url = APP_ENV_SETTINGS.pgbouncer_database_url.render_as_string(hide_password=False)
 
 
 def run_migrations_offline() -> None:

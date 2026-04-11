@@ -1,7 +1,7 @@
 from pydantic import Field
 
 from src.auth.types.internal import TokenConfig
-from src.core.config.env import BaseEnvSettings
+from src.core.settings import BaseEnvSettings
 
 
 class RefreshTokenConfigEnv(BaseEnvSettings):

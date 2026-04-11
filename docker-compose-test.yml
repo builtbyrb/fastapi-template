@@ -1,4 +1,0 @@
-services:
-  fastapi:
-    restart: no
-    entrypoint: ["bash", "/app/entrypoint_test.sh"]

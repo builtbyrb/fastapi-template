@@ -1,7 +1,7 @@
 import uuid
 from typing import Any, Protocol
 
-from src.refresh_token.interfaces import (
+from src.refresh_token.types.interfaces import (
     RefreshTokenDeleteAllByUserIdPort,
     RefreshTokenDeletePort,
     RefreshTokenInsertPort,

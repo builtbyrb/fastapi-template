@@ -13,10 +13,7 @@ RUN apt-get update && \
 
 COPY pyproject.toml uv.lock ./
 
-RUN if [ "$ENVIRONMENT" = "DEV" ]; then \
-  uv export --format requirements.txt --output-file ./requirements.txt; else \
-  uv export --no-dev --format requirements.txt --output-file ./requirements.txt;\
-  fi
+RUN uv export --no-dev --format requirements.txt --output-file ./requirements.txt
 
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r ./requirements.txt
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
-    from src.auth.interfaces import (
+    from src.auth.types.interfaces import (
         AuthRefreshTokenRefreshPort,
         BlacklistMultipleTokenPort,
         BlacklistTokenPort,
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
         TokenDataCreate,
     )
     from src.core.types.internal import DatabaseProviders, RequestInfo
-    from src.refresh_token.interfaces import (
+    from src.refresh_token.types.interfaces import (
         RefreshTokenDeleteAllByUserIdPort,
         RefreshTokenDeletePort,
         RefreshTokenInsertPort,
@@ -26,7 +26,7 @@ if TYPE_CHECKING:
         RefreshTokenJtiGetter,
         RefreshTokenUserIdGetter,
     )
-    from src.users.interfaces import UserReadPort
+    from src.users.types.interfaces import UserReadPort
     from src.users.types.typings import UserEmail
 
 

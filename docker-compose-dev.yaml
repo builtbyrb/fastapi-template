@@ -46,6 +46,8 @@ services:
       DEFAULT_POOL_SIZE: 90
     networks:
       - fastapi-net
+    ports: 
+      - ${PG_BOUNCER_PORT}:${PG_BOUNCER_PORT}
     deploy:
       resources:
         limits:
@@ -67,6 +69,8 @@ services:
     image: redis:7-alpine
     networks:
       - fastapi-net
+    ports: 
+      - ${REDIS_PORT}:${REDIS_PORT}
     deploy:
       resources:
         limits:
@@ -101,37 +105,6 @@ services:
       postgredb:
         condition: service_healthy
 
-  cadvisor:
-    container_name: cadvisor
-    restart: unless-stopped
-    image: ghcr.io/google/cadvisor:0.56
-    privileged: true
-    devices:
-      - /dev/kmsg
-    networks:
-      - fastapi-net
-    deploy:
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: 128M
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "wget --quiet --spider http://127.0.0.1:8080/cadvisor/healthz || exit 1",
-        ]
-      interval: 30s
-      timeout: 30s
-      retries: 5
-      start_period: 20s
-    volumes:
-      - /:/rootfs:ro
-      - /sys:/sys:ro
-      - /var/run:/var/run:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-
   vector:
     container_name: vector
     restart: unless-stopped
@@ -158,47 +131,6 @@ services:
     volumes:
       - ./vector_dev.toml:/etc/vector/vector_dev.toml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    depends_on:
-      cadvisor:
-        condition: service_healthy
-
-  fastapi:
-    build:
-      context: .
-      args:
-        - ENVIRONMENT=${ENVIRONMENT}
-    restart: unless-stopped
-    user: "${UID:-1000}:${GID:-1000}"
-    entrypoint: ["bash", "/app/entrypoint_dev.sh"]
-    env_file:
-      - ${ENV_FILE_NAME}
-    networks:
-      - fastapi-net
-    ports:
-      - 8000:8000
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 512M
-    healthcheck:
-      test: python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/', timeout=5)"
-      interval: 30s
-      timeout: 15s
-      retries: 5
-      start_period: 20s
-    depends_on:
-      pgbouncer:
-        condition: service_healthy
-      postgredb:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      vector:
-        condition: service_healthy
-    volumes:
-      - .:/app
-      - /app/.venv
 
 networks:
   fastapi-net:

@@ -11,7 +11,7 @@ from src.refresh_token.config.env import REFRESH_TOKEN_ENV
 
 
 if TYPE_CHECKING:
-    from src.refresh_token.interfaces import (
+    from src.refresh_token.types.interfaces import (
         RefreshTokenInsertPort,
         RefreshTokenUpdatePort,
     )
