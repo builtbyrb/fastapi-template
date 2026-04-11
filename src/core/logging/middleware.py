@@ -7,7 +7,7 @@ from fastapi import Request, Response
 from fastapi.datastructures import State
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from src.core.domain import get_client_ip
+from src.core.dependencies import get_client_ip
 from src.core.settings import APP_ENV_SETTINGS
 
 

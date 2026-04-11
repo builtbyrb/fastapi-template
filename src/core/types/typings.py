@@ -9,6 +9,7 @@ from pydantic import (
 )
 
 from src.core.constants import NO_SPACE_RULE_DATA, USER_AGENT_FORMAT_RULE_DATA
+from src.core.domain import serialize_ip
 from src.core.rules import NO_SPACE_RULE, USER_AGENT_FORMAT_RULE
 
 
@@ -24,7 +25,9 @@ type NoSpaceStr = Annotated[
     AfterValidator(NO_SPACE_RULE.validator),
 ]
 
-type IpAnyAddress = Annotated[IPvAnyAddress, PlainSerializer(str, return_type=str)]
+type IpAnyAddress = Annotated[
+    IPvAnyAddress, PlainSerializer(serialize_ip, return_type=str)
+]
 
 type AnyPort = Annotated[int, Field(ge=0, le=65535)]
 

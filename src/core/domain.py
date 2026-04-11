@@ -4,8 +4,8 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any
 
-from fastapi import Request
 from pydantic import EmailStr
+from pydantic.networks import IPvAnyAddressType
 
 from src.core.constants import Environment
 from src.core.exceptions import (
@@ -13,7 +13,6 @@ from src.core.exceptions import (
     setup_sync_uncaught_exception_handler,
 )
 from src.core.logging.logging import setup_logging
-from src.core.settings import APP_ENV_SETTINGS
 from src.core.types.typings import (
     ANY_IP_ADAPTER,
     IpAnyAddress,
@@ -40,26 +39,26 @@ def remove_email_domain(val: EmailStr) -> EmailStr:
     return val.split("@")[0]
 
 
+def serialize_ip(val: IPvAnyAddressType) -> str:
+    return val.compressed
+
+
 def resolve_ip_form_data(
-    headers: Mapping[str, str], client_host: str | None, environment: Environment
+    headers: Mapping[str, str],
+    client_host: str | None,
+    environment: Environment,
+    default_dev_ip: IpAnyAddress,
+    resolve_ip_header: str,
 ) -> IpAnyAddress:
     if environment == Environment.DEV:
-        return ANY_IP_ADAPTER.validate_python("127.0.0.1")
+        return default_dev_ip
 
-    ip = headers.get("X-Real-Ip") or client_host
+    ip = headers.get(resolve_ip_header) or client_host
 
     if not ip:
         raise AppClientIpNotFound
 
     return ANY_IP_ADAPTER.validate_python(ip)
-
-
-async def get_client_ip(
-    request: Request, environment: Environment = APP_ENV_SETTINGS.ENVIRONMENT
-) -> IpAnyAddress:
-    return resolve_ip_form_data(
-        request.headers, request.client.host if request.client else None, environment
-    )
 
 
 def start_setup() -> None:
