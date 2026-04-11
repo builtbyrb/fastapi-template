@@ -17,7 +17,9 @@ from src.core.constants import (
     ONE_UPPERCASE_RULE,
     ONE_UPPERCASE_RULE_DATA,
 )
-from src.core.types.typings import NoSpaceStr
+from src.core.types.typings import (
+    NoSpaceStr,
+)
 from src.users.constants import (
     USER_EMAIL_LENGTH_RULE_DATA,
     USER_FIRST_NAME_LENGTH_RULE_DATA,

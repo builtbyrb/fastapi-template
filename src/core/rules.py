@@ -30,7 +30,7 @@ class CustomValidationRuleBase[TVal, TData: CustomValidationRuleData]:
         )
 
     @property
-    def validator(self) -> ValidatorFn:
+    def validator(self) -> ValidatorFn[TVal]:
         return make_custom_validator(
             self.pydantic_custom_exception, self.predicate_fn
         )

@@ -71,7 +71,7 @@ class UserEmailPassword(BaseModel):
 
     @model_validator(mode="after")
     def validator(self) -> Self:
-        return CustomValidationRule[UserEmailPassword](
+        return CustomValidationRule[Self](
             data=USER_PASSWORD_EMAIL_RULE_DATA,
             predicate_fn=lambda val: contains_value(
                 val.password, remove_email_domain(val.email)
