@@ -1,7 +1,6 @@
 from collections.abc import Callable
-from typing import Any, LiteralString, cast
+from typing import LiteralString, cast
 
-from pydantic import BaseModel
 from pydantic_core import PydanticCustomError
 
 from src.core.constants import (
@@ -12,31 +11,16 @@ from src.core.constants import (
     USER_AGENT_FORMAT_RULE_DATA,
 )
 from src.core.types.interfaces import ValidatorFn
+from src.core.types.internal import (
+    CustomValidationRuleData,
+    CustomValidationRuleRegexData,
+)
 from src.core.validators import (
     contains_no_space,
     contains_regex,
     contains_ua,
     make_custom_validator,
 )
-
-
-# region -------------------------- Data -------------------------
-class LengthRuleData(BaseModel):
-    MIN_LENGTH: int
-    MAX_LENGTH: int
-
-
-class CustomValidationRuleData(BaseModel):
-    ERROR_CODE: str
-    ERROR_MESSAGE: str
-    ERROR_CONTEXT: dict[str, Any] | None = None
-
-
-class CustomValidationRuleRegexData(CustomValidationRuleData):
-    REGEX: str
-
-
-# endregion
 
 
 # region -------------------------- BaseClass -------------------------

@@ -1,6 +1,6 @@
 from enum import StrEnum
 
-from src.core.rules import (
+from src.core.types.internal import (
     CustomValidationRuleData,
     CustomValidationRuleRegexData,
 )
