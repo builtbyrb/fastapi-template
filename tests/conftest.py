@@ -30,7 +30,8 @@ async def transactional_session() -> AsyncIterator[AsyncSession]:
     async with session_manager.connect() as connection:
         try:
             async with AsyncSession(
-                bind=connection, join_transaction_mode="create_savepoint"
+                bind=connection,
+                join_transaction_mode="create_savepoint",
             ) as session:
                 yield session
         finally:
@@ -46,7 +47,4 @@ async def db_session(
 
 @pytest.fixture(autouse=True)
 async def session_override(app: FastAPI, db_session: AsyncSession) -> None:
-    async def get_db_session_override() -> AsyncSession:
-        return db_session
-
-    app.dependency_overrides[get_db_session] = get_db_session_override
+    app.dependency_overrides[get_db_session] = lambda: db_session
