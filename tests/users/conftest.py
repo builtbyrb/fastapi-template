@@ -9,7 +9,7 @@ from tests.users.interfaces import CreateUserRequest
 @pytest.fixture
 def user_register() -> dict[str, str]:
     return {
-        "first_name": "Jean",
+        "first_name": "Jeann",
         "last_name": "Brun",
         "username": "jeanbrun_du_76",
         "email": "user@gmail.com",
