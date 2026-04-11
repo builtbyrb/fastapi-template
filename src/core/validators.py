@@ -11,7 +11,7 @@ def contains_no_space(val: str) -> bool:
 
 
 def contains_value(val: str, search: str) -> bool:
-    return search in val
+    return search not in val
 
 
 def contains_regex(val: str, regex: str) -> bool:
