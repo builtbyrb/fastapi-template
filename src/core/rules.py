@@ -10,7 +10,7 @@ from src.core.constants import (
     ONE_UPPERCASE_RULE_DATA,
     USER_AGENT_FORMAT_RULE_DATA,
 )
-from src.core.types.interfaces import ValidatorFn
+from src.core.types.interfaces import PredicateFn
 from src.core.types.internal import (
     CustomValidationRuleData,
     CustomValidationRuleRegexData,
@@ -18,16 +18,16 @@ from src.core.types.internal import (
 from src.core.validators import (
     contains_no_space,
     contains_regex,
-    contains_ua,
+    is_valid_ua,
     make_custom_validator,
 )
 
 
 # region -------------------------- BaseClass -------------------------
 class CustomValidationRuleBase[TVal, TData: CustomValidationRuleData]:
-    def __init__(self, data: TData, validator_fn: ValidatorFn[TVal]) -> None:
+    def __init__(self, data: TData, predicate_fn: PredicateFn[TVal]) -> None:
         self.data = data
-        self.validator_fn = validator_fn
+        self.predicate_fn = predicate_fn
 
     @property
     def pydantic_custom_exception(
@@ -42,7 +42,7 @@ class CustomValidationRuleBase[TVal, TData: CustomValidationRuleData]:
     @property
     def validator(self) -> Callable[[TVal], TVal]:
         return make_custom_validator(
-            self.pydantic_custom_exception, self.validator_fn
+            self.pydantic_custom_exception, self.predicate_fn
         )
 
 
@@ -54,9 +54,9 @@ class CustomValidationRule[TVal](
     CustomValidationRuleBase[TVal, CustomValidationRuleData]
 ):
     def __init__(
-        self, data: CustomValidationRuleData, validator_fn: ValidatorFn[TVal]
+        self, data: CustomValidationRuleData, predicate_fn: PredicateFn[TVal]
     ) -> None:
-        super().__init__(data, validator_fn)
+        super().__init__(data, predicate_fn)
 
 
 class CustomValidationRuleRegex(
@@ -70,10 +70,10 @@ class CustomValidationRuleRegex(
 
 # region -------------------------- Rules -------------------------
 USER_AGENT_FORMAT_RULE = CustomValidationRule(
-    data=USER_AGENT_FORMAT_RULE_DATA, validator_fn=contains_ua
+    data=USER_AGENT_FORMAT_RULE_DATA, predicate_fn=is_valid_ua
 )
 NO_SPACE_RULE = CustomValidationRule(
-    data=NO_SPACE_RULE_DATA, validator_fn=contains_no_space
+    data=NO_SPACE_RULE_DATA, predicate_fn=contains_no_space
 )
 
 ONE_UPPERCASE_RULE = CustomValidationRuleRegex(data=ONE_UPPERCASE_RULE_DATA)

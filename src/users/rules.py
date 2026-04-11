@@ -15,9 +15,9 @@ class UserPasswordEmailRule[T: UserEmailPassword](CustomValidationRule[T]):
     def __init__(
         self,
     ) -> None:
-        super().__init__(USER_PASSWORD_EMAIL_RULE_DATA, self.validator_fn)
+        super().__init__(USER_PASSWORD_EMAIL_RULE_DATA, self.predicate_fn)
 
-    def validator_fn(self, val: T) -> bool:
+    def predicate_fn(self, val: T) -> bool:
         return contains_value(val.password, val.email)
 
 

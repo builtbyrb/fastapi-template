@@ -6,5 +6,5 @@ class Identifiable(Protocol):
     def identifier(self) -> str: ...
 
 
-class ValidatorFn[T](Protocol):
+class PredicateFn[T](Protocol):
     def __call__(self, val: T, *args: Any, **kwds: Any) -> bool: ...
