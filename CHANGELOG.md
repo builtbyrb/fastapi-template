@@ -12,6 +12,7 @@
 
 ### Fix
 
+- **users/typings**: fixed text too long
 - **src/core/validators**: fixed contains_value fn
 - **users**: fixed circular import
 - **core**: fixed circular import
@@ -41,6 +42,7 @@
 
 ### Refactor
 
+- **users/typings**: added new types
 - **src**: refactored all types folder
 - **core**: updated resolve_ip_from_data function and added serialiser
 - **users**: upgraded no email rules
