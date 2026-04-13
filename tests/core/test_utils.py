@@ -5,6 +5,7 @@ from ipaddress import IPv4Address, IPv6Address
 import pytest
 from pydantic_core import PydanticCustomError
 
+from src.core.constants import USER_AGENT_FORMAT_RULE
 from src.core.domain.utils import (
     enum_do_dict,
     get_utc_datetime,
@@ -21,7 +22,6 @@ from src.core.domain.validators import (
     make_custom_validator,
 )
 from src.core.types.alias import Environment, IpAnyAddress
-from src.core.USER_AGENT_FORMAT_RULE import USER_AGENT_FORMAT_RULE
 
 
 def test_get_utc_datetime_return_datetime_object() -> None:
