@@ -1,20 +1,25 @@
 name: Docker Image CI for GHCR
 
 on: 
-  push
+  push:
+    branches:
+      - main
+
 jobs:
   build_and_publish:
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    runs-on: ubuntu-latest
+
     steps: 
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.14'
           cache: 'pip'
@@ -22,18 +27,32 @@ jobs:
       - name: Install Commitizen
         run: pip install commitizen
       
-      - name: Get version
+      - name: Get project version
         id: get_version
         run: echo "project_version=$(cz version --project)" >> $GITHUB_OUTPUT
 
-      - name: Login to docker
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login --username ${{ github.actor }} --password-stdin ghcr.io
-  
-      - name: Build and push the image
-        run : |          
-          docker build . \
-            --tag ghcr.io/builtbyrb/fastapi-template:${{ steps.get_version.outputs.project_version }} \
-            --tag ghcr.io/builtbyrb/fastapi-template:latest
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }} 
+          tags: |
+            type=raw,value=${{ steps.get_version.outputs.project_version }}
+            type=raw,value=latest
+            
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-          docker push ghcr.io/builtbyrb/fastapi-template:${{steps.get_version.outputs.project_version}}
-          docker push ghcr.io/builtbyrb/fastapi-template:latest
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+  
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
