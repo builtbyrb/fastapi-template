@@ -1,9 +1,13 @@
 from enum import IntEnum
+from typing import TYPE_CHECKING
 
 import structlog
-from structlog.typing import Processor
 
 from src.core.logging.processors import drop_color_message_key
+
+
+if TYPE_CHECKING:
+    from structlog.typing import Processor
 
 
 # region -------------------------- PreChain -------------------------

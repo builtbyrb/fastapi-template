@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from fastapi.concurrency import run_in_threadpool
 
 from src.auth.config.env import AUTH_ENV
@@ -17,10 +19,8 @@ from src.auth.types.internal import (
     UserLoginServiceParams,
     UserRefreshTokenServiceParams,
 )
-from src.auth.types.schemas import UsersTokens
 from src.refresh_token.config.env import REFRESH_TOKEN_ENV
 from src.refresh_token.exceptions import RefreshTokenNotFoundException
-from src.refresh_token.models import RefreshToken
 from src.refresh_token.services import refresh_token_create_service
 from src.refresh_token.types.internal import RefreshTokenCreateServiceParams
 from src.refresh_token.types.schemas import (
@@ -31,11 +31,16 @@ from src.refresh_token.types.schemas import (
 from src.users.exceptions import (
     UserNotFoundException,
 )
-from src.users.models import User
 from src.users.types.schemas import (
     UserEmailGetter,
     UserOut,
 )
+
+
+if TYPE_CHECKING:
+    from src.auth.types.schemas import UsersTokens
+    from src.refresh_token.models import RefreshToken
+    from src.users.models import User
 
 
 # region -------------------------- GetCurrentUser -------------------------

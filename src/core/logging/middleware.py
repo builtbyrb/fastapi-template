@@ -1,14 +1,19 @@
 import time
-from collections.abc import Awaitable, Callable
+from typing import TYPE_CHECKING
 
 import structlog
 from asgi_correlation_id.context import correlation_id
 from fastapi import Request, Response
-from fastapi.datastructures import State
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.core.dependencies import get_client_ip
 from src.core.settings import APP_ENV_SETTINGS
+
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
+
+    from fastapi.datastructures import State
 
 
 access_logger = structlog.stdlib.get_logger("api.access")

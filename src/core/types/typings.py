@@ -2,7 +2,6 @@ from typing import Annotated
 
 from pydantic import (
     AfterValidator,
-    BeforeValidator,
     Field,
     TypeAdapter,
 )
@@ -22,8 +21,7 @@ from src.core.constants import (
     USER_AGENT_FORMAT_RULE,
     USER_AGENT_FORMAT_RULE_DATA,
 )
-from src.core.types.alias import AnyPort, HealthValues, IpAnyAddress
-from src.core.utils import bool_to_health
+from src.core.types.alias import AnyPort, IpAnyAddress
 
 
 ANY_IP_ADAPTER = TypeAdapter(IpAnyAddress)
@@ -65,9 +63,6 @@ type OneSpecialCharStr = Annotated[
     Field(json_schema_extra={"rules": [ONE_SPECIAL_CHAR_RULE_DATA.ERROR_CODE]}),
     AfterValidator(ONE_SPECIAL_CHAR_RULE.validator),
 ]
-
-
-
 
 
 @dataclass(frozen=True, kw_only=True)

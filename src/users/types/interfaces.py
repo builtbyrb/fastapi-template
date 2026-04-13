@@ -20,7 +20,9 @@ class UserReadPort(Protocol):
 
 
 class UserInsertPort(Protocol):
-    async def insert_user(self, sql_session: Any, values: dict[str, Any]) -> User: ...
+    async def insert_user(
+        self, sql_session: Any, values: dict[str, Any]
+    ) -> User: ...
 
 
 class UserUpdatePort(Protocol):

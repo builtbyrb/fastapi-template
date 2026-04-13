@@ -1,8 +1,7 @@
-from typing import LiteralString, cast
+from typing import TYPE_CHECKING, LiteralString, cast
 
 from pydantic_core import PydanticCustomError
 
-from src.core.types.interfaces import PredicateFn, ValidatorFn
 from src.core.types.internal import (
     CustomValidationRuleData,
     CustomValidationRuleRegexData,
@@ -11,6 +10,10 @@ from src.core.validators import (
     contains_regex,
     make_custom_validator,
 )
+
+
+if TYPE_CHECKING:
+    from src.core.types.interfaces import PredicateFn, ValidatorFn
 
 
 # region -------------------------- BaseClass -------------------------

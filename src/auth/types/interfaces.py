@@ -1,5 +1,4 @@
-import uuid
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
 
 from src.refresh_token.types.interfaces import (
     RefreshTokenDeleteAllByUserIdPort,
@@ -7,6 +6,10 @@ from src.refresh_token.types.interfaces import (
     RefreshTokenInsertPort,
     RefreshTokenReadByJtiPort,
 )
+
+
+if TYPE_CHECKING:
+    import uuid
 
 
 class BlacklistTokenPort(Protocol):

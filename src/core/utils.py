@@ -1,13 +1,14 @@
 import datetime
 from datetime import timedelta
-from enum import Enum
 from typing import TYPE_CHECKING, Any
-
-from pydantic import EmailStr
-from pydantic.networks import IPvAnyAddressType
 
 
 if TYPE_CHECKING:
+    from enum import Enum
+
+    from pydantic import EmailStr
+    from pydantic.networks import IPvAnyAddressType
+
     from src.core.types.alias import HealthValues
 
 

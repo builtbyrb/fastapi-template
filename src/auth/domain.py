@@ -1,4 +1,5 @@
 import uuid
+from typing import TYPE_CHECKING
 
 import jwt
 from jwt import PyJWTError
@@ -19,8 +20,11 @@ from src.auth.types.internal import (
 from src.auth.types.schemas import TokenData, TokenDataCreate, UsersTokens
 from src.core.utils import get_utc_datetime, to_timedelta
 from src.refresh_token.config.env import REFRESH_TOKEN_ENV
-from src.users.models import User
-from src.users.types.schemas import UserOut
+
+
+if TYPE_CHECKING:
+    from src.users.models import User
+    from src.users.types.schemas import UserOut
 
 
 def create_token(

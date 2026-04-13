@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from fastapi import status
 
 from src.auth.config.env import AUTH_ENV
@@ -6,8 +8,11 @@ from src.core.exceptions import (
     HTTPExceptionHeaderDefinition,
     WithHttpException,
 )
-from src.core.types.interfaces import Identifiable
 from src.users.exceptions import UserExceptionDetails
+
+
+if TYPE_CHECKING:
+    from src.core.types.interfaces import Identifiable
 
 
 INVALID_TOKEN_DEF = HTTPExceptionDefinition(

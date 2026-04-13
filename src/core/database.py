@@ -1,9 +1,7 @@
 import contextlib
-from collections.abc import AsyncIterator
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import redis.asyncio as redis
-from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
     AsyncEngine,
@@ -15,6 +13,12 @@ from sqlalchemy.ext.asyncio import (
 import src.refresh_token.models
 import src.users.models  # noqa: F401
 from src.core.settings import APP_ENV_SETTINGS
+
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
+
+    from sqlalchemy import URL
 
 
 class SqlDatabaseManager:

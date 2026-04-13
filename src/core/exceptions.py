@@ -1,15 +1,18 @@
 import asyncio
 import logging
 import sys
-from collections.abc import Mapping
-from types import TracebackType
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from src.core.types.alias import OpenApiSchemaType
+
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+    from types import TracebackType
 
 
 # region -------------------------- BaseClass -------------------------

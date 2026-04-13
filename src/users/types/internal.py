@@ -6,20 +6,20 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 from pydantic_core import Url
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.utils import get_utc_datetime
 from src.users.constants import UserRole
-from src.users.types.schemas import UserIdGetter
 
 
 if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
     from src.users.types.interfaces import (
         UserRepoCreateUserPort,
         UserRepoDeleteUserPort,
         UserRepoUpdateUserPort,
     )
-    from src.users.types.schemas import UserCreate, UserUpdate
+    from src.users.types.schemas import UserCreate, UserIdGetter, UserUpdate
 
 
 # region -------------------------- General -------------------------

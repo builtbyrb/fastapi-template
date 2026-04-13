@@ -1,13 +1,17 @@
-from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-
-from fastapi import FastAPI
+from typing import TYPE_CHECKING
 
 from src.core.database import (
     redis_manager,
     sql_database_manager,
 )
 from src.core.exceptions import setup_async_uncaught_exception_handler
+
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
+
+    from fastapi import FastAPI
 
 
 @asynccontextmanager

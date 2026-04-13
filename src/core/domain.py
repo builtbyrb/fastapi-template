@@ -1,15 +1,20 @@
+from typing import TYPE_CHECKING
+
 import redis.asyncio as redis
 from pydantic import ValidationError
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.core.database import SqlDatabaseManager
 from src.core.exceptions import (
     AppClientIpNotFound,
 )
 from src.core.types.alias import Environment, IpAnyAddress
-from src.core.types.internal import ResolveIpFromDataParams
 from src.core.types.typings import ANY_IP_ADAPTER
+
+
+if TYPE_CHECKING:
+    from src.core.database import SqlDatabaseManager
+    from src.core.types.internal import ResolveIpFromDataParams
 
 
 def resolve_ip_form_data(params: ResolveIpFromDataParams) -> IpAnyAddress:
@@ -38,6 +43,7 @@ async def check_redis_connectivity(client: redis.Redis) -> bool:
         return False
     else:
         return ping
+
 
 async def check_sql_db_connectivity(manager: SqlDatabaseManager) -> bool:
     try:

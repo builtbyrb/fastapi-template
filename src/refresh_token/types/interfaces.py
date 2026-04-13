@@ -1,10 +1,10 @@
-from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Protocol
-
-from src.refresh_token.models import RefreshToken
 
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from src.refresh_token.models import RefreshToken
     from src.refresh_token.types.schemas import (
         RefreshTokenJtiGetter,
         RefreshTokenUserIdGetter,

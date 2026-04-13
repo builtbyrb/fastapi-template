@@ -1,14 +1,18 @@
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import delete, insert, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.refresh_token.exceptions import RefreshTokenNotFoundException
 from src.refresh_token.models import RefreshToken
-from src.refresh_token.types.schemas import (
-    RefreshTokenJtiGetter,
-    RefreshTokenUserIdGetter,
-)
+
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from src.refresh_token.types.schemas import (
+        RefreshTokenJtiGetter,
+        RefreshTokenUserIdGetter,
+    )
 
 
 class SqlAlchemyRefreshTokenRepo:
@@ -43,7 +47,9 @@ class SqlAlchemyRefreshTokenRepo:
 
     @staticmethod
     async def update_refresh_token(
-        sql_session: AsyncSession, getter: RefreshTokenJtiGetter, values: dict[str, Any]
+        sql_session: AsyncSession,
+        getter: RefreshTokenJtiGetter,
+        values: dict[str, Any],
     ) -> RefreshToken:
         stmt = (
             update(RefreshToken)

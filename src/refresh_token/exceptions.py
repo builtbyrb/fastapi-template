@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from fastapi import status
 
 from src.core.exceptions import (
@@ -5,7 +7,10 @@ from src.core.exceptions import (
     HTTPExceptionDefinition,
     WithHttpException,
 )
-from src.core.types.interfaces import Identifiable
+
+
+if TYPE_CHECKING:
+    from src.core.types.interfaces import Identifiable
 
 
 class RefreshTokenExceptionDetails(BaseExceptionDetails):

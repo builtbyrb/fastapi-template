@@ -1,6 +1,4 @@
-from typing import Any
-
-from fastapi import Response
+from typing import TYPE_CHECKING, Any
 
 from src.refresh_token.config.env import REFRESH_TOKEN_ENV
 from src.refresh_token.types.internal import (
@@ -12,6 +10,10 @@ from src.refresh_token.types.schemas import (
     RefreshTokenUpdate,
     RefreshTokenUpdateTimestamp,
 )
+
+
+if TYPE_CHECKING:
+    from fastapi import Response
 
 
 def create_refresh_token_dict(create: RefreshTokenCreate) -> dict[str, Any]:

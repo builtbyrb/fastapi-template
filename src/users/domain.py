@@ -1,11 +1,10 @@
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from src.auth.security import hash_password
 from src.users.exceptions import (
     UserAlreadyExistsException,
     UserTooManyRefreshTokenException,
 )
-from src.users.models import User
 from src.users.types.internal import (
     UserCreateInternal,
     UserDupeFieldData,
@@ -16,6 +15,10 @@ from src.users.types.schemas import (
     UserUpdate,
     UserUpdateTimestamp,
 )
+
+
+if TYPE_CHECKING:
+    from src.users.models import User
 
 
 def create_user_dict(create: UserCreate) -> dict[str, Any]:

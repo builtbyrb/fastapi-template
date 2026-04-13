@@ -1,9 +1,13 @@
 import re
+from typing import TYPE_CHECKING
 
-from pydantic_core import PydanticCustomError
 from user_agents import parse
 
-from src.core.types.interfaces import PredicateFn, ValidatorFn
+
+if TYPE_CHECKING:
+    from pydantic_core import PydanticCustomError
+
+    from src.core.types.interfaces import PredicateFn, ValidatorFn
 
 
 def contains_no_space(val: str) -> bool:

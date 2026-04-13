@@ -1,12 +1,17 @@
-from collections.abc import Mapping
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-import redis.asyncio as redis
 from alembic.environment import Any
 from pydantic import BaseModel
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.types.alias import Environment
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+
+    import redis.asyncio as redis
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from src.core.types.alias import Environment
 
 
 class LengthRuleData(BaseModel):

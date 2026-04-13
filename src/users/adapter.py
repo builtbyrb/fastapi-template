@@ -1,11 +1,9 @@
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import delete, insert, or_, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.users.exceptions import UserNotFoundException
 from src.users.models import User
-from src.users.types.internal import UserUniqueFields
 from src.users.types.schemas import (
     UserEmailGetter,
     UserGetter,
@@ -14,9 +12,17 @@ from src.users.types.schemas import (
 )
 
 
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncSession
+
+    from src.users.types.internal import UserUniqueFields
+
+
 class SQLAlchemyUserRepo:
     @staticmethod
-    async def get_by_email(sql_session: AsyncSession, getter: UserEmailGetter) -> User:
+    async def get_by_email(
+        sql_session: AsyncSession, getter: UserEmailGetter
+    ) -> User:
         stmt = select(User).where(User.email == getter.email)
         result = await sql_session.scalar(stmt)
         if not result:

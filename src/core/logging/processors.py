@@ -1,4 +1,8 @@
-from structlog.typing import EventDict, WrappedLogger
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from structlog.typing import EventDict, WrappedLogger
 
 
 def drop_color_message_key(

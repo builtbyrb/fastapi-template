@@ -1,11 +1,15 @@
-import uuid
 from datetime import timedelta
-
-import redis.asyncio as redis
+from typing import TYPE_CHECKING
 
 from src.auth.config.env import AUTH_ENV
 from src.core.utils import to_seconds
 from src.refresh_token.config.env import REFRESH_TOKEN_ENV
+
+
+if TYPE_CHECKING:
+    import uuid
+
+    import redis.asyncio as redis
 
 
 class RedisAuthAccessTokenBlacklistRepo:

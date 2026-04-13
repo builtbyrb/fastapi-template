@@ -2,15 +2,16 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from fastapi import Response
 from pydantic import BaseModel, Field
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.utils import get_utc_datetime, to_timedelta
 from src.refresh_token.config.env import REFRESH_TOKEN_ENV
 
 
 if TYPE_CHECKING:
+    from fastapi import Response
+    from sqlalchemy.ext.asyncio import AsyncSession
+
     from src.refresh_token.types.interfaces import (
         RefreshTokenInsertPort,
         RefreshTokenUpdatePort,

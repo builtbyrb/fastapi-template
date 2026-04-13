@@ -44,7 +44,9 @@ async def create_user(
 ) -> UserOut:
     return await user_create_service(
         UserCreateServiceParams(
-            sql_session=sql_session, user_repo=SQL_ALCHEMY_USER_REPO, create=user_create
+            sql_session=sql_session,
+            user_repo=SQL_ALCHEMY_USER_REPO,
+            create=user_create,
         )
     )
 

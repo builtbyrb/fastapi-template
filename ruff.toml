@@ -58,10 +58,6 @@ ignore = [
     "SLF001", # private-member-access (allow access to private members in same package)
     "FA102",  # missing `from __future__ import annotations` when using PEP 604 union types
     "UP046",  # Generic class uses Generic subclass instead of type parameters
-    "TC001",  # move-to-type-checking - Breaks FastAPI/Pydantic runtime evaluation
-    "TC002",  # move-to-type-checking - Breaks FastAPI/Pydantic runtime evaluation
-    "TC003",  # move-to-type-checking - Breaks FastAPI/Pydantic runtime evaluation
-    "EXE002",
 ]
 
 # Auto-fixing configuration
@@ -105,6 +101,9 @@ ban-relative-imports = "all"
     "S105",    # allow hardcoded passwords in test files
     "S106",    # allow hardcoded passwords assignement in test files
 ]
+"**/dependencies.py" = ["TC"]
+"**/router.py" = ["TC"]
+"**/models.py" = ["TC"]
 
 # ==============================================================================
 # CODE FORMATTING
@@ -129,3 +128,11 @@ docstring-code-format = true # Format code examples in docstrings
 # Set line length limit for code snippets in docstrings
 # "dynamic" adapts to the docstring context
 docstring-code-line-length = "dynamic"
+
+[lint.flake8-type-checking]
+runtime-evaluated-base-classes = [
+    "pydantic.BaseModel",
+    "pydantic_settings.BaseSettings",
+    "sqlalchemy.orm.DeclarativeBase",
+]
+runtime-evaluated-decorators = ["pydantic.validate_call", "attrs.define"]

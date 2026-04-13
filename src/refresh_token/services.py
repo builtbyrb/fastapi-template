@@ -1,12 +1,17 @@
+from typing import TYPE_CHECKING
+
 from src.refresh_token.domain import (
     create_refresh_token_dict,
     update_refresh_token_dict,
 )
-from src.refresh_token.models import RefreshToken
-from src.refresh_token.types.internal import (
-    RefreshTokenCreateServiceParams,
-    RefreshTokenUpdateServiceParams,
-)
+
+
+if TYPE_CHECKING:
+    from src.refresh_token.models import RefreshToken
+    from src.refresh_token.types.internal import (
+        RefreshTokenCreateServiceParams,
+        RefreshTokenUpdateServiceParams,
+    )
 
 
 async def refresh_token_create_service(
