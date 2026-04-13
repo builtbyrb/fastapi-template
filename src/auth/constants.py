@@ -2,7 +2,7 @@ from fastapi import status
 
 from src.auth.domain.security import password_hash
 from src.auth.settings import AUTH_ENV_SETTINGS
-from src.core.domain.domain import to_response
+from src.core.domain.exceptions import to_response
 from src.core.types.internal import HTTPExceptionData, HTTPExceptionHeaderData
 from src.users.constants import USER_NOT_FOUND_EXC_DATA
 from src.users.types.internal import UserExceptionDetails

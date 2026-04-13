@@ -5,7 +5,7 @@ from fastapi import APIRouter, Body, status
 from src.auth.constants import AUTH_CURRENT_USER_RESPONSE
 from src.auth.dependencies import CurrentActiveUserDep
 from src.core.dependencies import SqlSessionDep
-from src.core.domain.domain import to_response
+from src.core.domain.exceptions import to_response
 from src.users.adapter import SQL_ALCHEMY_USER_REPO
 from src.users.constants import (
     USER_ALREADY_EXISTS_EXC_DATA,

@@ -61,21 +61,4 @@ async def check_sql_db_connectivity(manager: SqlDatabaseManager) -> bool:
         return True
 
 
-def to_response(
-    data: HTTPExceptionData,
-) -> dict[int | str, dict[str, Any]]:
-    response_dict: dict[str, Any] = {
-        "description": data.description,
-        "model": ExceptionResponse[data.details_model],
-    }
 
-    if data.headers:
-        response_dict["headers"] = {
-            name: {
-                "description": definition.description,
-                "schema": {"type": definition.type},
-            }
-            for name, definition in data.headers.items()
-        }
-
-    return {data.status_code: response_dict}

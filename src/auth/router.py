@@ -21,7 +21,7 @@ from src.auth.types.schemas import (
     AccessToken,
 )
 from src.core.dependencies import DataBaseProvidersDep, SqlSessionDep
-from src.core.domain.domain import to_response
+from src.core.domain.exceptions import to_response
 from src.core.types.internal import DatabaseProviders
 from src.core.types.schemas import RequestInfoInput
 from src.core.types.typings import RequestInfo
