@@ -17,6 +17,7 @@ class ClientIpNotFound(WithHttpException):
 class ResourceNotInitialized(WithHttpException):
     def __init__(self, resource_name: str) -> None:
         self.resource_name = resource_name
+
         super().__init__(
             f"Resource {resource_name} was not initialized",
             RESOURCE_NOT_INITIALIZED_EXC_DATA,

@@ -1,10 +1,15 @@
+from typing import TYPE_CHECKING
+
 import pytest
-from httpx import AsyncClient
 
 from src.core.types.schemas import HealthStatus
 
 
-@pytest.mark.usefixtures("db_session", "session_override")
+if TYPE_CHECKING:
+    from httpx import AsyncClient
+
+
+@pytest.mark.usefixtures("client", "db_session", "session_override")
 @pytest.mark.asyncio
 async def test_health_route_return_health_status(client: AsyncClient) -> None:
     response = await client.get("health/")
@@ -12,7 +17,7 @@ async def test_health_route_return_health_status(client: AsyncClient) -> None:
     assert HealthStatus.model_validate(response.json())
 
 
-@pytest.mark.usefixtures("db_session", "session_override")
+@pytest.mark.usefixtures("client", "db_session", "session_override")
 @pytest.mark.asyncio
 async def test_health_route_with_invalid_method(client: AsyncClient) -> None:
     response = await client.patch("health/")

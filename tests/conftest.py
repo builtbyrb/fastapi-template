@@ -1,14 +1,19 @@
-from collections.abc import AsyncIterator
+from typing import TYPE_CHECKING
 
 import pytest
 from asgi_lifespan import LifespanManager
-from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app import app as actual_app
 from src.core.database import SQL_DATABASE_MANGER
 from src.core.dependencies import get_sql_db_session
+
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
+
+    from fastapi import FastAPI
 
 
 @pytest.fixture

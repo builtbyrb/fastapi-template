@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from tests.users.interfaces import CreateUserRequest
 
 
-@pytest.mark.usefixtures("db_session", "session_override")
+@pytest.mark.usefixtures("client", "db_session", "session_override")
 @pytest.mark.asyncio
 async def test_register_with_valid_info(
     create_user_request: CreateUserRequest,
@@ -24,7 +24,7 @@ async def test_register_with_valid_info(
     assert UserOut.model_validate(response.json())
 
 
-@pytest.mark.usefixtures("db_session", "session_override")
+@pytest.mark.usefixtures("client", "db_session", "session_override")
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     ("field", "invalid_value"),
@@ -41,7 +41,7 @@ async def test_register_with_invalid_fields(
     assert response.status_code == 422
 
 
-@pytest.mark.usefixtures("db_session", "session_override")
+@pytest.mark.usefixtures("client", "db_session", "session_override")
 @pytest.mark.asyncio
 async def test_register_with_dupe_email(
     client: AsyncClient, user_register: dict[str, str]
@@ -61,7 +61,7 @@ async def test_register_with_dupe_email(
     assert response.detail.value == user_register["email"]
 
 
-@pytest.mark.usefixtures("db_session", "session_override")
+@pytest.mark.usefixtures("client", "db_session", "session_override")
 @pytest.mark.asyncio
 async def test_register_with_dupe_username(
     client: AsyncClient, user_register: dict[str, str]

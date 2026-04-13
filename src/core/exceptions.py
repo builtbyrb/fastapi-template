@@ -36,7 +36,7 @@ class WithHttpException(AppException):
             message=message,
             **self.__dict__,
         )
-        super().__init__(self.message)
+        super().__init__(message)
 
     @property
     def headers_dict(
@@ -89,7 +89,7 @@ async def with_http_exception_handler(
 
     return JSONResponse(
         status_code=http_exception.status_code,
-        content={"detail": http_exception.detail},
+        content=http_exception.detail,
         headers=http_exception.headers,
     )
 

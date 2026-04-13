@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import (
 
 import src.refresh_token.models
 import src.users.models  # noqa: F401
+from src.core.domain.exceptions import ResourceNotInitialized
 from src.core.settings import APP_ENV_SETTINGS
 
 
@@ -27,23 +28,19 @@ class SqlDatabaseManager:
     ) -> None:
         self.url = url
         self.engine_kwargs = engine_kwargs or {}
-        self.exc_msg = (
-            "DatabaseSessionManager is not initialized. Call init() first."
-        )
-
         self._engine: AsyncEngine | None = None
         self._sql_session_maker: async_sessionmaker[AsyncSession] | None = None
 
     @property
     def engine(self) -> AsyncEngine:
         if not self._engine:
-            raise RuntimeError(self.exc_msg)
+            raise ResourceNotInitialized(self.__class__.__name__)
         return self._engine
 
     @property
     def sql_session_maker(self) -> async_sessionmaker[AsyncSession]:
         if not self._sql_session_maker:
-            raise RuntimeError(self.exc_msg)
+            raise ResourceNotInitialized(self.__class__.__name__)
         return self._sql_session_maker
 
     async def init(self) -> None:
@@ -85,7 +82,7 @@ class RedisManager:
     @property
     def client(self) -> redis.Redis:
         if not self._client:
-            raise RuntimeError(self.exc_msg)
+            raise ResourceNotInitialized(self.__class__.__name__)
         return self._client
 
     async def init(self) -> None:
