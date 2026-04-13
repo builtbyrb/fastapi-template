@@ -10,7 +10,6 @@
 src = ["src"]
 line-length = 85
 indent-width = 4
-target-version = "py312" # Ajuste selon ta version cible
 
 # Directories excluded from scanning
 exclude = [
