@@ -24,13 +24,6 @@ if TYPE_CHECKING:
     )
 
 
-@dataclass(frozen=True, kw_only=True)
-class SetRefreshTokenCookieParams:
-    response: Response
-    token: str
-    max_age: int
-
-
 # region -------------------------- UserRefreshTokenCreate -------------------------
 @dataclass(frozen=True, kw_only=True)
 class RefreshTokenCreateServiceParams:
@@ -52,7 +45,6 @@ class RefreshTokenCreateInternal(BaseModel):
 # endregion
 
 
-# region -------------------------- UserRefreshTokenUpdate -------------------------
 @dataclass(frozen=True, kw_only=True)
 class RefreshTokenUpdateServiceParams:
     sql_session: AsyncSession
@@ -61,7 +53,12 @@ class RefreshTokenUpdateServiceParams:
     update: RefreshTokenUpdate
 
 
-# endregion
+
+@dataclass(frozen=True, kw_only=True)
+class SetRefreshTokenCookieParams:
+    response: Response
+    token: str
+    max_age: int
 
 
 class RefreshTokenExceptionDetails(HTTPExceptionDetails):
