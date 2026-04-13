@@ -1,13 +1,18 @@
 # ==============================================================================
-# RUFF CONFIGURATION FILE
+# RUFF CONFIGURATION
 # ==============================================================================
-# This file configures Ruff, a fast Python linter and formatter written in Rust.
-# It replaces multiple tools like Flake8, isort, Black, and others.
+# Fast Python linter and formatter. 
+# Replaces: Isort, Black, Flake8, Pyupgrade, etc.
 
-# ==============================================================================
-# EXCLUSIONS
-# ==============================================================================
-# Directories and files to exclude from linting and formatting
+# ------------------------------------------------------------------------------
+# GLOBAL SETTINGS
+# ------------------------------------------------------------------------------
+src = ["src"]
+line-length = 85
+indent-width = 4
+target-version = "py312" # Ajuste selon ta version cible
+
+# Directories excluded from scanning
 exclude = [
     ".bzr",
     ".direnv",
@@ -37,42 +42,47 @@ exclude = [
     "venv",
 ]
 
-# ==============================================================================
-# FORMATTING CONFIGURATION
-# ==============================================================================
-# Same as Black formatter for consistency
-line-length = 85 # Maximum line length (Black standard)
-indent-width = 4 # Number of spaces per indentation level
+# ------------------------------------------------------------------------------
+# FORMATTER (Replacement for Black)
+# ------------------------------------------------------------------------------
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
 
-# ==============================================================================
-# LINTING RULES
-# ==============================================================================
+# ------------------------------------------------------------------------------
+# LINTER RULES
+# ------------------------------------------------------------------------------
 [lint]
-# Rule selection and ignoring
-select = ["ALL"] # Enable all available rules by default
+select = ["ALL"] # Enable every rule by default
+
 ignore = [
-    "D",      # pydocstyle - docstring conventions (too strict for most projects)
-    "COM812", # trailing-comma-missing (conflicts with formatter)
-    "N818",   # error-suffix-on-exception-name (allow custom exception naming)
-    "ANN401", # any-type (allow Any type when necessary)
-    "SLF001", # private-member-access (allow access to private members in same package)
-    "FA102",  # missing `from __future__ import annotations` when using PEP 604 union types
-    "UP046",  # Generic class uses Generic subclass instead of type parameters
+    "D",      # pydocstyle (Docstrings) - Often too verbose for backend APIs
+    "COM812", # Missing trailing comma - Conflicts with Ruff formatter
+    "N818",   # Exception name suffix - Allows custom naming conventions
+    "ANN401", # Dynamically typed expressions (Any) - Necessary in some generic contexts
+    "SLF001", # Private member access - Allow within the same package
+    "FA102",  # Missing __future__ annotations - PEP 604 is standard in 3.10+
+    "UP046",  # Generic subclass usage
 ]
 
-# Auto-fixing configuration
-fixable = ["ALL"] # Allow auto-fix for all enabled rules
+# Auto-fix behavior
+fixable = ["ALL"]
 unfixable = [
-    "T201", # print-found (require manual review before removing print statements)
+    "T201", # print() statements - Keep manual review before removal
 ]
 
-# Variable naming patterns
-# Allow unused variables when prefixed with underscore(s)
+# Regex for allowed dummy variables (e.g., _, _unused)
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
-# ==============================================================================
-# ISORT CONFIGURATION
-# ==============================================================================
+# ------------------------------------------------------------------------------
+# LINTER PLUGINS CONFIGURATION
+# ------------------------------------------------------------------------------
+
+# ISORT: Import sorting
 [lint.isort]
 case-sensitive = false
 combine-as-imports = true
@@ -87,48 +97,11 @@ section-order = [
     "local-folder",
 ]
 
+# FLAKE8-TIDY-IMPORTS: Clean import structure
 [lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
-
-# ==============================================================================
-# PER-FILE IGNORES
-# ==============================================================================
-[lint.per-file-ignores]
-"tests/**/*.py" = [
-    "S101",    # allow `assert` in test files
-    "PLR2004", # allow magic numbers in test files
-    "S105",    # allow hardcoded passwords in test files
-    "S106",    # allow hardcoded passwords assignement in test files
-]
-"**/dependencies.py" = ["TC"]
-"**/router.py" = ["TC"]
-"**/models.py" = ["TC"]
-
-# ==============================================================================
-# CODE FORMATTING
-# ==============================================================================
-[format]
-# String quote style
-quote-style = "double" # Use double quotes for strings (Black standard)
-
-# Indentation style
-indent-style = "space" # Use spaces instead of tabs
-
-# Trailing comma behavior
-skip-magic-trailing-comma = false # Respect Black's magic trailing comma rules
-
-# Line ending detection
-line-ending = "auto" # Automatically detect appropriate line endings (LF/CRLF)
-
-# Docstring code formatting
-docstring-code-format = true # Format code examples in docstrings
-
-# Docstring code line length
-# Set line length limit for code snippets in docstrings
-# "dynamic" adapts to the docstring context
-docstring-code-line-length = "dynamic"
-
+# FLAKE8-TYPE-CHECKING: Automated TYPE_CHECKING blocks
 [lint.flake8-type-checking]
 runtime-evaluated-base-classes = [
     "pydantic.BaseModel",
@@ -136,3 +109,20 @@ runtime-evaluated-base-classes = [
     "sqlalchemy.orm.DeclarativeBase",
 ]
 runtime-evaluated-decorators = ["pydantic.validate_call", "attrs.define"]
+
+# ------------------------------------------------------------------------------
+# PER-FILE OVERRIDES
+# ------------------------------------------------------------------------------
+[lint.per-file-ignores]
+# Rules for Test files
+"tests/**/*.py" = [
+    "S101",    # Allow assert
+    "PLR2004", # Allow magic numbers
+    "S105",    # Allow hardcoded passwords
+    "S106",    # Allow hardcoded password assignments
+]
+
+# Rules for common Type-Checking heavy files
+"**/dependencies.py" = ["TC"]
+"**/router.py" = ["TC"]
+"**/models.py" = ["TC"]
