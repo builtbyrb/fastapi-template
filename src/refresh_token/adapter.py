@@ -4,15 +4,14 @@ from sqlalchemy import delete, insert, select, update
 
 from src.refresh_token.domain.exceptions import RefreshTokenNotFoundException
 from src.refresh_token.models import RefreshToken
+from src.refresh_token.types.schemas import (
+    RefreshTokenJtiGetter,
+    RefreshTokenUserIdGetter,
+)
 
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
-
-    from src.refresh_token.types.schemas import (
-        RefreshTokenJtiGetter,
-        RefreshTokenUserIdGetter,
-    )
 
 
 class SqlAlchemyRefreshTokenRepo:
