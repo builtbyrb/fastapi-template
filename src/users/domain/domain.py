@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
-from src.auth.security import hash_password
-from src.users.exceptions import (
+from src.auth.domain.security import hash_password
+from src.users.domain.exceptions import (
     UserAlreadyExistsException,
     UserTooManyRefreshTokenException,
 )
@@ -68,9 +68,11 @@ def validate_user_unique_fields(
 
     if dupe_fields:
         dupe_field = dupe_fields[0]
-        raise UserAlreadyExistsException(user, dupe_field.name, dupe_field.value)
+        raise UserAlreadyExistsException(
+            user.identifier, dupe_field.name, dupe_field.value
+        )
 
 
 def verify_user_token_limit(user: User, token_limit: int) -> None:
     if len(user.refresh_tokens) >= token_limit:
-        raise UserTooManyRefreshTokenException(user)
+        raise UserTooManyRefreshTokenException(user.identifier)

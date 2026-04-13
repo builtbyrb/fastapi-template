@@ -9,7 +9,7 @@ from src.core.exceptions import (
 )
 from src.core.lifespan import lifespan
 from src.core.logging.logging import setup_logging
-from src.core.logging.middleware import (
+from src.core.middleware import (
     AccessLoggingMiddleware,
 )
 from src.core.router import health_router

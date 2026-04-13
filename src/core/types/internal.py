@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 from alembic.environment import Any
 from pydantic import BaseModel
 
+from src.core.types.alias import OpenApiSchemaType
+
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -27,6 +29,33 @@ class CustomValidationRuleData(BaseModel):
 
 class CustomValidationRuleRegexData(CustomValidationRuleData):
     REGEX: str
+
+
+class HTTPExceptionDetails(BaseModel):
+    exc_code: str
+    message: str
+
+
+class ResourceNotInitializedDetails(HTTPExceptionDetails):
+    resource_name: str
+
+
+class ExceptionResponse[T: HTTPExceptionDetails](BaseModel):
+    detail: T
+
+
+class HTTPExceptionHeaderData(BaseModel):
+    description: str
+    type: OpenApiSchemaType
+    value: str | None = None
+
+
+class HTTPExceptionData(BaseModel):
+    exc_code: str
+    description: str
+    status_code: int
+    headers: dict[str, HTTPExceptionHeaderData] | None = None
+    details_model: type[HTTPExceptionDetails] = HTTPExceptionDetails
 
 
 @dataclass(frozen=True, kw_only=True)

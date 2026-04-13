@@ -7,7 +7,7 @@ from pydantic_core import PydanticCustomError
 
 from src.core.constants import USER_AGENT_FORMAT_RULE
 from src.core.types.alias import Environment, IpAnyAddress
-from src.core.utils import (
+from src.core.domain.utils import (
     enum_do_dict,
     get_utc_datetime,
     remove_email_domain,
@@ -15,7 +15,7 @@ from src.core.utils import (
     to_seconds,
     to_timedelta,
 )
-from src.core.validators import (
+from src.core.domain.validators import (
     contains_no_space,
     contains_no_value,
     contains_regex,

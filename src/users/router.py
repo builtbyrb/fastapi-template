@@ -2,12 +2,13 @@ from typing import Annotated
 
 from fastapi import APIRouter, Body, status
 
-from src.auth.config.exceptions import AUTH_CURRENT_USER_RESPONSE
+from src.auth.constants import AUTH_CURRENT_USER_RESPONSE
 from src.auth.dependencies import CurrentActiveUserDep
 from src.core.dependencies import SqlSessionDep
+from src.core.domain.domain import to_response
 from src.users.adapter import SQL_ALCHEMY_USER_REPO
-from src.users.exceptions import (
-    USER_ALREADY_EXISTS_DEF,
+from src.users.constants import (
+    USER_ALREADY_EXISTS_EXC_DATA,
 )
 from src.users.services import (
     user_create_service,
@@ -36,7 +37,7 @@ user_router = APIRouter(prefix="/users", tags=["Users"])
     summary="Register a new user",
     response_description="The newly created user object (password excluded).",
     responses={
-        **USER_ALREADY_EXISTS_DEF.response,
+        **to_response(USER_ALREADY_EXISTS_EXC_DATA),
     },
 )
 async def create_user(
@@ -57,7 +58,7 @@ async def create_user(
     response_description="The updated user object with the new values.",
     responses={
         **AUTH_CURRENT_USER_RESPONSE,
-        **USER_ALREADY_EXISTS_DEF.response,
+        **to_response(USER_ALREADY_EXISTS_EXC_DATA),
     },
 )
 async def update_user(

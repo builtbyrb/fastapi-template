@@ -5,16 +5,22 @@ from pydantic import ValidationError
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-from src.core.exceptions import (
-    AppClientIpNotFound,
+from src.core.domain.exceptions import (
+    ClientIpNotFound,
 )
 from src.core.types.alias import Environment, IpAnyAddress
+from src.core.types.internal import ExceptionResponse
 from src.core.types.typings import ANY_IP_ADAPTER
 
 
 if TYPE_CHECKING:
+    from alembic.environment import Any
+
     from src.core.database import SqlDatabaseManager
-    from src.core.types.internal import ResolveIpFromDataParams
+    from src.core.types.internal import (
+        HTTPExceptionData,
+        ResolveIpFromDataParams,
+    )
 
 
 def resolve_ip_form_data(params: ResolveIpFromDataParams) -> IpAnyAddress:
@@ -29,7 +35,7 @@ def resolve_ip_form_data(params: ResolveIpFromDataParams) -> IpAnyAddress:
         ip = None
 
     if not ip:
-        raise AppClientIpNotFound
+        raise ClientIpNotFound
 
     return ip
 
@@ -53,3 +59,23 @@ async def check_sql_db_connectivity(manager: SqlDatabaseManager) -> bool:
         return False
     else:
         return True
+
+
+def to_response(
+    data: HTTPExceptionData,
+) -> dict[int | str, dict[str, Any]]:
+    response_dict: dict[str, Any] = {
+        "description": data.description,
+        "model": ExceptionResponse[data.details_model],
+    }
+
+    if data.headers:
+        response_dict["headers"] = {
+            name: {
+                "description": definition.description,
+                "schema": {"type": definition.type},
+            }
+            for name, definition in data.headers.items()
+        }
+
+    return {data.status_code: response_dict}

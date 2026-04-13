@@ -4,8 +4,9 @@ from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
-from src.core.utils import get_utc_datetime, to_timedelta
-from src.refresh_token.config.env import REFRESH_TOKEN_ENV
+from src.core.domain.utils import get_utc_datetime, to_timedelta
+from src.core.types.internal import HTTPExceptionDetails
+from src.refresh_token.settings import REFRESH_TOKEN_ENV_SETTINGS
 
 
 if TYPE_CHECKING:
@@ -42,7 +43,7 @@ class RefreshTokenCreateInternal(BaseModel):
     expires_at: datetime = Field(
         default_factory=lambda: (
             get_utc_datetime()
-            + to_timedelta(REFRESH_TOKEN_ENV.REFRESH_TOKEN_EXPIRE_MINUTES)
+            + to_timedelta(REFRESH_TOKEN_ENV_SETTINGS.REFRESH_TOKEN_EXPIRE_MINUTES)
         ),
     )
     created_at: datetime = Field(default_factory=get_utc_datetime)
@@ -61,3 +62,7 @@ class RefreshTokenUpdateServiceParams:
 
 
 # endregion
+
+
+class RefreshTokenExceptionDetails(HTTPExceptionDetails):
+    refresh_token: str

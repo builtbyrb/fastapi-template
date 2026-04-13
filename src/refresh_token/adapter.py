@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import delete, insert, select, update
 
-from src.refresh_token.exceptions import RefreshTokenNotFoundException
+from src.refresh_token.domain.exceptions import RefreshTokenNotFoundException
 from src.refresh_token.models import RefreshToken
 
 
@@ -23,7 +23,7 @@ class SqlAlchemyRefreshTokenRepo:
         stmt = select(RefreshToken).where(RefreshToken.jti == getter.jti)
         result = await sql_session.scalar(stmt)
         if not result:
-            raise RefreshTokenNotFoundException(getter)
+            raise RefreshTokenNotFoundException(getter.identifier)
         return result
 
     @staticmethod
@@ -34,7 +34,7 @@ class SqlAlchemyRefreshTokenRepo:
         result = await sql_session.execute(stmt)
         refresh_tokens = result.scalars().all()
         if not refresh_tokens:
-            raise RefreshTokenNotFoundException(getter)
+            raise RefreshTokenNotFoundException(getter.identifier)
         return list(refresh_tokens)
 
     @staticmethod
@@ -59,7 +59,7 @@ class SqlAlchemyRefreshTokenRepo:
         )
         refresh_token = await sql_session.scalar(stmt)
         if not refresh_token:
-            raise RefreshTokenNotFoundException(getter)
+            raise RefreshTokenNotFoundException(getter.identifier)
         return refresh_token
 
     @staticmethod
@@ -73,7 +73,7 @@ class SqlAlchemyRefreshTokenRepo:
         )
         refresh_token = await sql_session.scalar(stmt)
         if not refresh_token:
-            raise RefreshTokenNotFoundException(getter)
+            raise RefreshTokenNotFoundException(getter.identifier)
         return refresh_token
 
     @staticmethod

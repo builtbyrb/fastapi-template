@@ -5,11 +5,14 @@ from fastapi import APIRouter, Depends, Response
 from src.auth.adapter import (
     REDIS_AUTH_ACCESS_TOKEN_BLACKLIST_REPO,
 )
-from src.auth.config.config import AUTH_ERRORS
-from src.auth.config.env import AUTH_ENV
-from src.auth.config.exceptions import AUTH_CURRENT_USER_RESPONSE
+from src.auth.constants import (
+    AUTH_CURRENT_USER_RESPONSE,
+    INCORRECT_CREDENTIALS_DATA,
+    USER_DISABLED_DATA,
+)
 from src.auth.dependencies import FormDataDep
 from src.auth.services import user_login_service, user_refresh_service
+from src.auth.settings import AUTH_ENV_SETTINGS
 from src.auth.types.internal import (
     UserLoginServiceParams,
     UserRefreshTokenServiceParams,
@@ -18,11 +21,12 @@ from src.auth.types.schemas import (
     AccessToken,
 )
 from src.core.dependencies import DataBaseProvidersDep, SqlSessionDep
+from src.core.domain.domain import to_response
 from src.core.types.internal import DatabaseProviders
 from src.core.types.schemas import RequestInfoInput
 from src.core.types.typings import RequestInfo
 from src.refresh_token.adapter import SQL_ALCHEMY_REFRESH_TOKEN_REPO
-from src.refresh_token.domain import set_refresh_token_cookie
+from src.refresh_token.domain.domain import set_refresh_token_cookie
 from src.refresh_token.types.internal import SetRefreshTokenCookieParams
 from src.refresh_token.types.schemas import RefreshTokenCookie
 from src.users.adapter import SQL_ALCHEMY_USER_REPO
@@ -36,8 +40,8 @@ token_router = APIRouter(prefix="/token", tags=["Token"])
     summary="User login",
     response_description="The access token and a http-only refresh token cookie.",
     responses={
-        **AUTH_ERRORS.INCORRECT_CREDENTIALS.response,
-        **AUTH_ERRORS.USER_DISABLED.response,
+        **to_response(INCORRECT_CREDENTIALS_DATA),
+        **to_response(USER_DISABLED_DATA),
     },
 )
 async def login(
@@ -65,7 +69,8 @@ async def login(
     )
 
     return AccessToken(
-        access_token=tokens.access_token, token_type=AUTH_ENV.ACCESS_TOKEN_TYPE
+        access_token=tokens.access_token,
+        token_type=AUTH_ENV_SETTINGS.ACCESS_TOKEN_TYPE,
     )
 
 
@@ -103,5 +108,6 @@ async def refresh(
     )
 
     return AccessToken(
-        access_token=result.access_token, token_type=AUTH_ENV.ACCESS_TOKEN_TYPE
+        access_token=result.access_token,
+        token_type=AUTH_ENV_SETTINGS.ACCESS_TOKEN_TYPE,
     )

@@ -7,7 +7,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app import app as actual_app
-from src.core.database import sql_database_manager
+from src.core.database import SQL_DATABASE_MANGER
 from src.core.dependencies import get_sql_db_session
 
 
@@ -27,7 +27,7 @@ async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
 
 @pytest.fixture
 async def transactional_sql_session() -> AsyncIterator[AsyncSession]:
-    async with sql_database_manager.connect() as connection:
+    async with SQL_DATABASE_MANGER.connect() as connection:
         try:
             async with AsyncSession(
                 bind=connection,

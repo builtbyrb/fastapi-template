@@ -103,7 +103,7 @@ class RedisManager:
         self._client = None
 
 
-sql_database_manager = SqlDatabaseManager(
+SQL_DATABASE_MANGER = SqlDatabaseManager(
     APP_ENV_SETTINGS.pgbouncer_database_url,
     engine_kwargs={
         "pool_size": 50,
@@ -114,6 +114,6 @@ sql_database_manager = SqlDatabaseManager(
     },
 )
 
-redis_manager = RedisManager(
+REDIS_MANGER = RedisManager(
     f"redis://{APP_ENV_SETTINGS.REDIS_HOST}:{APP_ENV_SETTINGS.REDIS_PORT}/{APP_ENV_SETTINGS.REDIS_DB}"
 )

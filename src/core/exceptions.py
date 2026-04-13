@@ -3,11 +3,13 @@ import logging
 import sys
 from typing import TYPE_CHECKING, Any
 
-from fastapi import HTTPException, Request, status
+from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 
-from src.core.types.alias import OpenApiSchemaType
+from src.core.types.internal import (
+    ExceptionResponse,
+    HTTPExceptionData,
+)
 
 
 if TYPE_CHECKING:
@@ -22,70 +24,37 @@ class AppException(Exception):
         super().__init__(self.message)
 
 
-class BaseExceptionDetails(BaseModel):
-    exc_code: str
-    message: str
-
-
-class ExceptionResponse[T: BaseExceptionDetails](BaseModel):
-    detail: T
-
-
-class HTTPExceptionHeaderDefinition(BaseModel):
-    description: str
-    type: OpenApiSchemaType
-    value: str | None = None
-
-
-class HTTPExceptionDefinition(BaseModel):
-    exc_code: str
-    description: str
-    status_code: int
-    headers: dict[str, HTTPExceptionHeaderDefinition] | None = None
-    details_model: type[BaseExceptionDetails] = BaseExceptionDetails
+class WithHttpException(AppException):
+    def __init__(
+        self,
+        message: str,
+        http_exception_data: HTTPExceptionData,
+    ) -> None:
+        self.http_exception_data = http_exception_data
+        self.details = self.http_exception_data.details_model(
+            exc_code=self.http_exception_data.exc_code,
+            message=message,
+            **self.__dict__,
+        )
+        super().__init__(self.message)
 
     @property
-    def headers_dict(self) -> dict[str, str] | None:
-        if not self.headers:
+    def headers_dict(
+        self,
+    ) -> dict[str, str] | None:
+        headers = self.http_exception_data.headers
+        if not headers:
             return None
 
         headers_dict: dict[str, str] = {}
-        for name, definition in self.headers.items():
+        for name, definition in headers.items():
             if definition.value:
                 headers_dict[name] = definition.value
 
-        if not headers_dict:
+        if not headers:
             return None
 
         return headers_dict
-
-    @property
-    def response(self) -> dict[int | str, dict[str, Any]]:
-        response_dict: dict[str, Any] = {
-            "description": self.description,
-            "model": ExceptionResponse[self.details_model],
-        }
-
-        if self.headers:
-            response_dict["headers"] = {
-                name: {
-                    "description": definition.description,
-                    "schema": {"type": definition.type},
-                }
-                for name, definition in self.headers.items()
-            }
-
-        return {self.status_code: response_dict}
-
-
-class WithHttpException(AppException):
-    def __init__(
-        self, message: str, http_definition: HTTPExceptionDefinition
-    ) -> None:
-        self.message = message
-        self.http_definition = http_definition
-        self.exc_code = http_definition.exc_code
-        super().__init__(self.message)
 
     def build_http_exception(
         self,
@@ -93,14 +62,14 @@ class WithHttpException(AppException):
         payload: dict[str, Any] | None = None,
         headers: Mapping[str, str] | None = None,
     ) -> HTTPException:
-        status_code = status_code or self.http_definition.status_code
-        payload = payload or self.http_definition.details_model(
-            **self.__dict__
-        ).model_dump(mode="json")
-        headers = headers or self.http_definition.headers_dict
+        status_code = status_code or self.http_exception_data.status_code
+        payload = payload or ExceptionResponse[
+            self.http_exception_data.details_model
+        ](detail=self.details).model_dump(mode="json")
+        headers = headers or self.headers_dict
 
         return HTTPException(
-            status_code=self.http_definition.status_code,
+            status_code=self.http_exception_data.status_code,
             detail=payload,
             headers=headers,
         )
@@ -108,20 +77,8 @@ class WithHttpException(AppException):
 
 # endregion
 
-# region -------------------------- Business -------------------------
-CLIENT_IP_NOT_FOUND = HTTPExceptionDefinition(
-    exc_code="ip-not-found",
-    status_code=status.HTTP_404_NOT_FOUND,
-    description="Client ip not found",
-)
 
-
-class AppClientIpNotFound(WithHttpException):
-    def __init__(self) -> None:
-        self.message = "Client IP could not be determined"
-        super().__init__(self.message, CLIENT_IP_NOT_FOUND)
-
-
+# region -------------------------- Infra -------------------------
 async def with_http_exception_handler(
     _request: Request, exc: Exception
 ) -> JSONResponse:

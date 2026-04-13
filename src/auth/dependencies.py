@@ -6,7 +6,7 @@ from fastapi.security import (
 )
 
 from src.auth.adapter import REDIS_AUTH_ACCESS_TOKEN_BLACKLIST_REPO
-from src.auth.domain import verify_disabled_user
+from src.auth.domain.domain import verify_disabled_user
 from src.auth.services import get_current_user_service
 from src.auth.types.internal import (
     GetCurrentUserServiceParams,

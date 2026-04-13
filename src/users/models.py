@@ -13,8 +13,8 @@ from src.users.constants import (
     USER_FIRST_NAME_LENGTH_RULE_DATA,
     USER_LAST_NAME_LENGTH_RULE_DATA,
     USER_USERNAME_LENGTH_RULE_DATA,
-    UserRole,
 )
+from src.users.types.alias import UserRole
 
 
 if TYPE_CHECKING:

@@ -4,7 +4,7 @@ from src.auth.types.internal import TokenConfig
 from src.core.settings import BaseEnvSettings
 
 
-class RefreshTokenConfigEnv(BaseEnvSettings):
+class RefreshTokenEnvSettings(BaseEnvSettings):
     REFRESH_TOKEN_SECRET_KEY: str = Field(default=...)
 
     REFRESH_TOKEN_ALGORITHM: str = Field(default="HS256")
@@ -21,4 +21,4 @@ class RefreshTokenConfigEnv(BaseEnvSettings):
         )
 
 
-REFRESH_TOKEN_ENV = RefreshTokenConfigEnv()
+REFRESH_TOKEN_ENV_SETTINGS = RefreshTokenEnvSettings()

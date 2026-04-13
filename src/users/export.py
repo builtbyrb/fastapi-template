@@ -2,25 +2,24 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from src.core.exceptions import HTTPExceptionDefinition
-from src.core.types.internal import LengthRuleData
-from src.core.utils import enum_do_dict
+from src.core.domain.utils import enum_do_dict
+from src.core.types.internal import HTTPExceptionData, LengthRuleData
 from src.users.constants import (
+    USER_ALREADY_EXISTS_EXC_DATA,
     USER_EMAIL_LENGTH_RULE_DATA,
     USER_FIRST_NAME_LENGTH_RULE_DATA,
     USER_LAST_NAME_LENGTH_RULE_DATA,
+    USER_NOT_FOUND_EXC_DATA,
     USER_PASSWORD_LENGTH_RULE_DATA,
     USER_USERNAME_LENGTH_RULE_DATA,
-    UserRole,
 )
-from src.users.exceptions import USER_ALREADY_EXISTS_DEF, USER_NOT_FOUND_DEF
+from src.users.types.alias import UserRole
 
 
 # region -------------------------- Exceptions -------------------------
 class UserExceptions(BaseModel):
-    USER_ALREADY_EXISTS: HTTPExceptionDefinition = USER_ALREADY_EXISTS_DEF
-
-    USER_NOT_FOUND: HTTPExceptionDefinition = USER_NOT_FOUND_DEF
+    USER_ALREADY_EXISTS: HTTPExceptionData = USER_ALREADY_EXISTS_EXC_DATA
+    USER_NOT_FOUND: HTTPExceptionData = USER_NOT_FOUND_EXC_DATA
 
 
 USER_EXCEPTIONS = UserExceptions()

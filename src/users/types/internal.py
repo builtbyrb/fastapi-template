@@ -7,8 +7,9 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 from pydantic_core import Url
 
-from src.core.utils import get_utc_datetime
-from src.users.constants import UserRole
+from src.core.domain.utils import get_utc_datetime
+from src.core.types.internal import HTTPExceptionDetails
+from src.users.types.alias import UserRole
 
 
 if TYPE_CHECKING:
@@ -75,3 +76,12 @@ class UserDeleteServiceParams:
     sql_session: AsyncSession
     getter: UserIdGetter
     user_repo: UserRepoDeleteUserPort
+
+
+class UserExceptionDetails(HTTPExceptionDetails):
+    user: str
+
+
+class UserAlreadyExistsErrorDetails(UserExceptionDetails):
+    field: str
+    value: str

@@ -2,14 +2,14 @@ from typing import TYPE_CHECKING
 
 from fastapi.concurrency import run_in_threadpool
 
-from src.auth.config.env import AUTH_ENV
-from src.auth.domain import (
+from src.auth.domain.domain import (
     authenticate_user,
     create_user_tokens,
     decode_token,
     verify_disabled_user,
 )
-from src.auth.exceptions import AuthInvalidTokenException
+from src.auth.domain.exceptions import AuthInvalidTokenException
+from src.auth.settings import AUTH_ENV_SETTINGS
 from src.auth.types.internal import (
     AuthenticateUserServiceParams,
     DecodeTokenParams,
@@ -19,18 +19,16 @@ from src.auth.types.internal import (
     UserLoginServiceParams,
     UserRefreshTokenServiceParams,
 )
-from src.refresh_token.config.env import REFRESH_TOKEN_ENV
-from src.refresh_token.exceptions import RefreshTokenNotFoundException
+from src.refresh_token.domain.exceptions import RefreshTokenNotFoundException
 from src.refresh_token.services import refresh_token_create_service
+from src.refresh_token.settings import REFRESH_TOKEN_ENV_SETTINGS
 from src.refresh_token.types.internal import RefreshTokenCreateServiceParams
 from src.refresh_token.types.schemas import (
     RefreshTokenCreate,
     RefreshTokenJtiGetter,
     RefreshTokenUserIdGetter,
 )
-from src.users.exceptions import (
-    UserNotFoundException,
-)
+from src.users.domain.exceptions import UserNotFoundException
 from src.users.types.schemas import (
     UserEmailGetter,
     UserOut,
@@ -46,7 +44,9 @@ if TYPE_CHECKING:
 # region -------------------------- GetCurrentUser -------------------------
 async def get_current_user_service(params: GetCurrentUserServiceParams) -> UserOut:
     access_token_payload = decode_token(
-        DecodeTokenParams(token=params.token, config=AUTH_ENV.access_token_config)
+        DecodeTokenParams(
+            token=params.token, config=AUTH_ENV_SETTINGS.access_token_config
+        )
     )
 
     is_blacklisted = await params.access_token_blacklist_repo.is_blacklisted(
@@ -159,7 +159,8 @@ async def user_refresh_service(
 
     refresh_token_data = decode_token(
         DecodeTokenParams(
-            token=params.refresh_token, config=REFRESH_TOKEN_ENV.refresh_token_config
+            token=params.refresh_token,
+            config=REFRESH_TOKEN_ENV_SETTINGS.refresh_token_config,
         )
     )
     user = await params.user_repo.get_model(

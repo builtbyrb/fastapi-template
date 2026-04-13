@@ -1,13 +1,17 @@
-from enum import StrEnum
+from fastapi import status
 
-from src.core.types.internal import CustomValidationRuleData, LengthRuleData
+from src.core.types.internal import (
+    CustomValidationRuleData,
+    HTTPExceptionData,
+    LengthRuleData,
+)
+from src.users.types.internal import (
+    UserAlreadyExistsErrorDetails,
+    UserExceptionDetails,
+)
 
 
-class UserRole(StrEnum):
-    USER = "User"
-    ADMIN = "Admin"
-
-
+# region -------------------------- Rules -------------------------
 USER_FIRST_NAME_LENGTH_RULE_DATA = LengthRuleData(MIN_LENGTH=3, MAX_LENGTH=30)
 
 USER_LAST_NAME_LENGTH_RULE_DATA = LengthRuleData(MIN_LENGTH=3, MAX_LENGTH=30)
@@ -20,3 +24,27 @@ USER_PASSWORD_LENGTH_RULE_DATA = LengthRuleData(MIN_LENGTH=8, MAX_LENGTH=40)
 USER_PASSWORD_EMAIL_RULE_DATA = CustomValidationRuleData(
     ERROR_CODE="contains_email", ERROR_MESSAGE="Must not contains your email address"
 )
+# endregion
+
+# region -------------------------- HTTPExceptionData -------------------------
+USER_ALREADY_EXISTS_EXC_DATA = HTTPExceptionData(
+    exc_code="users/already-exists",
+    status_code=status.HTTP_409_CONFLICT,
+    description="User already exists",
+    details_model=UserAlreadyExistsErrorDetails,
+)
+
+USER_NOT_FOUND_EXC_DATA = HTTPExceptionData(
+    exc_code="users/not-found",
+    status_code=status.HTTP_404_NOT_FOUND,
+    description="User not found",
+    details_model=UserExceptionDetails,
+)
+
+USER_TOO_MANY_REFRESH_TOKEN_EXC_DATA = HTTPExceptionData(
+    exc_code="users/too-many-token",
+    status_code=status.HTTP_400_BAD_REQUEST,
+    description="Too much refresh token",
+    details_model=UserExceptionDetails,
+)
+# endregion

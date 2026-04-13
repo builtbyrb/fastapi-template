@@ -5,21 +5,21 @@ import jwt
 from jwt import PyJWTError
 from pydantic import ValidationError
 
-from src.auth.config.env import AUTH_ENV
 from src.auth.constants import DUMMY_HASH
-from src.auth.exceptions import (
+from src.auth.domain.exceptions import (
     AuthIncorrectCredentialsException,
     AuthInvalidTokenException,
     AuthUserDisabledException,
 )
-from src.auth.security import verify_password
+from src.auth.domain.security import verify_password
+from src.auth.settings import AUTH_ENV_SETTINGS
 from src.auth.types.internal import (
     CreateTokenParams,
     DecodeTokenParams,
 )
 from src.auth.types.schemas import TokenData, TokenDataCreate, UsersTokens
-from src.core.utils import get_utc_datetime, to_timedelta
-from src.refresh_token.config.env import REFRESH_TOKEN_ENV
+from src.core.domain.utils import get_utc_datetime, to_timedelta
+from src.refresh_token.settings import REFRESH_TOKEN_ENV_SETTINGS
 
 
 if TYPE_CHECKING:
@@ -58,14 +58,14 @@ def authenticate_user(user: User | None, password: str) -> User:
     if not correct_password:
         raise AuthIncorrectCredentialsException
     if user.disabled:
-        raise AuthUserDisabledException(user)
+        raise AuthUserDisabledException(user.identifier)
 
     return user
 
 
 def verify_disabled_user(user: UserOut | User) -> None:
     if user.disabled:
-        raise AuthUserDisabledException(user)
+        raise AuthUserDisabledException(user.identifier)
 
 
 def create_user_tokens(user: User) -> UsersTokens:
@@ -73,24 +73,25 @@ def create_user_tokens(user: User) -> UsersTokens:
         email=user.email,
         jti=uuid.uuid4(),
         expiration=to_timedelta(
-            minutes=REFRESH_TOKEN_ENV.REFRESH_TOKEN_EXPIRE_MINUTES
+            minutes=REFRESH_TOKEN_ENV_SETTINGS.REFRESH_TOKEN_EXPIRE_MINUTES
         ),
     )
     refresh_token = create_token(
         CreateTokenParams(
             data=refresh_token_data_create,
-            config=REFRESH_TOKEN_ENV.refresh_token_config,
+            config=REFRESH_TOKEN_ENV_SETTINGS.refresh_token_config,
         )
     )
 
     access_token_data_create = TokenDataCreate(
         email=user.email,
         jti=refresh_token_data_create.jti,
-        expiration=to_timedelta(AUTH_ENV.ACCESS_TOKEN_EXPIRE_MINUTES),
+        expiration=to_timedelta(AUTH_ENV_SETTINGS.ACCESS_TOKEN_EXPIRE_MINUTES),
     )
     access_token = create_token(
         CreateTokenParams(
-            data=access_token_data_create, config=AUTH_ENV.access_token_config
+            data=access_token_data_create,
+            config=AUTH_ENV_SETTINGS.access_token_config,
         )
     )
 

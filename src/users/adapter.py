@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import delete, insert, or_, select, update
 
-from src.users.exceptions import UserNotFoundException
+from src.users.domain.exceptions import UserNotFoundException
 from src.users.models import User
 from src.users.types.schemas import (
     UserEmailGetter,
@@ -26,7 +26,7 @@ class SQLAlchemyUserRepo:
         stmt = select(User).where(User.email == getter.email)
         result = await sql_session.scalar(stmt)
         if not result:
-            raise UserNotFoundException(getter)
+            raise UserNotFoundException(getter.identifier)
         return result
 
     @staticmethod
@@ -36,14 +36,14 @@ class SQLAlchemyUserRepo:
         stmt = select(User).where(User.username == getter.username)
         result = await sql_session.scalar(stmt)
         if not result:
-            raise UserNotFoundException(getter)
+            raise UserNotFoundException(getter.identifier)
         return result
 
     @staticmethod
     async def get_by_id(sql_session: AsyncSession, getter: UserIdGetter) -> User:
         result = await sql_session.get(User, getter.id)
         if not result:
-            raise UserNotFoundException(getter)
+            raise UserNotFoundException(getter.identifier)
         return result
 
     @staticmethod
@@ -83,7 +83,7 @@ class SQLAlchemyUserRepo:
         )
         user = await sql_session.scalar(stmt)
         if not user:
-            raise UserNotFoundException(getter)
+            raise UserNotFoundException(getter.identifier)
         return user
 
     @staticmethod
@@ -95,7 +95,7 @@ class SQLAlchemyUserRepo:
         )
         user = await sql_session.scalar(stmt)
         if not user:
-            raise UserNotFoundException(getter)
+            raise UserNotFoundException(getter.identifier)
         return user
 
     @staticmethod
@@ -103,7 +103,7 @@ class SQLAlchemyUserRepo:
         stmt = delete(User).where(User.id == getter.id).returning(User)
         user = await sql_session.scalar(stmt)
         if not user:
-            raise UserNotFoundException(getter)
+            raise UserNotFoundException(getter.identifier)
         return user
 
 

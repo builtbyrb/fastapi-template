@@ -10,10 +10,11 @@ from pydantic import (
 )
 from pydantic_core import Url
 
+from src.core.domain.utils import get_utc_datetime, remove_email_domain
+from src.core.domain.validators import contains_no_value
 from src.core.rules import CustomValidationRule
-from src.core.utils import get_utc_datetime, remove_email_domain
-from src.core.validators import contains_no_value
-from src.users.constants import USER_PASSWORD_EMAIL_RULE_DATA, UserRole
+from src.users.constants import USER_PASSWORD_EMAIL_RULE_DATA
+from src.users.types.alias import UserRole
 from src.users.types.typings import (
     UserEmail,
     UserFirstName,

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any
 
-from src.refresh_token.config.env import REFRESH_TOKEN_ENV
+from src.refresh_token.settings import REFRESH_TOKEN_ENV_SETTINGS
 from src.refresh_token.types.internal import (
     RefreshTokenCreateInternal,
     SetRefreshTokenCookieParams,
@@ -33,7 +33,7 @@ def update_refresh_token_dict(update: RefreshTokenUpdate) -> dict[str, Any]:
 
 def set_refresh_token_cookie(params: SetRefreshTokenCookieParams) -> None:
     params.response.set_cookie(
-        key=REFRESH_TOKEN_ENV.REFRESH_TOKEN_COOKIE_KEY,
+        key=REFRESH_TOKEN_ENV_SETTINGS.REFRESH_TOKEN_COOKIE_KEY,
         value=params.token,
         httponly=True,
         secure=True,
@@ -44,7 +44,7 @@ def set_refresh_token_cookie(params: SetRefreshTokenCookieParams) -> None:
 
 def delete_refresh_token_cookie(response: Response) -> None:
     response.delete_cookie(
-        key=REFRESH_TOKEN_ENV.REFRESH_TOKEN_COOKIE_KEY,
+        key=REFRESH_TOKEN_ENV_SETTINGS.REFRESH_TOKEN_COOKIE_KEY,
         httponly=True,
         secure=True,
         samesite="lax",

@@ -5,20 +5,20 @@ import redis.asyncio as redis
 from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.database import redis_manager, sql_database_manager
-from src.core.domain import resolve_ip_form_data
+from src.core.database import REDIS_MANGER, SQL_DATABASE_MANGER
+from src.core.domain.domain import resolve_ip_form_data
 from src.core.settings import APP_ENV_SETTINGS
 from src.core.types.alias import Environment, IpAnyAddress
 from src.core.types.internal import DatabaseProviders, ResolveIpFromDataParams
 
 
 async def get_sql_db_session() -> AsyncIterator[AsyncSession]:
-    async with sql_database_manager.sql_session() as sql_session:
+    async with SQL_DATABASE_MANGER.sql_session() as sql_session:
         yield sql_session
 
 
 async def get_redis() -> redis.Redis:
-    return redis_manager.client
+    return REDIS_MANGER.client
 
 
 async def get_client_ip(

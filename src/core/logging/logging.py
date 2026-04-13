@@ -2,7 +2,7 @@ import logging
 
 import structlog
 
-from src.core.logging.constants import (
+from src.core.constants import (
     DEV_CHAIN,
     FOREIGN_PRE_CHAIN,
     LOGGERS_TO_CLEAR,

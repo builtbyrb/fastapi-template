@@ -1,4 +1,4 @@
-from src.users.domain import (
+from src.users.domain.domain import (
     create_user_dict,
     update_user_dict,
     validate_user_unique_fields,

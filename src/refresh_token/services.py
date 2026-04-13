@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from src.refresh_token.domain import (
+from src.refresh_token.domain.domain import (
     create_refresh_token_dict,
     update_refresh_token_dict,
 )

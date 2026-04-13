@@ -1,10 +1,16 @@
+from typing import TYPE_CHECKING
+
 import pytest
-from httpx import AsyncClient
 
 from src.core.exceptions import ExceptionResponse
-from src.users.exceptions import UserAlreadyExistsErrorDetails
+from src.users.types.internal import UserAlreadyExistsErrorDetails
 from src.users.types.schemas import UserOut
-from tests.users.interfaces import CreateUserRequest
+
+
+if TYPE_CHECKING:
+    from httpx import AsyncClient
+
+    from tests.users.interfaces import CreateUserRequest
 
 
 @pytest.mark.usefixtures("db_session", "session_override")

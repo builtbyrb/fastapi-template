@@ -1,7 +1,10 @@
 from fastapi import APIRouter, status
 
-from src.core.database import redis_manager, sql_database_manager
-from src.core.domain import check_redis_connectivity, check_sql_db_connectivity
+from src.core.database import REDIS_MANGER, SQL_DATABASE_MANGER
+from src.core.domain.domain import (
+    check_redis_connectivity,
+    check_sql_db_connectivity,
+)
 from src.core.types.schemas import HealthStatus
 
 
@@ -16,8 +19,8 @@ health_router = APIRouter(prefix="/health", tags=["Health"])
     response_model=HealthStatus,
 )
 async def health() -> dict[str, bool]:
-    redis_status = await check_redis_connectivity(redis_manager.client)
-    sql_db_status = await check_sql_db_connectivity(sql_database_manager)
+    redis_status = await check_redis_connectivity(REDIS_MANGER.client)
+    sql_db_status = await check_sql_db_connectivity(SQL_DATABASE_MANGER)
     status = redis_status and sql_db_status
 
     return {

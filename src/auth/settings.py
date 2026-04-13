@@ -4,7 +4,7 @@ from src.auth.types.internal import TokenConfig
 from src.core.settings import BaseEnvSettings
 
 
-class AuthConfigEnv(BaseEnvSettings):
+class AuthSettingsEnv(BaseEnvSettings):
     ACCESS_TOKEN_SECRET_KEY: str = Field(default=...)
 
     ACCESS_TOKEN_ALGORITHM: str = Field(default="HS256")
@@ -19,4 +19,4 @@ class AuthConfigEnv(BaseEnvSettings):
         )
 
 
-AUTH_ENV = AuthConfigEnv()
+AUTH_ENV_SETTINGS = AuthSettingsEnv()

@@ -3,8 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import URL
 
 from src.core.constants import ENV_FILE
-from src.core.logging.constants import LogLevel
-from src.core.types.alias import Environment
+from src.core.types.alias import Environment, LogLevel
 
 
 class BaseEnvSettings(BaseSettings):

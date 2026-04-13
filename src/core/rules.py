@@ -6,7 +6,7 @@ from src.core.types.internal import (
     CustomValidationRuleData,
     CustomValidationRuleRegexData,
 )
-from src.core.validators import (
+from src.core.domain.validators import (
     contains_regex,
     make_custom_validator,
 )

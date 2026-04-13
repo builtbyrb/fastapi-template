@@ -1,9 +1,9 @@
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
-from src.auth.config.env import AUTH_ENV
-from src.core.utils import to_seconds
-from src.refresh_token.config.env import REFRESH_TOKEN_ENV
+from src.auth.settings import AUTH_ENV_SETTINGS
+from src.core.domain.utils import to_seconds
+from src.refresh_token.settings import REFRESH_TOKEN_ENV_SETTINGS
 
 
 if TYPE_CHECKING:
@@ -14,8 +14,10 @@ if TYPE_CHECKING:
 
 class RedisAuthAccessTokenBlacklistRepo:
     def __init__(self) -> None:
-        self.prefix = REFRESH_TOKEN_ENV.REFRESH_TOKEN_BLACKLIST_PREFIX
-        self.ex = to_seconds(timedelta(minutes=AUTH_ENV.ACCESS_TOKEN_EXPIRE_MINUTES))
+        self.prefix = REFRESH_TOKEN_ENV_SETTINGS.REFRESH_TOKEN_BLACKLIST_PREFIX
+        self.ex = to_seconds(
+            timedelta(minutes=AUTH_ENV_SETTINGS.ACCESS_TOKEN_EXPIRE_MINUTES)
+        )
 
     def append_prefix(self, jti: uuid.UUID) -> str:
         return f"{self.prefix}:{jti}"

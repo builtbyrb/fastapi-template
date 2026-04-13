@@ -14,7 +14,7 @@ from src.core.rules import (
 )
 
 
-class AppValidationRulesData(BaseModel):
+class AppValidationRulesDataExport(BaseModel):
     USER_AGENT_FORMAT: CustomValidationRuleData = USER_AGENT_FORMAT_RULE_DATA
     NO_SPACE: CustomValidationRuleData = NO_SPACE_RULE_DATA
     ONE_UPPERCASE: CustomValidationRuleRegexData = ONE_UPPERCASE_RULE_DATA
@@ -23,11 +23,4 @@ class AppValidationRulesData(BaseModel):
     ONE_SPECIAL_CHAR: CustomValidationRuleRegexData = ONE_SPECIAL_CHAR_RULE_DATA
 
 
-APP_VALIDATION_RULES_DATA = AppValidationRulesData()
-
-
-class AppExport(BaseModel):
-    validation_rules_data: AppValidationRulesData = APP_VALIDATION_RULES_DATA
-
-
-APP_EXPORT = AppExport()
+APP_VALIDATION_RULES_DATA_EXPORT = AppValidationRulesDataExport()

@@ -1,7 +1,7 @@
 import pytest
 
-from src.core.domain import resolve_ip_form_data
-from src.core.exceptions import AppClientIpNotFound
+from src.core.domain.domain import resolve_ip_form_data
+from src.core.domain.exceptions import ClientIpNotFound
 from src.core.types.alias import Environment
 from src.core.types.internal import ResolveIpFromDataParams
 from src.core.types.typings import ANY_IP_ADAPTER
@@ -98,5 +98,5 @@ def test_resolve_ip_form_data_cases(
 def test_resolve_ip_raises_app_client_ip_not_found_cases(
     params: ResolveIpFromDataParams,
 ) -> None:
-    with pytest.raises(AppClientIpNotFound):
+    with pytest.raises(ClientIpNotFound):
         resolve_ip_form_data(params)
