@@ -1,10 +1,14 @@
 import datetime
 from datetime import timedelta
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pydantic import EmailStr
 from pydantic.networks import IPvAnyAddressType
+
+
+if TYPE_CHECKING:
+    from src.core.types.alias import HealthValues
 
 
 def get_utc_datetime() -> datetime.datetime:
@@ -29,3 +33,9 @@ def remove_email_domain(val: EmailStr) -> EmailStr:
 
 def serialize_ip(val: IPvAnyAddressType) -> str:
     return val.compressed
+
+
+def bool_to_health(*, status: bool) -> HealthValues:
+    if not status:
+        return "unhealthy"
+    return "healthy"

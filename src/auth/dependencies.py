@@ -27,7 +27,7 @@ async def get_current_user(
     return await get_current_user_service(
         GetCurrentUserServiceParams(
             providers=DatabaseProviders(
-                session=providers.session, client=providers.client
+                sql_session=providers.sql_session, client=providers.client
             ),
             user_repo=SQL_ALCHEMY_USER_REPO,
             access_token_blacklist_repo=REDIS_AUTH_ACCESS_TOKEN_BLACKLIST_REPO,

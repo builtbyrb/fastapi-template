@@ -16,33 +16,33 @@ from src.users.types.schemas import (
 
 class SQLAlchemyUserRepo:
     @staticmethod
-    async def get_by_email(session: AsyncSession, getter: UserEmailGetter) -> User:
+    async def get_by_email(sql_session: AsyncSession, getter: UserEmailGetter) -> User:
         stmt = select(User).where(User.email == getter.email)
-        result = await session.scalar(stmt)
+        result = await sql_session.scalar(stmt)
         if not result:
             raise UserNotFoundException(getter)
         return result
 
     @staticmethod
     async def get_by_username(
-        session: AsyncSession, getter: UserUsernameGetter
+        sql_session: AsyncSession, getter: UserUsernameGetter
     ) -> User:
         stmt = select(User).where(User.username == getter.username)
-        result = await session.scalar(stmt)
+        result = await sql_session.scalar(stmt)
         if not result:
             raise UserNotFoundException(getter)
         return result
 
     @staticmethod
-    async def get_by_id(session: AsyncSession, getter: UserIdGetter) -> User:
-        result = await session.get(User, getter.id)
+    async def get_by_id(sql_session: AsyncSession, getter: UserIdGetter) -> User:
+        result = await sql_session.get(User, getter.id)
         if not result:
             raise UserNotFoundException(getter)
         return result
 
     @staticmethod
     async def get_by_unique_fields(
-        session: AsyncSession, unique_fields: UserUniqueFields
+        sql_session: AsyncSession, unique_fields: UserUniqueFields
     ) -> User | None:
         stmt = select(User).where(
             or_(
@@ -50,52 +50,52 @@ class SQLAlchemyUserRepo:
                 User.username == unique_fields.username,
             )
         )
-        return await session.scalar(stmt)
+        return await sql_session.scalar(stmt)
 
     @classmethod
-    async def get_model(cls, session: AsyncSession, getter: UserGetter) -> User:
+    async def get_model(cls, sql_session: AsyncSession, getter: UserGetter) -> User:
         if isinstance(getter, UserEmailGetter):
-            return await cls.get_by_email(session, getter)
+            return await cls.get_by_email(sql_session, getter)
         if isinstance(getter, UserUsernameGetter):
-            return await cls.get_by_username(session, getter)
+            return await cls.get_by_username(sql_session, getter)
         if isinstance(getter, UserIdGetter):
-            return await cls.get_by_id(session, getter)
+            return await cls.get_by_id(sql_session, getter)
         return None
 
     @staticmethod
-    async def insert_user(session: AsyncSession, values: dict[str, Any]) -> User:
+    async def insert_user(sql_session: AsyncSession, values: dict[str, Any]) -> User:
         stmt = insert(User).values(values).returning(User)
-        result = await session.execute(stmt)
+        result = await sql_session.execute(stmt)
         return result.scalar_one()
 
     @staticmethod
     async def update_user(
-        session: AsyncSession, getter: UserIdGetter, values: dict[str, Any]
+        sql_session: AsyncSession, getter: UserIdGetter, values: dict[str, Any]
     ) -> User:
         stmt = (
             update(User).where(User.id == getter.id).values(values).returning(User)
         )
-        user = await session.scalar(stmt)
+        user = await sql_session.scalar(stmt)
         if not user:
             raise UserNotFoundException(getter)
         return user
 
     @staticmethod
     async def update_user_password(
-        session: AsyncSession, getter: UserIdGetter, values: dict[str, Any]
+        sql_session: AsyncSession, getter: UserIdGetter, values: dict[str, Any]
     ) -> User:
         stmt = (
             update(User).where(User.id == getter.id).values(values).returning(User)
         )
-        user = await session.scalar(stmt)
+        user = await sql_session.scalar(stmt)
         if not user:
             raise UserNotFoundException(getter)
         return user
 
     @staticmethod
-    async def delete_user(session: AsyncSession, getter: UserIdGetter) -> User:
+    async def delete_user(sql_session: AsyncSession, getter: UserIdGetter) -> User:
         stmt = delete(User).where(User.id == getter.id).returning(User)
-        user = await session.scalar(stmt)
+        user = await sql_session.scalar(stmt)
         if not user:
             raise UserNotFoundException(getter)
         return user

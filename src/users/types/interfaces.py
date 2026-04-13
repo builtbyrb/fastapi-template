@@ -16,32 +16,32 @@ class UserUniqueFieldsPort(Protocol):
 
 
 class UserReadPort(Protocol):
-    async def get_model(self, session: Any, getter: UserGetter) -> User: ...
+    async def get_model(self, sql_session: Any, getter: UserGetter) -> User: ...
 
 
 class UserInsertPort(Protocol):
-    async def insert_user(self, session: Any, values: dict[str, Any]) -> User: ...
+    async def insert_user(self, sql_session: Any, values: dict[str, Any]) -> User: ...
 
 
 class UserUpdatePort(Protocol):
     async def update_user(
-        self, session: Any, getter: UserIdGetter, values: dict[str, Any]
+        self, sql_session: Any, getter: UserIdGetter, values: dict[str, Any]
     ) -> User: ...
 
 
 class UserUpdatePasswordPort(Protocol):
     async def update_user_password(
-        self, session: Any, getter: UserIdGetter, values: dict[str, Any]
+        self, sql_session: Any, getter: UserIdGetter, values: dict[str, Any]
     ) -> User: ...
 
 
 class UserDeletePort(Protocol):
-    async def delete_user(self, session: Any, getter: UserIdGetter) -> User: ...
+    async def delete_user(self, sql_session: Any, getter: UserIdGetter) -> User: ...
 
 
 class UserGetByUniqueFieldsPort(Protocol):
     async def get_by_unique_fields(
-        self, session: Any, unique_fields: UserUniqueFields
+        self, sql_session: Any, unique_fields: UserUniqueFields
     ) -> User | None: ...
 
 

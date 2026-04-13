@@ -26,7 +26,7 @@ class CustomValidationRuleRegexData(CustomValidationRuleData):
 
 @dataclass(frozen=True, kw_only=True)
 class DatabaseProviders:
-    session: AsyncSession
+    sql_session: AsyncSession
     client: redis.Redis
 
 

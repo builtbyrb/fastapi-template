@@ -17,7 +17,7 @@ from src.auth.types.internal import (
 from src.auth.types.schemas import (
     AccessToken,
 )
-from src.core.dependencies import DataBaseProvidersDep, SessionDep
+from src.core.dependencies import DataBaseProvidersDep, SqlSessionDep
 from src.core.types.internal import DatabaseProviders
 from src.core.types.schemas import RequestInfoInput
 from src.core.types.typings import RequestInfo
@@ -41,14 +41,14 @@ token_router = APIRouter(prefix="/token", tags=["Token"])
     },
 )
 async def login(
-    session: SessionDep,
+    sql_session: SqlSessionDep,
     form_data: FormDataDep,
     response: Response,
     req_info: Annotated[RequestInfoInput, Depends()],
 ) -> AccessToken:
     tokens = await user_login_service(
         UserLoginServiceParams(
-            session=session,
+            sql_session=sql_session,
             user_repo=SQL_ALCHEMY_USER_REPO,
             refresh_token_repo=SQL_ALCHEMY_REFRESH_TOKEN_REPO,
             req_info=RequestInfo(**req_info.model_dump()),
@@ -84,7 +84,7 @@ async def refresh(
     result = await user_refresh_service(
         UserRefreshTokenServiceParams(
             providers=DatabaseProviders(
-                session=providers.session, client=providers.client
+                sql_session=providers.sql_session, client=providers.client
             ),
             access_token_blacklist_repo=REDIS_AUTH_ACCESS_TOKEN_BLACKLIST_REPO,
             refresh_token_repo=SQL_ALCHEMY_REFRESH_TOKEN_REPO,

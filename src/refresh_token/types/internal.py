@@ -32,7 +32,7 @@ class SetRefreshTokenCookieParams:
 # region -------------------------- UserRefreshTokenCreate -------------------------
 @dataclass(frozen=True, kw_only=True)
 class RefreshTokenCreateServiceParams:
-    session: AsyncSession
+    sql_session: AsyncSession
     refresh_token_repo: RefreshTokenInsertPort
     create: RefreshTokenCreate
 
@@ -53,7 +53,7 @@ class RefreshTokenCreateInternal(BaseModel):
 # region -------------------------- UserRefreshTokenUpdate -------------------------
 @dataclass(frozen=True, kw_only=True)
 class RefreshTokenUpdateServiceParams:
-    session: AsyncSession
+    sql_session: AsyncSession
     refresh_token_repo: RefreshTokenUpdatePort
     getter: RefreshTokenJtiGetter
     update: RefreshTokenUpdate

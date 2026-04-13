@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, status
 
 from src.auth.config.exceptions import AUTH_CURRENT_USER_RESPONSE
 from src.auth.dependencies import CurrentActiveUserDep
-from src.core.dependencies import SessionDep
+from src.core.dependencies import SqlSessionDep
 from src.users.adapter import SQL_ALCHEMY_USER_REPO
 from src.users.exceptions import (
     USER_ALREADY_EXISTS_DEF,
@@ -40,11 +40,11 @@ user_router = APIRouter(prefix="/users", tags=["Users"])
     },
 )
 async def create_user(
-    user_create: Annotated[UserCreate, Body()], session: SessionDep
+    user_create: Annotated[UserCreate, Body()], sql_session: SqlSessionDep
 ) -> UserOut:
     return await user_create_service(
         UserCreateServiceParams(
-            session=session, user_repo=SQL_ALCHEMY_USER_REPO, create=user_create
+            sql_session=sql_session, user_repo=SQL_ALCHEMY_USER_REPO, create=user_create
         )
     )
 
@@ -61,11 +61,11 @@ async def create_user(
 async def update_user(
     current_user: CurrentActiveUserDep,
     user_update: Annotated[UserUpdate, Body()],
-    session: SessionDep,
+    sql_session: SqlSessionDep,
 ) -> UserOut:
     return await user_update_service(
         UserUpdateServiceParams(
-            session=session,
+            sql_session=sql_session,
             getter=UserIdGetter(id=current_user.id),
             user_repo=SQL_ALCHEMY_USER_REPO,
             update=user_update,
@@ -82,11 +82,11 @@ async def update_user(
     },
 )
 async def delete_user(
-    current_user: CurrentActiveUserDep, session: SessionDep
+    current_user: CurrentActiveUserDep, sql_session: SqlSessionDep
 ) -> UserOut:
     return await user_delete_service(
         UserDeleteServiceParams(
-            session=session,
+            sql_session=sql_session,
             getter=UserIdGetter(id=current_user.id),
             user_repo=SQL_ALCHEMY_USER_REPO,
         )

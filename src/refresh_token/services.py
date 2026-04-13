@@ -14,7 +14,7 @@ async def refresh_token_create_service(
 ) -> RefreshToken:
     create_dict = create_refresh_token_dict(params.create)
     return await params.refresh_token_repo.insert_refresh_token(
-        params.session, create_dict
+        params.sql_session, create_dict
     )
 
 
@@ -23,5 +23,5 @@ async def refresh_token_update_service(
 ) -> RefreshToken:
     update_dict = update_refresh_token_dict(params.update)
     return await params.refresh_token_repo.update_refresh_token(
-        params.session, params.getter, update_dict
+        params.sql_session, params.getter, update_dict
     )

@@ -68,7 +68,7 @@ class GetCurrentUserServiceParams:
 # region -------------------------- UserLoginService -------------------------
 @dataclass(frozen=True, kw_only=True)
 class AuthenticateUserServiceParams:
-    session: AsyncSession
+    sql_session: AsyncSession
     user_repo: UserReadPort
     email: UserEmail
     password: str
@@ -76,7 +76,7 @@ class AuthenticateUserServiceParams:
 
 @dataclass(frozen=True, kw_only=True)
 class UserLoginServiceParams:
-    session: AsyncSession
+    sql_session: AsyncSession
     user_repo: UserReadPort
     refresh_token_repo: RefreshTokenInsertPort
     req_info: RequestInfo

@@ -7,8 +7,8 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app import app as actual_app
-from src.core.database import session_manager
-from src.core.dependencies import get_db_session
+from src.core.database import sql_database_manager
+from src.core.dependencies import get_sql_db_session
 
 
 @pytest.fixture
@@ -26,25 +26,25 @@ async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
 
 
 @pytest.fixture
-async def transactional_session() -> AsyncIterator[AsyncSession]:
-    async with session_manager.connect() as connection:
+async def transactional_sql_session() -> AsyncIterator[AsyncSession]:
+    async with sql_database_manager.connect() as connection:
         try:
             async with AsyncSession(
                 bind=connection,
                 join_transaction_mode="create_savepoint",
-            ) as session:
-                yield session
+            ) as sql_session:
+                yield sql_session
         finally:
             await connection.rollback()
 
 
 @pytest.fixture
 async def db_session(
-    transactional_session: AsyncSession,
+    transactional_sql_session: AsyncSession,
 ) -> AsyncSession:
-    return transactional_session
+    return transactional_sql_session
 
 
 @pytest.fixture
 async def session_override(app: FastAPI, db_session: AsyncSession) -> None:
-    app.dependency_overrides[get_db_session] = lambda: db_session
+    app.dependency_overrides[get_sql_db_session] = lambda: db_session

@@ -40,7 +40,7 @@ class UserDupeFieldData:
 # region -------------------------- UserCreate -------------------------
 @dataclass(frozen=True, kw_only=True)
 class UserCreateServiceParams:
-    session: AsyncSession
+    sql_session: AsyncSession
     user_repo: UserRepoCreateUserPort
     create: UserCreate
 
@@ -64,7 +64,7 @@ class UserCreateInternal(BaseModel):
 
 @dataclass(frozen=True, kw_only=True)
 class UserUpdateServiceParams:
-    session: AsyncSession
+    sql_session: AsyncSession
     getter: UserIdGetter
     user_repo: UserRepoUpdateUserPort
     update: UserUpdate
@@ -72,6 +72,6 @@ class UserUpdateServiceParams:
 
 @dataclass(frozen=True, kw_only=True)
 class UserDeleteServiceParams:
-    session: AsyncSession
+    sql_session: AsyncSession
     getter: UserIdGetter
     user_repo: UserRepoDeleteUserPort

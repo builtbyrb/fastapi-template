@@ -6,6 +6,7 @@ import redis.asyncio as redis
 from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
+    AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
@@ -16,21 +17,43 @@ import src.users.models  # noqa: F401
 from src.core.settings import APP_ENV_SETTINGS
 
 
-class DatabaseSessionManager:
+class SqlDatabaseManager:
     def __init__(
         self, url: str | URL, engine_kwargs: dict[str, Any] | None = None
     ) -> None:
-        if engine_kwargs is None:
-            engine_kwargs = {}
-        self._engine = create_async_engine(url, **engine_kwargs)
-        self._sessionmaker = async_sessionmaker(bind=self._engine)
+        self.url = url
+        self.engine_kwargs = engine_kwargs or {}
+        self.exc_msg = (
+            "DatabaseSessionManager is not initialized. Call init() first."
+        )
+
+        self._engine: AsyncEngine | None = None
+        self._sql_session_maker: async_sessionmaker[AsyncSession] | None = None
+
+    @property
+    def engine(self) -> AsyncEngine:
+        if not self._engine:
+            raise RuntimeError(self.exc_msg)
+        return self._engine
+
+    @property
+    def sql_session_maker(self) -> async_sessionmaker[AsyncSession]:
+        if not self._sql_session_maker:
+            raise RuntimeError(self.exc_msg)
+        return self._sql_session_maker
+
+    async def init(self) -> None:
+        self._engine = create_async_engine(self.url, **self.engine_kwargs)
+        self._sql_session_maker = async_sessionmaker(bind=self._engine)
 
     async def close(self) -> None:
-        await self._engine.dispose()
+        await self.engine.dispose()
+        self._engine = None
+        self._sql_session_maker = None
 
     @contextlib.asynccontextmanager
     async def connect(self) -> AsyncIterator[AsyncConnection]:
-        async with self._engine.begin() as connection:
+        async with self.engine.begin() as connection:
             try:
                 yield connection
             except Exception:
@@ -38,24 +61,31 @@ class DatabaseSessionManager:
                 raise
 
     @contextlib.asynccontextmanager
-    async def session(self) -> AsyncIterator[AsyncSession]:
-        session = self._sessionmaker()
+    async def sql_session(self) -> AsyncIterator[AsyncSession]:
+        sql_session = self.sql_session_maker()
         try:
-            yield session
+            yield sql_session
         except Exception:
-            await session.rollback()
+            await sql_session.rollback()
             raise
         finally:
-            await session.close()
+            await sql_session.close()
 
 
 class RedisManager:
     def __init__(self, url: str) -> None:
         self.url = url
-        self.client: redis.Redis | None = None
+        self._client: redis.Redis | None = None
+        self.exc_msg = "RedisManager is not initialized. Call init() first."
+
+    @property
+    def client(self) -> redis.Redis:
+        if not self._client:
+            raise RuntimeError(self.exc_msg)
+        return self._client
 
     async def init(self) -> None:
-        self.client = redis.Redis.from_url(
+        self._client = redis.Redis.from_url(
             self.url,
             protocol=3,
             socket_timeout=5,
@@ -65,12 +95,11 @@ class RedisManager:
         )
 
     async def close(self) -> None:
-        if self.client:
-            await self.client.aclose()
-            self.client = None
+        await self.client.aclose()
+        self._client = None
 
 
-session_manager = DatabaseSessionManager(
+sql_database_manager = SqlDatabaseManager(
     APP_ENV_SETTINGS.pgbouncer_database_url,
     engine_kwargs={
         "pool_size": 50,

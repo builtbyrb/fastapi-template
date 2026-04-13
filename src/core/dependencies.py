@@ -5,24 +5,20 @@ import redis.asyncio as redis
 from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.database import redis_manager, session_manager
+from src.core.database import redis_manager, sql_database_manager
 from src.core.domain import resolve_ip_form_data
 from src.core.settings import APP_ENV_SETTINGS
 from src.core.types.alias import Environment, IpAnyAddress
 from src.core.types.internal import DatabaseProviders, ResolveIpFromDataParams
 
 
-async def get_db_session() -> AsyncIterator[AsyncSession]:
-    async with session_manager.session() as session:
-        yield session
+async def get_sql_db_session() -> AsyncIterator[AsyncSession]:
+    async with sql_database_manager.sql_session() as sql_session:
+        yield sql_session
 
 
 async def get_redis() -> redis.Redis:
-    client = redis_manager.client
-    if not client:
-        err_msg = "Redis client is not initialized"
-        raise RuntimeError(err_msg)
-    return client
+    return redis_manager.client
 
 
 async def get_client_ip(
@@ -43,14 +39,14 @@ async def get_client_ip(
 
 
 async def get_database_providers(
-    session: SessionDep,
+    sql_session: SqlSessionDep,
     client: RedisDep,
 ) -> DatabaseProviders:
-    return DatabaseProviders(session=session, client=client)
+    return DatabaseProviders(sql_session=sql_session, client=client)
 
 
 IpDep = Annotated[IpAnyAddress, Depends(get_client_ip)]
-SessionDep = Annotated[AsyncSession, Depends(get_db_session)]
+SqlSessionDep = Annotated[AsyncSession, Depends(get_sql_db_session)]
 RedisDep = Annotated[redis.Redis, Depends(get_redis)]
 DataBaseProvidersDep = Annotated[
     DatabaseProviders,

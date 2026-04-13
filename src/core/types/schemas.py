@@ -1,4 +1,4 @@
-from typing import Annotated, Literal
+from typing import Annotated
 
 from fastapi.params import Header
 from pydantic import (
@@ -6,6 +6,7 @@ from pydantic import (
 )
 
 from src.core.dependencies import IpDep
+from src.core.types.alias import Health
 from src.core.types.typings import UserAgent
 
 
@@ -21,4 +22,6 @@ class RequestInfoInput(BaseModel):
 
 
 class HealthStatus(BaseModel):
-    status: Literal["healthy"]
+    health: Health
+    redis_health: Health
+    sql_db_health: Health

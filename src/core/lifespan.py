@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 from src.core.database import (
     redis_manager,
-    session_manager,
+    sql_database_manager,
 )
 from src.core.exceptions import setup_async_uncaught_exception_handler
 
@@ -13,7 +13,8 @@ from src.core.exceptions import setup_async_uncaught_exception_handler
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     setup_async_uncaught_exception_handler()
+    await sql_database_manager.init()
     await redis_manager.init()
     yield
-    await session_manager.close()
+    await sql_database_manager.close()
     await redis_manager.close()

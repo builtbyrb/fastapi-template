@@ -51,7 +51,7 @@ async def get_current_user_service(params: GetCurrentUserServiceParams) -> UserO
         raise AuthInvalidTokenException
 
     user = await params.user_repo.get_model(
-        params.providers.session, UserEmailGetter(email=access_token_payload.sub)
+        params.providers.sql_session, UserEmailGetter(email=access_token_payload.sub)
     )
 
     return UserOut.model_validate(user)
@@ -66,7 +66,7 @@ async def authenticate_user_service(
 ) -> User:
     try:
         user = await params.user_repo.get_model(
-            params.session, UserEmailGetter(email=params.email)
+            params.sql_session, UserEmailGetter(email=params.email)
         )
     except UserNotFoundException:
         user = None
@@ -79,7 +79,7 @@ async def user_login_service(
 ) -> UsersTokens:
     user = await authenticate_user_service(
         AuthenticateUserServiceParams(
-            session=params.session,
+            sql_session=params.sql_session,
             user_repo=params.user_repo,
             email=params.form_data.username,
             password=params.form_data.password,
@@ -90,7 +90,7 @@ async def user_login_service(
 
     await refresh_token_create_service(
         RefreshTokenCreateServiceParams(
-            session=params.session,
+            sql_session=params.sql_session,
             refresh_token_repo=params.refresh_token_repo,
             create=RefreshTokenCreate(
                 jti=result.refresh_token_data_create.jti,
@@ -101,7 +101,7 @@ async def user_login_service(
         )
     )
 
-    await params.session.commit()
+    await params.sql_session.commit()
 
     return result
 
@@ -113,25 +113,25 @@ async def user_login_service(
 async def revoke_user_session_service(
     params: RevokeUserSessionServiceParams,
 ) -> RefreshToken:
-    session = params.providers.session
+    sql_session = params.providers.sql_session
 
     await params.access_token_blacklist_repo.blacklist_token(
         params.providers.client, params.getter.jti
     )
 
     return await params.refresh_token_repo.delete_refresh_token(
-        session, params.getter
+        sql_session, params.getter
     )
 
 
 async def revoke_all_user_session_service(
     params: RevokeAllUserSessionServiceParams,
 ) -> list[RefreshToken]:
-    session = params.providers.session
+    sql_session = params.providers.sql_session
 
     refresh_tokens = (
         await params.refresh_token_repo.delete_all_refresh_token_by_user_id(
-            session, params.getter
+            sql_session, params.getter
         )
     )
 
@@ -149,7 +149,7 @@ async def revoke_all_user_session_service(
 async def user_refresh_service(
     params: UserRefreshTokenServiceParams,
 ) -> UsersTokens:
-    session = params.providers.session
+    sql_session = params.providers.sql_session
     client = params.providers.client
 
     refresh_token_data = decode_token(
@@ -158,13 +158,13 @@ async def user_refresh_service(
         )
     )
     user = await params.user_repo.get_model(
-        session, UserEmailGetter(email=refresh_token_data.sub)
+        sql_session, UserEmailGetter(email=refresh_token_data.sub)
     )
 
     verify_disabled_user(user)
     try:
         current_user_refresh_token = await params.refresh_token_repo.get_by_jti(
-            session, RefreshTokenJtiGetter(jti=refresh_token_data.jti)
+            sql_session, RefreshTokenJtiGetter(jti=refresh_token_data.jti)
         )
     except RefreshTokenNotFoundException as err:
         raise AuthInvalidTokenException from err
@@ -182,7 +182,7 @@ async def user_refresh_service(
             )
         )
 
-        await session.commit()
+        await sql_session.commit()
 
         raise AuthInvalidTokenException
 
@@ -202,7 +202,7 @@ async def user_refresh_service(
 
     await refresh_token_create_service(
         RefreshTokenCreateServiceParams(
-            session=session,
+            sql_session=sql_session,
             refresh_token_repo=params.refresh_token_repo,
             create=RefreshTokenCreate(
                 jti=result.refresh_token_data_create.jti,
@@ -213,7 +213,7 @@ async def user_refresh_service(
         )
     )
 
-    await session.commit()
+    await sql_session.commit()
 
     return result
 

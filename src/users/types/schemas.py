@@ -12,7 +12,7 @@ from pydantic_core import Url
 
 from src.core.rules import CustomValidationRule
 from src.core.utils import get_utc_datetime, remove_email_domain
-from src.core.validators import contains_value
+from src.core.validators import contains_no_value
 from src.users.constants import USER_PASSWORD_EMAIL_RULE_DATA, UserRole
 from src.users.types.typings import (
     UserEmail,
@@ -73,7 +73,7 @@ class UserEmailPassword(BaseModel):
     def validator(self) -> Self:
         return CustomValidationRule[Self](
             data=USER_PASSWORD_EMAIL_RULE_DATA,
-            predicate_fn=lambda val: contains_value(
+            predicate_fn=lambda val: contains_no_value(
                 val.password, remove_email_domain(val.email)
             ),
         ).validator(self)

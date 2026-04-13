@@ -10,8 +10,8 @@ def contains_no_space(val: str) -> bool:
     return " " not in val
 
 
-def contains_value(val: str, search: str) -> bool:
-    return search not in val
+def contains_no_value(search: str, val: str) -> bool:
+    return search.lower() not in val.lower()
 
 
 def contains_regex(val: str, regex: str) -> bool:
@@ -20,10 +20,10 @@ def contains_regex(val: str, regex: str) -> bool:
 
 def is_valid_ua(val: str) -> bool:
     user_agent = parse(val)
-    is_unknown = (
-        user_agent.get_browser() == "Other" and user_agent.get_os() == "Other"
+    return (
+        not (user_agent.get_browser() == "Other" and user_agent.get_os() == "Other")
+        or user_agent.is_bot
     )
-    return not user_agent.is_bot or is_unknown
 
 
 def make_custom_validator[TVal](
