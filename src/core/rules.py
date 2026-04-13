@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING, LiteralString, cast
 
 from pydantic_core import PydanticCustomError
 
-from src.core.types.internal import (
-    CustomValidationRuleData,
-    CustomValidationRuleRegexData,
-)
 from src.core.domain.validators import (
     contains_regex,
     make_custom_validator,
+)
+from src.core.types.internal import (
+    CustomValidationRuleData,
+    CustomValidationRuleRegexData,
 )
 
 

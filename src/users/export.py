@@ -17,17 +17,17 @@ from src.users.types.alias import UserRole
 
 
 # region -------------------------- Exceptions -------------------------
-class UserExceptions(BaseModel):
+class UserExceptionsExport(BaseModel):
     USER_ALREADY_EXISTS: HTTPExceptionData = USER_ALREADY_EXISTS_EXC_DATA
     USER_NOT_FOUND: HTTPExceptionData = USER_NOT_FOUND_EXC_DATA
 
 
-USER_EXCEPTIONS = UserExceptions()
+USER_EXCEPTIONS_EXPORT = UserExceptionsExport()
 # endregion
 
 
 # region -------------------------- Constants -------------------------
-class UserLengthConstants(BaseModel):
+class UserLengthConstantsExport(BaseModel):
     FIRST_NAME: LengthRuleData = USER_FIRST_NAME_LENGTH_RULE_DATA
     LAST_NAME: LengthRuleData = USER_LAST_NAME_LENGTH_RULE_DATA
     EMAIL: LengthRuleData = USER_EMAIL_LENGTH_RULE_DATA
@@ -35,21 +35,21 @@ class UserLengthConstants(BaseModel):
     PASSWORD: LengthRuleData = USER_PASSWORD_LENGTH_RULE_DATA
 
 
-USER_LENGTH_CONSTANTS = UserLengthConstants()
+USER_LENGTH_CONSTANTS_EXPORT = UserLengthConstantsExport()
 
 
-class UserConstants(BaseModel):
-    LENGTH: UserLengthConstants = USER_LENGTH_CONSTANTS
+class UserConstantsExport(BaseModel):
+    LENGTH: UserLengthConstantsExport = USER_LENGTH_CONSTANTS_EXPORT
     USER_ROLE: dict[str, Any] = enum_do_dict(UserRole)
 
 
-USER_CONSTANTS = UserConstants()
+USER_CONSTANTS_EXPORT = UserConstantsExport()
 # endregion
 
 
-class UserConfig(BaseModel):
-    constants: UserConstants = USER_CONSTANTS
-    exceptions: UserExceptions = USER_EXCEPTIONS
+class UserExport(BaseModel):
+    constants: UserConstantsExport = USER_CONSTANTS_EXPORT
+    exceptions: UserExceptionsExport = USER_EXCEPTIONS_EXPORT
 
 
-USER_CONFIG = UserConfig()
+USER_EXPORT = UserExport()
