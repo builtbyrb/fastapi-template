@@ -9,16 +9,12 @@ from src.core.domain.exceptions import (
     ClientIpNotFound,
 )
 from src.core.types.alias import Environment, IpAnyAddress
-from src.core.types.internal import ExceptionResponse
 from src.core.types.typings import ANY_IP_ADAPTER
 
 
 if TYPE_CHECKING:
-    from alembic.environment import Any
-
     from src.core.database import SqlDatabaseManager
     from src.core.types.internal import (
-        HTTPExceptionData,
         ResolveIpFromDataParams,
     )
 
@@ -59,6 +55,3 @@ async def check_sql_db_connectivity(manager: SqlDatabaseManager) -> bool:
         return False
     else:
         return True
-
-
-
