@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel, Field
 
 from src.core.domain.utils import get_utc_datetime, to_timedelta
-from src.core.types.internal import HTTPExceptionDetails
+from src.core.types.internal import (
+    HTTPExceptionDetailsContext,
+)
 from src.refresh_token.settings import REFRESH_TOKEN_ENV_SETTINGS
 
 
@@ -53,7 +55,6 @@ class RefreshTokenUpdateServiceParams:
     update: RefreshTokenUpdate
 
 
-
 @dataclass(frozen=True, kw_only=True)
 class SetRefreshTokenCookieParams:
     response: Response
@@ -61,5 +62,5 @@ class SetRefreshTokenCookieParams:
     max_age: int
 
 
-class RefreshTokenExceptionDetails(HTTPExceptionDetails):
+class RefreshTokenExceptionDetailsContext(HTTPExceptionDetailsContext):
     refresh_token: str

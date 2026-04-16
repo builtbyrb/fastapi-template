@@ -1,7 +1,13 @@
+from typing import TYPE_CHECKING
+
 from src.core.exceptions import (
     WithHttpException,
 )
 from src.refresh_token.constants import REFRESH_TOKEN_NOT_FOUND_EXC_DATA
+
+
+if TYPE_CHECKING:
+    from src.refresh_token.types.internal import RefreshTokenExceptionDetailsContext
 
 
 class RefreshTokenException(WithHttpException):
@@ -9,10 +15,9 @@ class RefreshTokenException(WithHttpException):
 
 
 class RefreshTokenNotFoundException(RefreshTokenException):
-    def __init__(self, refresh_token: str) -> None:
-        self.refresh_token = refresh_token
-
+    def __init__(self, context: RefreshTokenExceptionDetailsContext) -> None:
         super().__init__(
-            f"Refresh Token {refresh_token} not found",
-            REFRESH_TOKEN_NOT_FOUND_EXC_DATA,
+            message=f"Refresh Token {context.refresh_token} not found",
+            http_exception_data=REFRESH_TOKEN_NOT_FOUND_EXC_DATA,
+            context=context,
         )

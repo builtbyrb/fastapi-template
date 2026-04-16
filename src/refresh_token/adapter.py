@@ -4,6 +4,7 @@ from sqlalchemy import delete, insert, select, update
 
 from src.refresh_token.domain.exceptions import RefreshTokenNotFoundException
 from src.refresh_token.models import RefreshToken
+from src.refresh_token.types.internal import RefreshTokenExceptionDetailsContext
 
 
 if TYPE_CHECKING:
@@ -23,7 +24,9 @@ class SqlAlchemyRefreshTokenRepo:
         stmt = select(RefreshToken).where(RefreshToken.jti == getter.jti)
         result = await sql_session.scalar(stmt)
         if not result:
-            raise RefreshTokenNotFoundException(getter.identifier)
+            raise RefreshTokenNotFoundException(
+                RefreshTokenExceptionDetailsContext(refresh_token=getter.identifier)
+            )
         return result
 
     @staticmethod
@@ -34,7 +37,9 @@ class SqlAlchemyRefreshTokenRepo:
         result = await sql_session.execute(stmt)
         refresh_tokens = result.scalars().all()
         if not refresh_tokens:
-            raise RefreshTokenNotFoundException(getter.identifier)
+            raise RefreshTokenNotFoundException(
+                RefreshTokenExceptionDetailsContext(refresh_token=getter.identifier)
+            )
         return list(refresh_tokens)
 
     @staticmethod
@@ -59,7 +64,9 @@ class SqlAlchemyRefreshTokenRepo:
         )
         refresh_token = await sql_session.scalar(stmt)
         if not refresh_token:
-            raise RefreshTokenNotFoundException(getter.identifier)
+            raise RefreshTokenNotFoundException(
+                RefreshTokenExceptionDetailsContext(refresh_token=getter.identifier)
+            )
         return refresh_token
 
     @staticmethod
@@ -73,7 +80,9 @@ class SqlAlchemyRefreshTokenRepo:
         )
         refresh_token = await sql_session.scalar(stmt)
         if not refresh_token:
-            raise RefreshTokenNotFoundException(getter.identifier)
+            raise RefreshTokenNotFoundException(
+                RefreshTokenExceptionDetailsContext(refresh_token=getter.identifier)
+            )
         return refresh_token
 
     @staticmethod

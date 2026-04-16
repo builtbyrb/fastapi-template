@@ -6,8 +6,10 @@ from src.users.domain.exceptions import (
     UserTooManyRefreshTokenException,
 )
 from src.users.types.internal import (
+    UserAlreadyExistsExceptionDetailsContext,
     UserCreateInternal,
     UserDupeFieldData,
+    UserExceptionDetailsContext,
     UserUniqueFields,
 )
 from src.users.types.schemas import (
@@ -69,10 +71,14 @@ def validate_user_unique_fields(
     if dupe_fields:
         dupe_field = dupe_fields[0]
         raise UserAlreadyExistsException(
-            user.identifier, dupe_field.name, dupe_field.value
+            UserAlreadyExistsExceptionDetailsContext(
+                user=user.identifier, field=dupe_field.name, value=dupe_field.value
+            )
         )
 
 
 def verify_user_token_limit(user: User, token_limit: int) -> None:
     if len(user.refresh_tokens) >= token_limit:
-        raise UserTooManyRefreshTokenException(user.identifier)
+        raise UserTooManyRefreshTokenException(
+            UserExceptionDetailsContext(user=user.identifier)
+        )

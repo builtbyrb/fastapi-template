@@ -20,6 +20,7 @@ from src.auth.types.internal import (
 from src.auth.types.schemas import TokenData, TokenDataCreate, UsersTokens
 from src.core.domain.utils import get_utc_datetime, to_timedelta
 from src.refresh_token.settings import REFRESH_TOKEN_ENV_SETTINGS
+from src.users.types.internal import UserExceptionDetailsContext
 
 
 if TYPE_CHECKING:
@@ -58,14 +59,18 @@ def authenticate_user(user: User | None, password: str) -> User:
     if not correct_password:
         raise AuthIncorrectCredentialsException
     if user.disabled:
-        raise AuthUserDisabledException(user.identifier)
+        raise AuthUserDisabledException(
+            UserExceptionDetailsContext(user=user.identifier)
+        )
 
     return user
 
 
 def verify_disabled_user(user: UserOut | User) -> None:
     if user.disabled:
-        raise AuthUserDisabledException(user.identifier)
+        raise AuthUserDisabledException(
+            UserExceptionDetailsContext(user=user.identifier)
+        )
 
 
 def create_user_tokens(user: User) -> UsersTokens:

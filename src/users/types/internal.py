@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from pydantic_core import Url
 
 from src.core.domain.utils import get_utc_datetime
-from src.core.types.internal import HTTPExceptionDetails
+from src.core.types.internal import HTTPExceptionDetailsContext
 from src.users.types.alias import UserRole
 
 
@@ -78,10 +78,10 @@ class UserDeleteServiceParams:
     user_repo: UserRepoDeleteUserPort
 
 
-class UserExceptionDetails(HTTPExceptionDetails):
+class UserExceptionDetailsContext(HTTPExceptionDetailsContext):
     user: str
 
 
-class UserAlreadyExistsErrorDetails(UserExceptionDetails):
+class UserAlreadyExistsExceptionDetailsContext(UserExceptionDetailsContext):
     field: str
     value: str

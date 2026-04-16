@@ -6,8 +6,8 @@ from src.core.types.internal import (
     LengthRuleData,
 )
 from src.users.types.internal import (
-    UserAlreadyExistsErrorDetails,
-    UserExceptionDetails,
+    UserAlreadyExistsExceptionDetailsContext,
+    UserExceptionDetailsContext,
 )
 
 
@@ -31,20 +31,20 @@ USER_ALREADY_EXISTS_EXC_DATA = HTTPExceptionData(
     exc_code="users/already-exists",
     status_code=status.HTTP_409_CONFLICT,
     description="User already exists",
-    details_model=UserAlreadyExistsErrorDetails,
+    context_model=UserAlreadyExistsExceptionDetailsContext,
 )
 
 USER_NOT_FOUND_EXC_DATA = HTTPExceptionData(
     exc_code="users/not-found",
     status_code=status.HTTP_404_NOT_FOUND,
     description="User not found",
-    details_model=UserExceptionDetails,
+    context_model=UserExceptionDetailsContext,
 )
 
 USER_TOO_MANY_REFRESH_TOKEN_EXC_DATA = HTTPExceptionData(
     exc_code="users/too-many-token",
     status_code=status.HTTP_400_BAD_REQUEST,
     description="Too much refresh token",
-    details_model=UserExceptionDetails,
+    context_model=UserExceptionDetailsContext,
 )
 # endregion

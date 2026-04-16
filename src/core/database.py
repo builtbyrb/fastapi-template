@@ -14,6 +14,7 @@ import src.refresh_token.models
 import src.users.models  # noqa: F401
 from src.core.domain.exceptions import ResourceNotInitialized
 from src.core.settings import APP_ENV_SETTINGS
+from src.core.types.internal import ResourceNotInitializedDetailsContext
 
 
 if TYPE_CHECKING:
@@ -34,13 +35,21 @@ class SqlDatabaseManager:
     @property
     def engine(self) -> AsyncEngine:
         if not self._engine:
-            raise ResourceNotInitialized(self.__class__.__name__)
+            raise ResourceNotInitialized(
+                ResourceNotInitializedDetailsContext(
+                    resource_name=self.__class__.__name__
+                )
+            )
         return self._engine
 
     @property
     def sql_session_maker(self) -> async_sessionmaker[AsyncSession]:
         if not self._sql_session_maker:
-            raise ResourceNotInitialized(self.__class__.__name__)
+            raise ResourceNotInitialized(
+                ResourceNotInitializedDetailsContext(
+                    resource_name=self.__class__.__name__
+                )
+            )
         return self._sql_session_maker
 
     async def init(self) -> None:
@@ -82,7 +91,11 @@ class RedisManager:
     @property
     def client(self) -> redis.Redis:
         if not self._client:
-            raise ResourceNotInitialized(self.__class__.__name__)
+            raise ResourceNotInitialized(
+                ResourceNotInitializedDetailsContext(
+                    resource_name=self.__class__.__name__
+                )
+            )
         return self._client
 
     async def init(self) -> None:

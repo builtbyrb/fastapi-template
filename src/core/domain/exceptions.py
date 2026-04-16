@@ -7,7 +7,11 @@ from src.core.constants import (
 from src.core.exceptions import (
     WithHttpException,
 )
-from src.core.types.internal import ExceptionResponse, HTTPExceptionData
+from src.core.types.internal import (
+    ExceptionResponse,
+    HTTPExceptionData,
+    ResourceNotInitializedDetailsContext,
+)
 
 
 if TYPE_CHECKING:
@@ -17,17 +21,17 @@ if TYPE_CHECKING:
 class ClientIpNotFound(WithHttpException):
     def __init__(self) -> None:
         super().__init__(
-            "Client IP could not be determined", CLIENT_IP_NOT_FOUND_EXC_DATA
+            message="Client IP could not be determined",
+            http_exception_data=CLIENT_IP_NOT_FOUND_EXC_DATA,
         )
 
 
 class ResourceNotInitialized(WithHttpException):
-    def __init__(self, resource_name: str) -> None:
-        self.resource_name = resource_name
-
+    def __init__(self, context: ResourceNotInitializedDetailsContext) -> None:
         super().__init__(
-            f"Resource {resource_name} was not initialized",
-            RESOURCE_NOT_INITIALIZED_EXC_DATA,
+            message=f"Resource {context.resource_name} was not initialized",
+            http_exception_data=RESOURCE_NOT_INITIALIZED_EXC_DATA,
+            context=context,
         )
 
 

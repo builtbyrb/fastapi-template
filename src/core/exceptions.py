@@ -9,6 +9,9 @@ from fastapi.responses import JSONResponse
 from src.core.types.internal import (
     ExceptionResponse,
     HTTPExceptionData,
+    HTTPExceptionDetails,
+    HTTPExceptionDetailsContext,
+    HTTPExceptionDetailsWithContext,
 )
 
 
@@ -27,16 +30,39 @@ class AppException(Exception):
 class WithHttpException(AppException):
     def __init__(
         self,
+        *,
         message: str,
         http_exception_data: HTTPExceptionData,
+        context: HTTPExceptionDetailsContext | None = None,
     ) -> None:
         self.http_exception_data = http_exception_data
-        self.details = self.http_exception_data.details_model(
-            exc_code=self.http_exception_data.exc_code,
-            message=message,
-            **self.__dict__,
+        self.details = http_exception_data.details_model.model_validate(
+            {
+                "exc_code": self.http_exception_data.exc_code,
+                "message": message,
+                "context": context,
+            }
         )
         super().__init__(message)
+
+    @property
+    def http_exception_details(
+        self,
+    ) -> HTTPExceptionDetails | HTTPExceptionDetailsWithContext:
+        details = HTTPExceptionDetails(
+            exc_code=self.http_exception_data.exc_code,
+            message=self.message,
+        )
+
+        if self.http_exception_data.context_model:
+            return HTTPExceptionDetailsWithContext[
+                self.http_exception_data.context_model
+            ](
+                **details.model_dump(),
+                context=self.http_exception_data.context_model(),
+            )
+
+        return details
 
     @property
     def headers_dict(

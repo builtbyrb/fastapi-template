@@ -36,7 +36,17 @@ class HTTPExceptionDetails(BaseModel):
     message: str
 
 
-class ResourceNotInitializedDetails(HTTPExceptionDetails):
+class HTTPExceptionDetailsContext(BaseModel):
+    pass
+
+
+class HTTPExceptionDetailsWithContext[T: HTTPExceptionDetailsContext](
+    HTTPExceptionDetails
+):
+    context: T
+
+
+class ResourceNotInitializedDetailsContext(HTTPExceptionDetailsContext):
     resource_name: str
 
 
@@ -55,7 +65,13 @@ class HTTPExceptionData(BaseModel):
     description: str
     status_code: int
     headers: dict[str, HTTPExceptionHeaderData] | None = None
-    details_model: type[HTTPExceptionDetails] = HTTPExceptionDetails
+    context_model: type[HTTPExceptionDetailsContext] | None = None
+
+    @property
+    def details_model(self) -> type[HTTPExceptionDetails]:
+        if self.context_model:
+            return HTTPExceptionDetailsWithContext[self.context_model]
+        return HTTPExceptionDetails
 
 
 @dataclass(frozen=True, kw_only=True)

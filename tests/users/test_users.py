@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING
 import pytest
 
 from src.core.exceptions import ExceptionResponse
-from src.users.types.internal import UserAlreadyExistsErrorDetails
+from src.core.types.internal import HTTPExceptionDetailsWithContext
+from src.users.types.internal import UserAlreadyExistsExceptionDetailsContext
 from src.users.types.schemas import UserOut
 
 
@@ -52,13 +53,13 @@ async def test_register_with_dupe_email(
 
     response = await client.post("users/register", json=user_register)
     assert response.status_code == 409
-    response = ExceptionResponse[UserAlreadyExistsErrorDetails].model_validate(
-        response.json()
-    )
+    response = ExceptionResponse[
+        HTTPExceptionDetailsWithContext[UserAlreadyExistsExceptionDetailsContext]
+    ].model_validate(response.json())
 
     assert response.detail.exc_code == "users/already-exists"
-    assert response.detail.field == "email"
-    assert response.detail.value == user_register["email"]
+    assert response.detail.context.field == "email"
+    assert response.detail.context.value == user_register["email"]
 
 
 @pytest.mark.usefixtures("client", "db_session", "session_override")
@@ -73,10 +74,10 @@ async def test_register_with_dupe_username(
 
     response = await client.post("users/register", json=user_register)
     assert response.status_code == 409
-    response = ExceptionResponse[UserAlreadyExistsErrorDetails].model_validate(
-        response.json()
-    )
+    response = ExceptionResponse[
+        HTTPExceptionDetailsWithContext[UserAlreadyExistsExceptionDetailsContext]
+    ].model_validate(response.json())
 
     assert response.detail.exc_code == "users/already-exists"
-    assert response.detail.field == "username"
-    assert response.detail.value == user_register["username"]
+    assert response.detail.context.field == "username"
+    assert response.detail.context.value == user_register["username"]

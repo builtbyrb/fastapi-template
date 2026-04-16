@@ -5,7 +5,7 @@ from src.auth.settings import AUTH_ENV_SETTINGS
 from src.core.domain.exceptions import to_response
 from src.core.types.internal import HTTPExceptionData, HTTPExceptionHeaderData
 from src.users.constants import USER_NOT_FOUND_EXC_DATA
-from src.users.types.internal import UserExceptionDetails
+from src.users.types.internal import UserExceptionDetailsContext
 
 
 DUMMY_HASH = password_hash.hash("dummyPassword")
@@ -40,7 +40,7 @@ USER_DISABLED_DATA = HTTPExceptionData(
     exc_code="auth/user-disabled",
     status_code=status.HTTP_400_BAD_REQUEST,
     description="Inactive user",
-    details_model=UserExceptionDetails,
+    context_model=UserExceptionDetailsContext,
 )
 
 

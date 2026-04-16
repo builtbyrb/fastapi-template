@@ -10,7 +10,7 @@ from src.core.types.internal import (
     CustomValidationRuleData,
     CustomValidationRuleRegexData,
     HTTPExceptionData,
-    ResourceNotInitializedDetails,
+    ResourceNotInitializedDetailsContext,
 )
 
 
@@ -80,7 +80,7 @@ RESOURCE_NOT_INITIALIZED_EXC_DATA = HTTPExceptionData(
     exc_code="resource-not-initialized",
     status_code=status.HTTP_400_BAD_REQUEST,
     description="resource in the code was not initialized",
-    details_model=ResourceNotInitializedDetails,
+    context_model=ResourceNotInitializedDetailsContext,
 )
 # endregion
 
