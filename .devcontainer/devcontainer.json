@@ -17,7 +17,17 @@
   "customizations": {
     "vscode": {
       "settings": {
-        // --- Interpreter & Analysis ---
+        // General Editor & Window Settings
+        "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+        "editor.fontLigatures": true,
+        "editor.formatOnSave": true,
+        "files.autoSave": "afterDelay",
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/.ruff_cache": true
+        },
+        "files.eol": "\n",
+        // Python Analysis / Linter
         "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
         "python.venvPath": ".",
         "python.languageServer": "Pylance",
@@ -26,38 +36,97 @@
         "python.analysis.autoImportCompletions": true,
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.analysis.enablePytestSupport": true,
-        // --- Formatting & Linting ---
+        "python.analysis.ignore": [
+          "**/venv",
+          "**/.venv",
+          "**/env",
+          "**/.env",
+          "**/node_modules",
+          "**/__pycache__",
+          "**/.*"
+        ],
+        // Language Specific Formatters & Linters
         "[python]": {
           "editor.defaultFormatter": "charliermarsh.ruff",
           "editor.formatOnSave": true,
           "editor.codeActionsOnSave": {
-            "source.organizeImports": "explicit",
+            "source.organizeImports.ruff": "explicit",
             "source.fixAll.ruff": "explicit"
           }
         },
-        "ruff.nativeServer": true,
-        "ruff.configurationPreference": "filesystemFirst",
-        // --- Hadolint (Docker Linter) ---
-        "hadolint.hadolintPath": "/usr/local/bin/hadolint",
-        "hadolint.cliOptions": [
-          "--no-color"
-        ],
-        "hadolint.maxNumberOfProblems": 100,
-        "hadolint.outputLevel": "warning",
-        // --- Interface & Comfort ---
-        "files.eol": "\n",
-        "files.autoSave": "afterDelay",
-        "files.exclude": {
-          "**/__pycache__": true,
-          "**/.ruff_cache": true,
-          "**/.venv": false
-        },
         "[json]": {
-          "editor.tabSize": 2
+          "editor.defaultFormatter": "vscode.json-language-features",
+          "editor.formatOnSave": true,
+          "editor.tabSize": 2,
+          "editor.insertSpaces": true,
+          "editor.codeActionsOnSave": {
+            "source.formatDocument": "explicit"
+          }
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "vscode.json-language-features",
+          "editor.formatOnSave": true,
+          "editor.tabSize": 2,
+          "editor.insertSpaces": true,
+          "editor.codeActionsOnSave": {
+            "source.formatDocument": "explicit"
+          }
+        },
+        "[markdown]": {
+          "editor.defaultFormatter": "vscode.markdown-language-features",
+          "editor.formatOnSave": true,
+          "editor.tabSize": 2,
+          "editor.insertSpaces": true,
+          "editor.codeActionsOnSave": {
+            "source.formatDocument": "explicit"
+          }
         },
         "[yaml]": {
-          "editor.tabSize": 2
-        }
+          "editor.defaultFormatter": "redhat.vscode-yaml",
+          "editor.insertSpaces": true,
+          "editor.tabSize": 2,
+          "editor.formatOnSave": true
+        },
+        "[dockerfile]": {
+          "editor.defaultFormatter": "ms-azuretools.vscode-containers",
+          "editor.formatOnSave": true
+        },
+        "[dockercompose]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml",
+          "editor.insertSpaces": true,
+          "editor.tabSize": 2,
+          "editor.autoIndent": "advanced",
+          "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+          }
+        },
+        "[toml]": {
+          "editor.defaultFormatter": "tamasfe.even-better-toml",
+          "editor.formatOnSave": true
+        },
+        "[github-actions-workflow]": {
+          "editor.defaultFormatter": "github.vscode-github-actions",
+          "editor.insertSpaces": true,
+          "editor.tabSize": 2,
+          "editor.formatOnSave": true
+        },
+        // Extensions / Plugins
+        "ruff.nativeServer": true,
+        "ruff.configurationPreference": "filesystemFirst",
+        "redhat.telemetry.enabled": false,
+        "cSpell.language": "en,fr",
+        "cSpell.ignorePaths": [
+          "package-lock.json",
+          "node_modules",
+          "vscode-extension",
+          ".git/{info,lfs,logs,refs,objects}/**",
+          ".git/{index,*refs,*HEAD}",
+          ".vscode",
+          ".vscode-insiders"
+        ],
+        "remote.autoForwardPortsSource": "hybrid"
       },
       "extensions": [
         "streetsidesoftware.code-spell-checker",
@@ -72,16 +141,18 @@
         "ms-python.debugpy",
         "ms-python.vscode-python-envs",
         "charliermarsh.ruff",
-        "tamasfe.even-better-toml"
+        "tamasfe.even-better-toml",
+        "christian-kohler.path-intellisense",
+        "streetsidesoftware.code-spell-checker-french"
       ]
-    }
-  },
-  "remoteEnv": {
-    "PROJECT_NAME": "Python + uv",
-    "PYTHON_VERSION": "3.14",
-    "UV_INIT_BARE": "false",
-    "INSTALL_IPYKERNEL": "false"
-  },
-  "postCreateCommand": "make post-create",
-  "mounts": []
+    },
+    "remoteEnv": {
+      "PROJECT_NAME": "Python + uv",
+      "PYTHON_VERSION": "3.14",
+      "UV_INIT_BARE": "false",
+      "INSTALL_IPYKERNEL": "false"
+    },
+    "postCreateCommand": "make post-create",
+    "mounts": []
+  }
 }
