@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from alembic.environment import Any
 
 
-class ClientIpNotFound(WithHttpException):
+class ClientIpNotFoundException(WithHttpException):
     def __init__(self) -> None:
         super().__init__(
             message="Client IP could not be determined",
@@ -26,7 +26,7 @@ class ClientIpNotFound(WithHttpException):
         )
 
 
-class ResourceNotInitialized(WithHttpException):
+class ResourceNotInitializedException(WithHttpException):
     def __init__(self, context: ResourceNotInitializedDetailsContext) -> None:
         super().__init__(
             message=f"Resource {context.resource_name} was not initialized",

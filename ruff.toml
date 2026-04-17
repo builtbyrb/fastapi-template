@@ -39,7 +39,7 @@ exclude = [
     "node_modules",
     "site-packages",
     "venv",
-    "alembic_db"
+    "alembic_db",
 ]
 
 # ------------------------------------------------------------------------------

@@ -6,8 +6,8 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
 from src.core.domain.exceptions import (
-    ClientIpNotFound,
-    ResourceNotInitialized,
+    ClientIpNotFoundException,
+    ResourceNotInitializedException,
 )
 from src.core.types.alias import Environment, IpAnyAddress
 from src.core.types.typings import ANY_IP_ADAPTER
@@ -32,7 +32,7 @@ def resolve_ip_form_data(params: ResolveIpFromDataParams) -> IpAnyAddress:
         ip = None
 
     if not ip:
-        raise ClientIpNotFound
+        raise ClientIpNotFoundException
 
     return ip
 
@@ -42,7 +42,7 @@ async def check_redis_connectivity(client: redis.Redis) -> bool:
         ping = client.ping()
         if not isinstance(ping, bool):
             ping = await ping
-    except redis.RedisError, ConnectionError, ResourceNotInitialized:
+    except redis.RedisError, ConnectionError, ResourceNotInitializedException:
         return False
     else:
         return ping
@@ -52,7 +52,7 @@ async def check_sql_db_connectivity(manager: SqlDatabaseManager) -> bool:
     try:
         async with manager.connect() as connection:
             await connection.execute(text("SELECT 1"))
-    except SQLAlchemyError, ConnectionError, ResourceNotInitialized:
+    except SQLAlchemyError, ConnectionError, ResourceNotInitializedException:
         return False
     else:
         return True
