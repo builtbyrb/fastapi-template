@@ -13,14 +13,14 @@ from src.core.types.internal import (
     [
         CustomValidationRule[str](
             CustomValidationRuleData(
-                ERROR_CODE="not_red", ERROR_MESSAGE="str is not equal to red"
+                EXC_CODE="not_red", EXC_MESSAGE="str is not equal to red"
             ),
             predicate_fn=lambda val: val == "Red",
         ),
         CustomValidationRuleRegex(
             CustomValidationRuleRegexData(
-                ERROR_CODE="no_uppercase",
-                ERROR_MESSAGE="Must contains an uppercase",
+                EXC_CODE="no_uppercase",
+                EXC_MESSAGE="Must contains an uppercase",
                 REGEX=r"[A-Z]",
             )
         ),
@@ -36,9 +36,9 @@ def test_custom_validation_rule_cases(
     assert isinstance(pydantic_custom_exception, PydanticCustomError)
     assert (
         pydantic_custom_exception.message()
-        == custom_validation_rule_data.ERROR_MESSAGE
+        == custom_validation_rule_data.EXC_MESSAGE
     )
-    assert pydantic_custom_exception.type == custom_validation_rule_data.ERROR_CODE
+    assert pydantic_custom_exception.type == custom_validation_rule_data.EXC_CODE
 
     with pytest.raises(PydanticCustomError):
         raise custom_validation_rule.pydantic_custom_exception

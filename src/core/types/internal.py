@@ -22,9 +22,9 @@ class LengthRuleData(BaseModel):
 
 
 class CustomValidationRuleData(BaseModel):
-    ERROR_CODE: str
-    ERROR_MESSAGE: str
-    ERROR_CONTEXT: dict[str, Any] | None = None
+    EXC_CODE: str
+    EXC_MESSAGE: str
+    EXC_CONTEXT: dict[str, Any] | None = None
 
 
 class CustomValidationRuleRegexData(CustomValidationRuleData):

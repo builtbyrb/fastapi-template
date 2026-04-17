@@ -30,37 +30,37 @@ ANY_PORT_ADAPTER = TypeAdapter(AnyPort)
 
 type UserAgent = Annotated[
     str,
-    Field(json_schema_extra={"rules": [USER_AGENT_FORMAT_RULE_DATA.ERROR_CODE]}),
+    Field(json_schema_extra={"rules": [USER_AGENT_FORMAT_RULE_DATA.EXC_CODE]}),
     AfterValidator(USER_AGENT_FORMAT_RULE.validator),
 ]
 
 type NoSpaceStr = Annotated[
     str,
-    Field(json_schema_extra={"rules": [NO_SPACE_RULE_DATA.ERROR_CODE]}),
+    Field(json_schema_extra={"rules": [NO_SPACE_RULE_DATA.EXC_CODE]}),
     AfterValidator(NO_SPACE_RULE.validator),
 ]
 
 type OneUppercaseStr = Annotated[
     str,
-    Field(json_schema_extra={"rules": [ONE_UPPERCASE_RULE_DATA.ERROR_CODE]}),
+    Field(json_schema_extra={"rules": [ONE_UPPERCASE_RULE_DATA.EXC_CODE]}),
     AfterValidator(ONE_UPPERCASE_RULE.validator),
 ]
 
 type OneLowercaseStr = Annotated[
     str,
-    Field(json_schema_extra={"rules": [ONE_LOWERCASE_RULE_DATA.ERROR_CODE]}),
+    Field(json_schema_extra={"rules": [ONE_LOWERCASE_RULE_DATA.EXC_CODE]}),
     AfterValidator(ONE_LOWERCASE_RULE.validator),
 ]
 
 type OneDigitStr = Annotated[
     str,
-    Field(json_schema_extra={"rules": [ONE_DIGIT_RULE_DATA.ERROR_CODE]}),
+    Field(json_schema_extra={"rules": [ONE_DIGIT_RULE_DATA.EXC_CODE]}),
     AfterValidator(ONE_DIGIT_RULE.validator),
 ]
 
 type OneSpecialCharStr = Annotated[
     str,
-    Field(json_schema_extra={"rules": [ONE_SPECIAL_CHAR_RULE_DATA.ERROR_CODE]}),
+    Field(json_schema_extra={"rules": [ONE_SPECIAL_CHAR_RULE_DATA.EXC_CODE]}),
     AfterValidator(ONE_SPECIAL_CHAR_RULE.validator),
 ]
 

@@ -22,7 +22,7 @@ USER_USERNAME_LENGTH_RULE_DATA = LengthRuleData(MIN_LENGTH=6, MAX_LENGTH=25)
 
 USER_PASSWORD_LENGTH_RULE_DATA = LengthRuleData(MIN_LENGTH=8, MAX_LENGTH=40)
 USER_PASSWORD_EMAIL_RULE_DATA = CustomValidationRuleData(
-    ERROR_CODE="contains_email", ERROR_MESSAGE="Must not contains your email address"
+    EXC_CODE="contains_email", EXC_MESSAGE="Must not contains your email address"
 )
 # endregion
 

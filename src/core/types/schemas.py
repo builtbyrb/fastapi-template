@@ -22,6 +22,6 @@ class RequestInfoInput(BaseModel):
 
 
 class HealthStatus(BaseModel):
-    health: Health
     redis_health: Health
     sql_db_health: Health
+    health: Health

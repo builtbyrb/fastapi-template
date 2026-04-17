@@ -97,11 +97,11 @@ type UserPassword = Annotated[
         ),
         json_schema_extra={
             "rules": [
-                NO_SPACE_RULE_DATA.ERROR_CODE,
-                ONE_UPPERCASE_RULE_DATA.ERROR_CODE,
-                ONE_LOWERCASE_RULE_DATA.ERROR_CODE,
-                ONE_DIGIT_RULE_DATA.ERROR_CODE,
-                ONE_SPECIAL_CHAR_RULE_DATA.ERROR_CODE,
+                NO_SPACE_RULE_DATA.EXC_CODE,
+                ONE_UPPERCASE_RULE_DATA.EXC_CODE,
+                ONE_LOWERCASE_RULE_DATA.EXC_CODE,
+                ONE_DIGIT_RULE_DATA.EXC_CODE,
+                ONE_SPECIAL_CHAR_RULE_DATA.EXC_CODE,
             ]
         },
     ),

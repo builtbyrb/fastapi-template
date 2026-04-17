@@ -7,6 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from src.core.domain.exceptions import (
     ClientIpNotFound,
+    ResourceNotInitialized,
 )
 from src.core.types.alias import Environment, IpAnyAddress
 from src.core.types.typings import ANY_IP_ADAPTER
@@ -41,7 +42,7 @@ async def check_redis_connectivity(client: redis.Redis) -> bool:
         ping = client.ping()
         if not isinstance(ping, bool):
             ping = await ping
-    except redis.RedisError:
+    except redis.RedisError, ConnectionError, ResourceNotInitialized:
         return False
     else:
         return ping
@@ -51,7 +52,7 @@ async def check_sql_db_connectivity(manager: SqlDatabaseManager) -> bool:
     try:
         async with manager.connect() as connection:
             await connection.execute(text("SELECT 1"))
-    except SQLAlchemyError:
+    except SQLAlchemyError, ConnectionError, ResourceNotInitialized:
         return False
     else:
         return True

@@ -14,4 +14,4 @@ class AppExceptionsExport(BaseModel):
     USER_DISABLED: HTTPExceptionData = USER_DISABLED_DATA
 
 
-AUTH_ERRORS = AppExceptionsExport()
+AUTH_EXCEPTIONS = AppExceptionsExport()

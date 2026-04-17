@@ -27,9 +27,9 @@ class CustomValidationRuleBase[TVal, TData: CustomValidationRuleData]:
         self,
     ) -> PydanticCustomError:
         return PydanticCustomError(
-            cast("LiteralString", self.data.ERROR_CODE),
-            cast("LiteralString", self.data.ERROR_MESSAGE),
-            self.data.ERROR_CONTEXT,
+            cast("LiteralString", self.data.EXC_CODE),
+            cast("LiteralString", self.data.EXC_MESSAGE),
+            self.data.EXC_CONTEXT,
         )
 
     @property

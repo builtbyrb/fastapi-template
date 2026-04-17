@@ -64,7 +64,7 @@ type UserGetter = UserEmailGetter | UserUsernameGetter | UserIdGetter
 
 class UserEmailPassword(BaseModel):
     model_config = ConfigDict(
-        json_schema_extra={"rules": [USER_PASSWORD_EMAIL_RULE_DATA.ERROR_CODE]},
+        json_schema_extra={"rules": [USER_PASSWORD_EMAIL_RULE_DATA.EXC_CODE]},
     )
 
     email: UserEmail

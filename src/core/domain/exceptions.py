@@ -38,7 +38,7 @@ class ResourceNotInitialized(WithHttpException):
 def to_response(
     data: HTTPExceptionData,
 ) -> dict[int | str, dict[str, Any]]:
-    response_dict: dict[str, Any] = {
+    response_dict = {
         "description": data.description,
         "model": ExceptionResponse[data.details_model],
     }
