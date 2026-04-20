@@ -1,6 +1,5 @@
 import contextlib
 from collections.abc import AsyncIterator
-from dataclasses import dataclass
 from typing import Annotated, Any
 
 import redis.asyncio as redis
@@ -36,34 +35,12 @@ class ResourceNotInitializedException(AppException):
         )
 
 
-@dataclass(frozen=True, kw_only=True)
-class DatabaseProviders:
-    sql_session: AsyncSession
-    client: redis.Redis
-
-
 async def get_sql_db_session() -> AsyncIterator[AsyncSession]:
     async with SQL_DATABASE_MANGER.sql_session() as sql_session:
         yield sql_session
 
 
-async def get_redis() -> redis.Redis:
-    return REDIS_MANGER.client
-
-
-async def get_database_providers(
-    sql_session: SqlSessionDep,
-    client: RedisDep,
-) -> DatabaseProviders:
-    return DatabaseProviders(sql_session=sql_session, client=client)
-
-
 SqlSessionDep = Annotated[AsyncSession, Depends(get_sql_db_session)]
-RedisDep = Annotated[redis.Redis, Depends(get_redis)]
-DataBaseProvidersDep = Annotated[
-    DatabaseProviders,
-    Depends(get_database_providers),
-]
 
 
 class SqlDatabaseManager:

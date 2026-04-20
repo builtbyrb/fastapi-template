@@ -1,56 +1,31 @@
-import uuid
 from typing import Any, Protocol
 
 import redis.asyncio as redis
+from redis.typing import EncodableT
 
-from src.users.subdomains.access_token.settings import ACCESS_TOKEN_ENV_SETTINGS
-
-
-class BlacklistTokenPort(Protocol):
-    async def blacklist_token(self, client: Any, jti: uuid.UUID) -> None: ...
+from src.database.database import REDIS_MANGER
 
 
-class BlacklistMultipleTokenPort(Protocol):
-    async def blacklist_tokens(
-        self, client: Any, jti_list: list[uuid.UUID]
-    ) -> None: ...
+class AccessTokenJtiRepo(Protocol):
+    @property
+    def client(self) -> Any: ...
 
 
-class IsTokenBlacklistedPort(Protocol):
-    async def is_blacklisted(self, client: Any, jti: uuid.UUID) -> bool: ...
+class RedisAccessTokenJtiRepo:
+    def __init__(self, client: redis.Redis) -> None:
+        self.client = client
 
-
-class BlackListTokenRefreshPort(
-    BlacklistTokenPort, BlacklistMultipleTokenPort, Protocol
-): ...
-
-
-class RedisAuthAccessTokenBlacklistRepo:
-    def __init__(self) -> None:
-        self.prefix = ACCESS_TOKEN_ENV_SETTINGS.ACCESS_TOKEN_BLACKLIST_PREFIX
-        self.ex = int(ACCESS_TOKEN_ENV_SETTINGS.ACCESS_TOKEN_EXPIRE_MINUTES / 60)
-
-    def append_prefix(self, jti: uuid.UUID) -> str:
-        return f"{self.prefix}:{jti}"
-
-    async def blacklist_token(
+    async def insert(
         self,
-        client: redis.Redis,
-        jti: uuid.UUID,
+        *,
+        jti: str,
+        value: EncodableT,
+        ex_seconds: int,
     ) -> None:
-        await client.set(name=self.append_prefix(jti), value=1, ex=self.ex)
+        await self.client.set(name=jti, value=value, ex=ex_seconds)
 
-    async def blacklist_tokens(
-        self, client: redis.Redis, jti_list: list[uuid.UUID]
-    ) -> None:
-        async with client.pipeline(transaction=True) as pipe:
-            for jti in jti_list:
-                await self.blacklist_token(pipe, jti)
-            await pipe.execute()
-
-    async def is_blacklisted(self, client: redis.Redis, jti: uuid.UUID) -> bool:
-        result = await client.exists(self.append_prefix(jti))
-        return result > 0
+    async def count(self, jti: str) -> int:
+        return await self.client.exists(jti)
 
 
-REDIS_AUTH_ACCESS_TOKEN_BLACKLIST_REPO = RedisAuthAccessTokenBlacklistRepo()
+REDIS_ACCESS_TOKEN_JTI_REPO = RedisAccessTokenJtiRepo(REDIS_MANGER.client)

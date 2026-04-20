@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 
-from src.database.database import DatabaseProviders, DataBaseProvidersDep
+from src.database.database import SqlSessionDep
 from src.shared.security import (
     DecodeTokenParams,
     InvalidTokenException,
@@ -16,10 +16,14 @@ from src.users.storage import (
     User,
     UserReadPort,
 )
+from src.users.subdomains.access_token.features.is_token_blacklisted import (
+    AccessTokenJtiCount,
+    IsTokenBlacklistedParams,
+    is_token_blacklisted,
+)
 from src.users.subdomains.access_token.settings import ACCESS_TOKEN_ENV_SETTINGS
 from src.users.subdomains.access_token.storage import (
-    REDIS_AUTH_ACCESS_TOKEN_BLACKLIST_REPO,
-    IsTokenBlacklistedPort,
+    REDIS_ACCESS_TOKEN_JTI_REPO,
 )
 from src.users.tokens import UserJwtTokenClaims
 from src.users.validations import UserEmailGetter, UserOut
@@ -28,9 +32,9 @@ from src.users.validations import UserEmailGetter, UserOut
 # region -------------------------- CurrentUser -------------------------
 @dataclass(frozen=True, kw_only=True)
 class GetCurrentUserServiceParams:
-    providers: DatabaseProviders
+    sql_session: SqlSessionDep
     user_repo: UserReadPort
-    access_token_blacklist_repo: IsTokenBlacklistedPort
+    access_token_jti_repo: AccessTokenJtiCount
     token: str
 
 
@@ -42,14 +46,18 @@ async def get_current_user_service(params: GetCurrentUserServiceParams) -> UserO
         UserJwtTokenClaims,
     )
 
-    is_blacklisted = await params.access_token_blacklist_repo.is_blacklisted(
-        params.providers.client, access_token_payload.jti
+    is_blacklisted = await is_token_blacklisted(
+        IsTokenBlacklistedParams(
+            redis_access_token_jti_repo=params.access_token_jti_repo,
+            access_token_jti=access_token_payload.jti,
+        )
     )
+
     if is_blacklisted:
         raise InvalidTokenException
 
     user = await params.user_repo.get_model(
-        params.providers.sql_session, UserEmailGetter(email=access_token_payload.sub)
+        params.sql_session, UserEmailGetter(email=access_token_payload.sub)
     )
 
     return UserOut.model_validate(user)
@@ -59,16 +67,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token/")
 TokenDep = Annotated[str, Depends(oauth2_scheme)]
 
 
-async def get_current_user(
-    token: TokenDep, providers: DataBaseProvidersDep
-) -> UserOut:
+async def get_current_user(token: TokenDep, sql_session: SqlSessionDep) -> UserOut:
     return await get_current_user_service(
         GetCurrentUserServiceParams(
-            providers=DatabaseProviders(
-                sql_session=providers.sql_session, client=providers.client
-            ),
+            sql_session=sql_session,
             user_repo=SQL_ALCHEMY_USER_REPO,
-            access_token_blacklist_repo=REDIS_AUTH_ACCESS_TOKEN_BLACKLIST_REPO,
+            access_token_jti_repo=REDIS_ACCESS_TOKEN_JTI_REPO,
             token=token,
         )
     )
