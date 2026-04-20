@@ -2,9 +2,11 @@ from dataclasses import dataclass
 from typing import Annotated, Protocol
 
 from fastapi import APIRouter, Depends, Response, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database.database import SqlSessionDep
+from src.database.database import (
+    DatabaseProviders,
+    DatabaseProvidersDep,
+)
 from src.shared.security import (
     DecodeTokenParams,
     InvalidTokenException,
@@ -58,7 +60,7 @@ from src.users.validations import RequestInfo, RequestInfoInput, UserEmailGetter
 
 @dataclass(frozen=True, kw_only=True)
 class RevokeUserSessionServiceParams:
-    sql_session: AsyncSession
+    providers: DatabaseProviders
     refresh_token_repo: RefreshTokenDeletePort
     access_token_jti_repo: AccessTokenJtiInsert
     getter: RefreshTokenJtiGetter
@@ -69,19 +71,20 @@ async def revoke_user_session_service(
 ) -> RefreshToken:
     await blacklist_token(
         BlacklistTokenParams(
+            redis_client=params.providers.redis_client,
             redis_access_token_jti_repo=params.access_token_jti_repo,
             insert_data=InsertAccessTokenJtiData(access_token_jti=params.getter.jti),
         )
     )
 
     return await params.refresh_token_repo.delete_refresh_token(
-        params.sql_session, params.getter
+        params.providers.sql_session, params.getter
     )
 
 
 @dataclass(frozen=True, kw_only=True)
 class RevokeAllUserSessionServiceParams:
-    sql_session: AsyncSession
+    providers: DatabaseProviders
     access_token_jti_repo: AccessTokenJtiInsert
     refresh_token_repo: RefreshTokenDeleteAllByUserIdPort
     getter: RefreshTokenUserIdGetter
@@ -92,12 +95,13 @@ async def revoke_all_user_session_service(
 ) -> list[RefreshToken]:
     refresh_tokens = (
         await params.refresh_token_repo.delete_all_refresh_token_by_user_id(
-            params.sql_session, params.getter
+            params.providers.sql_session, params.getter
         )
     )
 
     await blacklist_tokens(
         BlacklistTokensParams(
+            redis_client=params.providers.redis_client,
             redis_access_token_jti_repo=params.access_token_jti_repo,
             insert_data=[
                 InsertAccessTokenJtiData(access_token_jti=rf.jti)
@@ -120,7 +124,7 @@ class RefreshTokenRefreshPort(
 
 @dataclass(frozen=True, kw_only=True)
 class UserRefreshTokenServiceParams:
-    sql_session: AsyncSession
+    providers: DatabaseProvidersDep
     access_token_jti_repo: AccessTokenJtiInsert
     refresh_token_repo: RefreshTokenRefreshPort
     user_repo: UserReadPort
@@ -131,7 +135,7 @@ class UserRefreshTokenServiceParams:
 async def user_refresh_service(
     params: UserRefreshTokenServiceParams,
 ) -> UsersTokens:
-    sql_session = params.sql_session
+    sql_session = params.providers.sql_session
 
     refresh_token_data = decode_token(
         DecodeTokenParams(
@@ -158,7 +162,7 @@ async def user_refresh_service(
     ):
         await revoke_all_user_session_service(
             RevokeAllUserSessionServiceParams(
-                sql_session=sql_session,
+                providers=params.providers,
                 access_token_jti_repo=params.access_token_jti_repo,
                 refresh_token_repo=params.refresh_token_repo,
                 getter=RefreshTokenUserIdGetter(user_id=user.id),
@@ -173,7 +177,7 @@ async def user_refresh_service(
 
     await revoke_user_session_service(
         RevokeUserSessionServiceParams(
-            sql_session=sql_session,
+            providers=params.providers,
             refresh_token_repo=params.refresh_token_repo,
             access_token_jti_repo=params.access_token_jti_repo,
             getter=RefreshTokenJtiGetter(jti=current_user_refresh_token.jti),
@@ -221,14 +225,14 @@ router = APIRouter()
     },
 )
 async def refresh(
-    sql_session: SqlSessionDep,
+    providers: DatabaseProvidersDep,
     response: Response,
     req_info: Annotated[RequestInfoInput, Depends()],
     refresh_token: RefreshTokenCookie,
 ) -> AccessToken:
     result = await user_refresh_service(
         UserRefreshTokenServiceParams(
-            sql_session=sql_session,
+            providers=providers,
             access_token_jti_repo=REDIS_ACCESS_TOKEN_JTI_REPO,
             refresh_token_repo=SQL_ALCHEMY_REFRESH_TOKEN_REPO,
             user_repo=SQL_ALCHEMY_USER_REPO,

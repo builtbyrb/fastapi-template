@@ -4,7 +4,7 @@ from typing import Annotated
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 
-from src.database.database import SqlSessionDep
+from src.database.database import DatabaseProvidersDep
 from src.shared.security import (
     DecodeTokenParams,
     InvalidTokenException,
@@ -32,7 +32,7 @@ from src.users.validations import UserEmailGetter, UserOut
 # region -------------------------- CurrentUser -------------------------
 @dataclass(frozen=True, kw_only=True)
 class GetCurrentUserServiceParams:
-    sql_session: SqlSessionDep
+    providers: DatabaseProvidersDep
     user_repo: UserReadPort
     access_token_jti_repo: AccessTokenJtiCount
     token: str
@@ -48,6 +48,7 @@ async def get_current_user_service(params: GetCurrentUserServiceParams) -> UserO
 
     is_blacklisted = await is_token_blacklisted(
         IsTokenBlacklistedParams(
+            redis_client=params.providers.redis_client,
             redis_access_token_jti_repo=params.access_token_jti_repo,
             access_token_jti=access_token_payload.jti,
         )
@@ -57,7 +58,7 @@ async def get_current_user_service(params: GetCurrentUserServiceParams) -> UserO
         raise InvalidTokenException
 
     user = await params.user_repo.get_model(
-        params.sql_session, UserEmailGetter(email=access_token_payload.sub)
+        params.providers.sql_session, UserEmailGetter(email=access_token_payload.sub)
     )
 
     return UserOut.model_validate(user)
@@ -67,10 +68,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token/")
 TokenDep = Annotated[str, Depends(oauth2_scheme)]
 
 
-async def get_current_user(token: TokenDep, sql_session: SqlSessionDep) -> UserOut:
+async def get_current_user(
+    token: TokenDep, providers: DatabaseProvidersDep
+) -> UserOut:
     return await get_current_user_service(
         GetCurrentUserServiceParams(
-            sql_session=sql_session,
+            providers=providers,
             user_repo=SQL_ALCHEMY_USER_REPO,
             access_token_jti_repo=REDIS_ACCESS_TOKEN_JTI_REPO,
             token=token,
