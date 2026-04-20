@@ -7,8 +7,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.app.main import app as actual_app
-from src.core.api.dependencies import get_sql_db_session
-from src.core.infra.database import SQL_DATABASE_MANGER
+from src.database.database import SQL_DATABASE_MANGER, get_sql_db_session
 
 
 @pytest.fixture
