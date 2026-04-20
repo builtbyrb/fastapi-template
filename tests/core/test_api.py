@@ -1,12 +1,7 @@
-from typing import TYPE_CHECKING
-
 import pytest
+from httpx import AsyncClient
 
 from src.core.types.schemas import HealthStatus
-
-
-if TYPE_CHECKING:
-    from httpx import AsyncClient
 
 
 @pytest.mark.usefixtures("client", "db_session", "session_override")

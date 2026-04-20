@@ -1,0 +1,13 @@
+[importlinter]
+root_package = src
+
+[importlinter:contract:architecture_layers]
+name = "Hierarchy of Technical and Business Slices"
+type = layers
+layers =
+    src.app
+    src.users | src.health
+    src.telemetry | src.database
+    src.shared
+    src.config
+    

@@ -5,11 +5,9 @@ from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
-import src.refresh_token.models
-import src.users.models  # noqa: F401
-from src.core.logging.logging import setup_logging
-from src.core.models import Base
-from src.core.settings import APP_ENV_SETTINGS
+from src.telemetry.logging import setup_logging
+from src.database.database import Base
+from src.config.settings import APP_ENV_SETTINGS
 
 
 # this is the Alembic Config object, which provides

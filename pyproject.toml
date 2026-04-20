@@ -27,6 +27,7 @@ dependencies = [
 dev = [
     "asgi-lifespan>=2.1.0",
     "httpx>=0.28.1",
+    "import-linter[ui]>=2.11",
     "locust>=2.43.3",
     "pre-commit>=4.5.1",
     "pytest>=9.0.2",
