@@ -19,7 +19,7 @@ from src.users.storage import (
     UserGetByUniqueFieldsPort,
 )
 from src.users.unique import (
-    UserUniqueFields,
+    RequiredUserUniqueFields,
     validate_user_unique_fields,
 )
 from src.users.validations import UserBase, UserEmailPassword, UserOut, UserRole
@@ -71,14 +71,21 @@ class UserCreateServiceParams:
 
 async def user_create_service(params: UserCreateServiceParams) -> UserOut:
     sql_session = params.sql_session
-    unique_fields = UserUniqueFields(
+    unique_fields = RequiredUserUniqueFields(
         email=params.create.email, username=params.create.username
     )
 
+    user = await params.user_repo.get_by_unique_fields(
+        sql_session, unique_fields=unique_fields
+    )
+    user_unique_fields = (
+        RequiredUserUniqueFields(email=user.email, username=user.email)
+        if user
+        else None
+    )
+
     validate_user_unique_fields(
-        await params.user_repo.get_by_unique_fields(
-            sql_session, unique_fields=unique_fields
-        ),
+        user_unique_fields,
         unique_fields,
     )
     user = await params.user_repo.insert_user(

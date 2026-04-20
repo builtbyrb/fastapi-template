@@ -14,7 +14,8 @@ from src.users.responses import (
 )
 from src.users.storage import SQL_ALCHEMY_USER_REPO, User, UserGetByUniqueFieldsPort
 from src.users.unique import (
-    UserUniqueFields,
+    OptionalUserUniqueFields,
+    RequiredUserUniqueFields,
     validate_user_unique_fields,
 )
 from src.users.validations import (
@@ -71,14 +72,21 @@ async def user_update_service(
     params: UserUpdateServiceParams,
 ) -> UserOut:
     sql_session = params.sql_session
-    unique_fields = UserUniqueFields(
+
+    unique_fields = OptionalUserUniqueFields(
         email=params.update.email, username=params.update.username
+    )
+    user = await params.user_repo.get_by_unique_fields(
+        sql_session, unique_fields=unique_fields
+    )
+    user_unique_fields = (
+        RequiredUserUniqueFields(email=user.email, username=user.username)
+        if user
+        else None
     )
 
     validate_user_unique_fields(
-        await params.user_repo.get_by_unique_fields(
-            sql_session, unique_fields=unique_fields
-        ),
+        user_unique_fields,
         unique_fields,
     )
     user = await params.user_repo.update_user(
