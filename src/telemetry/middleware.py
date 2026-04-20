@@ -11,12 +11,9 @@ from src.config.settings import APP_ENV_SETTINGS
 from src.shared.web import get_client_ip
 
 
-# region -------------------------- Constants -------------------------
 ACCESS_LOGGER = structlog.stdlib.get_logger("api.access")
-# endregion
 
 
-# region -------------------------- Middleware -------------------------
 class AccessLoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(
         self,
@@ -59,6 +56,3 @@ class AccessLoggingMiddleware(BaseHTTPMiddleware):
                 network={"client": {"ip": client_host, "port": client_port}},
                 duration=elapsed,
             )
-
-
-# endregion
