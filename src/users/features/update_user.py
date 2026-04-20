@@ -1,4 +1,3 @@
-import datetime
 from dataclasses import dataclass
 from typing import Annotated, Any, Protocol
 
@@ -8,7 +7,6 @@ from pydantic_core import Url
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.database import SqlSessionDep
-from src.shared.date import get_utc_datetime
 from src.users.current_user import CurrentActiveUserDep
 from src.users.responses import (
     CURRENT_ACTIVE_USER_RESPONSE,
@@ -25,6 +23,7 @@ from src.users.validations import (
     UserIdGetter,
     UserLastName,
     UserOut,
+    UserUpdateTimestamp,
     UserUsername,
 )
 
@@ -36,14 +35,6 @@ class UserUpdate(BaseModel):
     email: UserEmail | None = Field(default=None)
     avatar_url: Url | None = Field(default=None)
     login_notification: bool | None = Field(default=None)
-
-
-class UserUpdateTimestamp(BaseModel):
-    updated_at: datetime.datetime | None = Field(default_factory=get_utc_datetime)
-    last_login_at: datetime.datetime | None = Field(default_factory=get_utc_datetime)
-    updated_password_at: datetime.datetime | None = Field(
-        default_factory=get_utc_datetime
-    )
 
 
 def update_user_dict(update: UserUpdate) -> dict[str, Any]:

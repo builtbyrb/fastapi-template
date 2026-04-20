@@ -15,6 +15,7 @@ from pydantic import (
 )
 from pydantic_core import Url
 
+from src.shared.date import get_utc_datetime
 from src.shared.rules import (
     CustomValidationRule,
     CustomValidationRuleData,
@@ -280,6 +281,18 @@ class UserBase(BaseModel):
     @property
     def identifier(self) -> str:
         return self.email
+
+
+# endregion
+
+
+# region -------------------------- UserUpdate -------------------------
+class UserUpdateTimestamp(BaseModel):
+    updated_at: datetime.datetime | None = Field(default_factory=get_utc_datetime)
+    last_login_at: datetime.datetime | None = Field(default_factory=get_utc_datetime)
+    updated_password_at: datetime.datetime | None = Field(
+        default_factory=get_utc_datetime
+    )
 
 
 # endregion

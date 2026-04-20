@@ -2,9 +2,13 @@
 from typing import Any, Protocol
 
 from src.shared.security import hash_password
-from src.users.features.update_user import UserUpdateTimestamp
 from src.users.storage import User
-from src.users.validations import UserEmailPassword, UserIdGetter, UserPassword
+from src.users.validations import (
+    UserEmailPassword,
+    UserIdGetter,
+    UserPassword,
+    UserUpdateTimestamp,
+)
 
 
 class UserUpdatePasswordPort(Protocol):
