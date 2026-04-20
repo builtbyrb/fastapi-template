@@ -13,9 +13,12 @@ from src.database.database import (
     ResourceNotInitializedException,
     SqlDatabaseManager,
 )
+from src.shared.web import OpenApiResponse
 
 
-type HealthValues = Literal["healthy", "unhealthy"]
+type Healthy = Literal["healthy"]
+type Unhealthy = Literal["unhealthy"]
+type HealthValues = Healthy | Unhealthy
 
 
 def bool_to_health(*, status: bool) -> HealthValues:
@@ -32,10 +35,17 @@ type Health = Annotated[
 ]
 
 
-class HealthStatus(BaseModel):
-    redis_health: Health
+class DatabaseHealthStatus(BaseModel):
     sql_db_health: Health
+    redis_health: Health
+
+
+class HealthStatus(DatabaseHealthStatus):
     health: Health
+
+
+class UnhealthyStatus(DatabaseHealthStatus):
+    health: Unhealthy
 
 
 async def check_redis_connectivity(client: redis.Redis) -> bool:
@@ -61,6 +71,12 @@ async def check_sql_db_connectivity(manager: SqlDatabaseManager) -> bool:
 
 router = APIRouter()
 
+BAD_HEALTH_CHECK_OPENAPI_RESPONSE = OpenApiResponse(
+    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    description="Service unhealthy",
+    response_model=UnhealthyStatus,
+)
+
 
 @router.get(
     "/",
@@ -68,12 +84,7 @@ router = APIRouter()
     summary="Perform a Health Check",
     response_description="Return HTTP 200 if the service is healthy.",
     response_model=HealthStatus,
-    responses={
-        500: {
-            "description": "Service unhealthy",
-            "model": HealthStatus,
-        }
-    },
+    responses={**BAD_HEALTH_CHECK_OPENAPI_RESPONSE.openapi_response},
 )
 async def health() -> HealthStatus | JSONResponse:
     redis_status = await check_redis_connectivity(REDIS_MANGER.client)
