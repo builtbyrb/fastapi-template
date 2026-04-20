@@ -37,7 +37,7 @@ class ResourceNotInitializedException(AppException):
 
 
 @dataclass(kw_only=True, frozen=True)
-class DatabaseProviders(BaseModel):
+class DatabaseProviders:
     sql_session: AsyncSession
     redis_client: redis.Redis
 
