@@ -1,20 +1,22 @@
 from typing import Any
 
 import pytest
+from httpx import AsyncClient
 from pydantic import TypeAdapter, ValidationError
 
 from src.database.database import (
     PG_BOUNCER_URL,
+    REDIS_MANGER,
     REDIS_URL,
+    SQL_DATABASE_MANGER,
     CreateRedisUrlParams,
     CreateSqlalchemyUrlParams,
-    RedisManager,
-    SqlDatabaseManager,
     create_redis_url,
     create_sqlalchemy_url,
 )
 from src.health.features.health_check import (
     Health,
+    HealthStatus,
     HealthValues,
     bool_to_health,
     check_redis_connectivity,
@@ -25,6 +27,8 @@ from src.health.features.health_check import (
 HEALTH_ARG_NAMES = ("status", "expected_value")
 HEALTH_ARG_VALUES = [(False, "unhealthy"), (True, "healthy")]
 HEALTH_ARG_IDS = ["unhealthy_when_false", "healthy_when_true"]
+BAD_REDIS_URL = create_redis_url(CreateRedisUrlParams(redis_port=12))
+BAD_SQL_URL = create_sqlalchemy_url(CreateSqlalchemyUrlParams(port=12))
 
 
 @pytest.mark.parametrize(
@@ -75,7 +79,7 @@ def test_health_type_raises_expected_exception(
             REDIS_URL,
             False,
         ),
-        (True, create_redis_url(CreateRedisUrlParams(redis_port=12)), False),
+        (True, BAD_REDIS_URL, False),
         (True, REDIS_URL, True),
     ],
     ids=[
@@ -88,27 +92,19 @@ def test_health_type_raises_expected_exception(
 async def test_check_redis_con_returns_expected_value(
     *, init: bool, url: str, expected_value: bool
 ) -> None:
-    redis_manager = RedisManager(
-        url,
-        client_kwargs={
-            "protocol": 3,
-            "socket_timeout": 1,
-            "socket_connect_timeout": 1,
-            "retry_on_timeout": False,
-        },
-    )
+    REDIS_MANGER.url = url
     if init:
-        await redis_manager.init()
-    assert await check_redis_connectivity(redis_manager) == expected_value
+        await REDIS_MANGER.init()
+    assert await check_redis_connectivity(REDIS_MANGER) == expected_value
     if init:
-        await redis_manager.close()
+        await REDIS_MANGER.close()
 
 
 @pytest.mark.parametrize(
     ("init", "url", "expected_value"),
     [
         (False, PG_BOUNCER_URL, False),
-        (True, create_sqlalchemy_url(CreateSqlalchemyUrlParams(port=12)), False),
+        (True, BAD_SQL_URL, False),
         (True, PG_BOUNCER_URL, True),
     ],
     ids=[
@@ -121,18 +117,67 @@ async def test_check_redis_con_returns_expected_value(
 async def test_check_sql_db_con_returns_expected_value(
     *, init: bool, url: str, expected_value: bool
 ) -> None:
-    sql_database_manager = SqlDatabaseManager(
-        url,
-        engine_kwargs={
-            "pool_size": 50,
-            "max_overflow": 20,
-            "pool_timeout": 30,
-            "pool_recycle": 1800,
-            "pool_pre_ping": True,
-        },
-    )
+    SQL_DATABASE_MANGER.url = url
     if init:
-        await sql_database_manager.init()
-    assert await check_sql_db_connectivity(sql_database_manager) == expected_value
+        await SQL_DATABASE_MANGER.init()
+    assert await check_sql_db_connectivity(SQL_DATABASE_MANGER) == expected_value
     if init:
-        await sql_database_manager.close()
+        await SQL_DATABASE_MANGER.close()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    (
+        "redis_url",
+        "sql_url",
+        "expected_payload",
+        "expected_status_code",
+    ),
+    [
+        (
+            REDIS_URL,
+            PG_BOUNCER_URL,
+            HealthStatus(
+                sql_db_health="healthy", redis_health="healthy", health="healthy"
+            ),
+            200,
+        ),
+        (
+            BAD_REDIS_URL,
+            PG_BOUNCER_URL,
+            HealthStatus(
+                sql_db_health="healthy", redis_health="unhealthy", health="unhealthy"
+            ),
+            503,
+        ),
+        (
+            BAD_REDIS_URL,
+            BAD_SQL_URL,
+            HealthStatus(
+                sql_db_health="unhealthy",
+                redis_health="unhealthy",
+                health="unhealthy",
+            ),
+            503,
+        ),
+    ],
+    ids=[
+        "200_healthy_when_all_service_functional",
+        "503_unhealthy_when_one_service_fails",
+        "503_unhealthy_when_all_services_fail",
+    ],
+)
+async def test_health_route_returns_expected_payload_and_status_code(
+    client: AsyncClient,
+    redis_url: str,
+    sql_url: str,
+    expected_payload: HealthStatus,
+    expected_status_code: int,
+) -> None:
+    REDIS_MANGER.url = redis_url
+    SQL_DATABASE_MANGER.url = sql_url
+    await REDIS_MANGER.init()
+    await SQL_DATABASE_MANGER.init()
+    response = await client.get("/health/")
+    assert HealthStatus.model_validate(response.json()) == expected_payload
+    assert response.status_code == expected_status_code

@@ -16,9 +16,17 @@ def app() -> FastAPI:
 
 
 @pytest.fixture
-async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
+async def client_lifespan(app: FastAPI) -> AsyncIterator[AsyncClient]:
     async with (
         LifespanManager(app),
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac,
+    ):
+        yield ac
+
+
+@pytest.fixture
+async def client(app: FastAPI) -> AsyncIterator[AsyncClient]:
+    async with (
         AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac,
     ):
         yield ac

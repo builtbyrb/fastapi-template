@@ -174,15 +174,17 @@ PG_BOUNCER_URL = create_sqlalchemy_url(
     )
 )
 
+SQL_ENGINE_KWARGS = {
+    "pool_size": 50,
+    "max_overflow": 20,
+    "pool_timeout": 30,
+    "pool_recycle": 1800,
+    "pool_pre_ping": True,
+}
+
 SQL_DATABASE_MANGER = SqlDatabaseManager(
     PG_BOUNCER_URL,
-    engine_kwargs={
-        "pool_size": 50,
-        "max_overflow": 20,
-        "pool_timeout": 30,
-        "pool_recycle": 1800,
-        "pool_pre_ping": True,
-    },
+    engine_kwargs=SQL_ENGINE_KWARGS,
 )
 
 
@@ -199,13 +201,15 @@ def create_redis_url(params: CreateRedisUrlParams) -> str:
 
 REDIS_URL = create_redis_url(CreateRedisUrlParams())
 
+REDIS_KWARGS = {
+    "protocol": 3,
+    "socket_timeout": 5,
+    "socket_connect_timeout": 2,
+    "health_check_interval": 30,
+    "retry_on_timeout": True,
+}
+
+
 REDIS_MANGER = RedisManager(
-    create_redis_url(CreateRedisUrlParams()),
-    client_kwargs={
-        "protocol": 3,
-        "socket_timeout": 5,
-        "socket_connect_timeout": 2,
-        "health_check_interval": 30,
-        "retry_on_timeout": True,
-    },
+    create_redis_url(CreateRedisUrlParams()), client_kwargs=REDIS_KWARGS
 )

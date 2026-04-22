@@ -81,7 +81,7 @@ async def check_sql_db_connectivity(manager: SqlDatabaseManager) -> bool:
 router = APIRouter()
 
 BAD_HEALTH_CHECK_OPENAPI_RESPONSE = OpenApiResponse(
-    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
     description="Service unhealthy",
     response_model=UnhealthyStatus,
 )
@@ -110,7 +110,7 @@ async def health() -> HealthStatus | JSONResponse:
 
     if not app_status:
         return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=BAD_HEALTH_CHECK_OPENAPI_RESPONSE.status_code,
             content=health_status.model_dump(),
         )
 
