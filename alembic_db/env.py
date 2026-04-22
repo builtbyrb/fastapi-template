@@ -6,7 +6,7 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from src.telemetry.logging import setup_logging
-from src.database.database import Base
+from src.database.database import PG_BOUNCER_URL, Base
 from src.config.settings import APP_ENV_SETTINGS
 
 
@@ -21,7 +21,7 @@ setup_logging()
 # for 'autogenerate' support
 target_metadata = Base.metadata
 
-url = APP_ENV_SETTINGS.pgbouncer_database_url.render_as_string(hide_password=False)
+url = PG_BOUNCER_URL.render_as_string(hide_password=False)
 
 
 def run_migrations_offline() -> None:

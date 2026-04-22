@@ -1,6 +1,7 @@
+import socket
 from typing import Annotated, Literal
 
-import redis.asyncio as redis
+import redis
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, BeforeValidator
@@ -10,6 +11,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from src.database.database import (
     REDIS_MANGER,
     SQL_DATABASE_MANGER,
+    RedisManager,
     ResourceNotInitializedException,
     SqlDatabaseManager,
 )
@@ -48,12 +50,19 @@ class UnhealthyStatus(DatabaseHealthStatus):
     health: Unhealthy
 
 
-async def check_redis_connectivity(client: redis.Redis) -> bool:
+DB_CONNECTIVITY_EXCEPTION = (
+    ConnectionError,
+    ResourceNotInitializedException,
+    socket.error,
+)
+
+
+async def check_redis_connectivity(manager: RedisManager) -> bool:
     try:
-        ping = client.ping()
+        ping = manager.client.ping()
         if not isinstance(ping, bool):
             ping = await ping
-    except redis.RedisError, ConnectionError, ResourceNotInitializedException:
+    except (redis.RedisError, *DB_CONNECTIVITY_EXCEPTION):
         return False
     else:
         return ping
@@ -63,7 +72,7 @@ async def check_sql_db_connectivity(manager: SqlDatabaseManager) -> bool:
     try:
         async with manager.connect() as connection:
             await connection.execute(text("SELECT 1"))
-    except SQLAlchemyError, ConnectionError, ResourceNotInitializedException:
+    except (SQLAlchemyError, *DB_CONNECTIVITY_EXCEPTION):
         return False
     else:
         return True
@@ -87,7 +96,7 @@ BAD_HEALTH_CHECK_OPENAPI_RESPONSE = OpenApiResponse(
     responses={**BAD_HEALTH_CHECK_OPENAPI_RESPONSE.openapi_response},
 )
 async def health() -> HealthStatus | JSONResponse:
-    redis_status = await check_redis_connectivity(REDIS_MANGER.client)
+    redis_status = await check_redis_connectivity(REDIS_MANGER)
     sql_db_status = await check_sql_db_connectivity(SQL_DATABASE_MANGER)
     app_status = redis_status and sql_db_status
 

@@ -119,9 +119,12 @@ class SqlDatabaseManager:
 
 
 class RedisManager:
-    def __init__(self, url: str) -> None:
+    def __init__(
+        self, url: str, client_kwargs: dict[str, Any] | None = None
+    ) -> None:
         self.url = url
         self._client: redis.Redis | None = None
+        self.client_kwargs = client_kwargs or {}
         self.exc_msg = "RedisManager is not initialized. Call init() first."
 
     @property
@@ -135,11 +138,7 @@ class RedisManager:
     async def init(self) -> None:
         self._client = redis.Redis.from_url(
             self.url,
-            protocol=3,
-            socket_timeout=5,
-            socket_connect_timeout=2,
-            health_check_interval=30,
-            retry_on_timeout=True,
+            **self.client_kwargs,
         )
 
     async def close(self) -> None:
@@ -147,8 +146,36 @@ class RedisManager:
         self._client = None
 
 
+@dataclass(kw_only=True, frozen=True)
+class CreateSqlalchemyUrlParams:
+    drivername: str = APP_ENV_SETTINGS.POSTGRES_DRIVER_NAME
+    username: str | None = APP_ENV_SETTINGS.POSTGRES_USER
+    password: str | None = APP_ENV_SETTINGS.POSTGRES_PASSWORD
+    host: str | None = APP_ENV_SETTINGS.POSTGRES_HOST
+    port: int | None = APP_ENV_SETTINGS.POSTGRES_PORT
+    database: str | None = APP_ENV_SETTINGS.POSTGRES_DB
+
+
+def create_sqlalchemy_url(params: CreateSqlalchemyUrlParams) -> URL:
+    return URL.create(
+        drivername=params.drivername,
+        username=params.username,
+        password=params.password,
+        host=params.host,
+        port=params.port,
+        database=params.database,
+    )
+
+
+POSTGRES_URL = create_sqlalchemy_url(CreateSqlalchemyUrlParams())
+PG_BOUNCER_URL = create_sqlalchemy_url(
+    CreateSqlalchemyUrlParams(
+        host=APP_ENV_SETTINGS.PG_BOUNCER_HOST, port=APP_ENV_SETTINGS.PG_BOUNCER_PORT
+    )
+)
+
 SQL_DATABASE_MANGER = SqlDatabaseManager(
-    APP_ENV_SETTINGS.pgbouncer_database_url,
+    PG_BOUNCER_URL,
     engine_kwargs={
         "pool_size": 50,
         "max_overflow": 20,
@@ -158,6 +185,27 @@ SQL_DATABASE_MANGER = SqlDatabaseManager(
     },
 )
 
+
+@dataclass(kw_only=True, frozen=True)
+class CreateRedisUrlParams:
+    redis_host: str = APP_ENV_SETTINGS.REDIS_HOST
+    redis_port: int = APP_ENV_SETTINGS.REDIS_PORT
+    redis_db: int = APP_ENV_SETTINGS.REDIS_DB
+
+
+def create_redis_url(params: CreateRedisUrlParams) -> str:
+    return f"redis://{params.redis_host}:{params.redis_port}/{params.redis_db}"
+
+
+REDIS_URL = create_redis_url(CreateRedisUrlParams())
+
 REDIS_MANGER = RedisManager(
-    f"redis://{APP_ENV_SETTINGS.REDIS_HOST}:{APP_ENV_SETTINGS.REDIS_PORT}/{APP_ENV_SETTINGS.REDIS_DB}"
+    create_redis_url(CreateRedisUrlParams()),
+    client_kwargs={
+        "protocol": 3,
+        "socket_timeout": 5,
+        "socket_connect_timeout": 2,
+        "health_check_interval": 30,
+        "retry_on_timeout": True,
+    },
 )
