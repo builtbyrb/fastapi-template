@@ -135,18 +135,6 @@ class OpenApiResponse(BaseModel):
     headers: Sequence[OpenApiHeaderResponse] | None = None
     response_model: type[BaseModel]
 
-    @staticmethod
-    def openapi_headers_response(
-        headers: Sequence[OpenApiHeaderResponse],
-    ) -> OpenApiHeadersResponseDict:
-        headers_dict: OpenApiHeadersResponseDict = {}
-        for data in headers:
-            headers_dict[data.name] = {
-                "description": data.description,
-                "schema": {"type": data.header_type},
-            }
-        return headers_dict
-
     @property
     def openapi_response(self) -> dict[str | int, dict[str, Any]]:
         response_dict = {
@@ -155,7 +143,11 @@ class OpenApiResponse(BaseModel):
         }
 
         if self.headers:
-            response_dict["headers"] = self.openapi_headers_response(self.headers)
+            response_dict["headers"] = {
+                key: value
+                for header in self.headers
+                for key, value in header.header_dict.items()
+            }
 
         return {self.status_code: response_dict}
 
