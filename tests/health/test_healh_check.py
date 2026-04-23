@@ -96,8 +96,7 @@ async def test_check_redis_con_returns_expected_bool(
     if init:
         await REDIS_MANGER.init()
     assert await check_redis_connectivity(REDIS_MANGER) == expected_bool
-    if init:
-        await REDIS_MANGER.close()
+    await REDIS_MANGER.close()
 
 
 @pytest.mark.parametrize(
@@ -121,8 +120,7 @@ async def test_check_sql_db_con_returns_expected_bool(
     if init:
         await SQL_DATABASE_MANGER.init()
     assert await check_sql_db_connectivity(SQL_DATABASE_MANGER) == expected_bool
-    if init:
-        await SQL_DATABASE_MANGER.close()
+    await SQL_DATABASE_MANGER.close()
 
 
 @pytest.mark.asyncio
