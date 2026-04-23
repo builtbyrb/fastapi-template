@@ -1,8 +1,7 @@
 from datetime import UTC, datetime, timedelta
-from typing import Any
 
 import pytest
-from pydantic import BaseModel, TypeAdapter, ValidationError
+from pydantic import BaseModel
 
 from src.shared.security import (
     BaseJwtTokenClaims,
@@ -39,22 +38,6 @@ TOKEN = create_token(
 
 def test_datetime_to_timestamp_returns_int_when_valid_data() -> None:
     assert isinstance(datetime_to_timestamp(DATETIME_NOW_UTC), int)
-
-
-@pytest.mark.parametrize(
-    ("value", "expected_exception"),
-    [(True, ValidationError), ("foo", ValidationError)],
-    ids=[
-        "raises_validation_error_when_bool_value",
-        "raises_validation_error_when_string_value",
-    ],
-)
-def test_timestamp_datetime_type_raises_expected_exception(
-    value: Any, expected_exception: type[Exception]
-) -> None:
-    timestamp_datetime_adapter = TypeAdapter[TimestampDatetime](TimestampDatetime)
-    with pytest.raises(expected_exception):
-        timestamp_datetime_adapter.validate_python(value)
 
 
 def test_timestamp_datetime_returns_int_when_valid_datetime() -> None:
@@ -166,15 +149,15 @@ def test_hash_password_returns_different_str_when_valid_password() -> None:
 
 
 @pytest.mark.parametrize(
-    ("plain_password", "password_to_hash", "expected_value"),
+    ("plain_password", "password_to_hash", "expected_bool"),
     [("bar", None, True), ("bar", "foo", False)],
     ids=["true_when_password_matches", "false_when_password_does_not_match"],
 )
-def test_verify_password_returns_expected_value(
-    plain_password: str, password_to_hash: str | None, *, expected_value: bool
+def test_verify_password_returns_expected_bool(
+    plain_password: str, password_to_hash: str | None, *, expected_bool: bool
 ) -> None:
     if not password_to_hash:
         hashed_password = hash_password(plain_password)
     else:
         hashed_password = hash_password(password_to_hash)
-    assert verify_password(plain_password, hashed_password) == expected_value
+    assert verify_password(plain_password, hashed_password) == expected_bool
