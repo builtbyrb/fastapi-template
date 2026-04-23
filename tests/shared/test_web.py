@@ -6,6 +6,7 @@ from pydantic.networks import IPvAnyAddressType
 
 from src.config.settings import Environment
 from src.shared.web import (
+    ClientIpNotFoundException,
     IpAnyAddress,
     ResolveIpFromDataParams,
     is_valid_ua,
@@ -105,6 +106,19 @@ def test_resolve_ip_from_data_returns_expected_ip(
     params: ResolveIpFromDataParams, expected_ip: str
 ) -> None:
     assert serialize_ip(resolve_ip_form_data(params)) == expected_ip
+
+
+def test_resolve_ip_from_data_raises_client_ip_not_found_when_no_data() -> None:
+    with pytest.raises(ClientIpNotFoundException):
+        resolve_ip_form_data(
+            ResolveIpFromDataParams(
+                environment=Environment.PROD,
+                default_dev_ip="",
+                client_host=None,
+                headers={},
+                resolve_ip_header="",
+            )
+        )
 
 
 VALID_UA = "Mozilla/5.0 (Linux; Android 13; SM-S908U) AppleWebKit/537.36 "
