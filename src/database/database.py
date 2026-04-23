@@ -93,9 +93,10 @@ class SqlDatabaseManager:
         self._sql_session_maker = async_sessionmaker(bind=self._engine)
 
     async def close(self) -> None:
-        await self.engine.dispose()
-        self._engine = None
-        self._sql_session_maker = None
+        if self._engine and self._sql_session_maker:
+            await self.engine.dispose()
+            self._engine = None
+            self._sql_session_maker = None
 
     @contextlib.asynccontextmanager
     async def connect(self) -> AsyncIterator[AsyncConnection]:
@@ -142,8 +143,9 @@ class RedisManager:
         )
 
     async def close(self) -> None:
-        await self.client.aclose()
-        self._client = None
+        if self._client:
+            await self.client.aclose()
+            self._client = None
 
 
 @dataclass(kw_only=True, frozen=True)
