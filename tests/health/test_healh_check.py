@@ -162,9 +162,9 @@ async def test_check_sql_db_con_returns_expected_value(
         ),
     ],
     ids=[
-        "200_healthy_when_all_service_functional",
-        "503_unhealthy_when_one_service_fails",
-        "503_unhealthy_when_all_services_fail",
+        "healthy_200_when_all_service_functional",
+        "unhealthy_503_when_one_service_fails",
+        "unhealthy_503_when_all_services_fail",
     ],
 )
 async def test_health_route_returns_expected_payload_and_status_code(
