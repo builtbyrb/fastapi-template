@@ -16,7 +16,7 @@ class ValidatorFn[TVal](Protocol):
 def make_custom_validator[TVal](
     pydantic_custom_exception: PydanticCustomError,
     predicate: PredicateFn[TVal],
-) -> ValidatorFn:
+) -> ValidatorFn[TVal]:
     def validator(val: TVal) -> TVal:
         if not predicate(val):
             raise pydantic_custom_exception

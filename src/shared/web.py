@@ -88,10 +88,11 @@ async def get_client_ip(
 # region -------------------------- UserAgent -------------------------
 def is_valid_ua(val: str) -> bool:
     user_agent = parse(val)
-    return (
-        not (user_agent.get_browser() == "Other" and user_agent.get_os() == "Other")
-        or user_agent.is_bot
+    is_unknown = (
+        user_agent.get_browser() == "Other" and user_agent.get_os() == "Other"
     )
+    is_invalid = is_unknown or user_agent.is_bot
+    return not is_invalid
 
 
 USER_AGENT_FORMAT_RULE_DATA = CustomValidationRuleData(

@@ -24,7 +24,7 @@ from src.health.features.health_check import (
 )
 
 
-HEALTH_ARG_NAMES = ("status", "expected_value")
+HEALTH_ARG_NAMES = ("status", "expected_health_value")
 HEALTH_ARG_VALUES = [(False, "unhealthy"), (True, "healthy")]
 HEALTH_ARG_IDS = ["unhealthy_when_false", "healthy_when_true"]
 BAD_REDIS_URL = create_redis_url(CreateRedisUrlParams(redis_port=12))
@@ -36,10 +36,10 @@ BAD_SQL_URL = create_sqlalchemy_url(CreateSqlalchemyUrlParams(port=12))
     HEALTH_ARG_VALUES,
     ids=HEALTH_ARG_IDS,
 )
-def test_bool_to_health_returns_expected_value(
-    *, status: bool, expected_value: HealthValues
+def test_bool_to_health_returns_expected_health_value(
+    *, status: bool, expected_health_value: HealthValues
 ) -> None:
-    assert bool_to_health(status=status) == expected_value
+    assert bool_to_health(status=status) == expected_health_value
 
 
 HEALTH_ADAPTER = TypeAdapter[Health](Health)
@@ -50,10 +50,10 @@ HEALTH_ADAPTER = TypeAdapter[Health](Health)
     HEALTH_ARG_VALUES,
     ids=HEALTH_ARG_IDS,
 )
-def test_health_type_returns_expected_value(
-    *, status: bool, expected_value: HealthValues
+def test_health_type_returns_expected_health_value(
+    *, status: bool, expected_health_value: HealthValues
 ) -> None:
-    assert HEALTH_ADAPTER.validate_python(status) == expected_value
+    assert HEALTH_ADAPTER.validate_python(status) == expected_health_value
 
 
 @pytest.mark.parametrize(
@@ -72,7 +72,7 @@ def test_health_type_raises_expected_exception(
 
 
 @pytest.mark.parametrize(
-    ("init", "url", "expected_value"),
+    ("init", "url", "expected_bool"),
     [
         (
             False,
@@ -89,19 +89,19 @@ def test_health_type_raises_expected_exception(
     ],
 )
 @pytest.mark.asyncio
-async def test_check_redis_con_returns_expected_value(
-    *, init: bool, url: str, expected_value: bool
+async def test_check_redis_con_returns_expected_bool(
+    *, init: bool, url: str, expected_bool: bool
 ) -> None:
     REDIS_MANGER.url = url
     if init:
         await REDIS_MANGER.init()
-    assert await check_redis_connectivity(REDIS_MANGER) == expected_value
+    assert await check_redis_connectivity(REDIS_MANGER) == expected_bool
     if init:
         await REDIS_MANGER.close()
 
 
 @pytest.mark.parametrize(
-    ("init", "url", "expected_value"),
+    ("init", "url", "expected_bool"),
     [
         (False, PG_BOUNCER_URL, False),
         (True, BAD_SQL_URL, False),
@@ -114,13 +114,13 @@ async def test_check_redis_con_returns_expected_value(
     ],
 )
 @pytest.mark.asyncio
-async def test_check_sql_db_con_returns_expected_value(
-    *, init: bool, url: str, expected_value: bool
+async def test_check_sql_db_con_returns_expected_bool(
+    *, init: bool, url: str, expected_bool: bool
 ) -> None:
     SQL_DATABASE_MANGER.url = url
     if init:
         await SQL_DATABASE_MANGER.init()
-    assert await check_sql_db_connectivity(SQL_DATABASE_MANGER) == expected_value
+    assert await check_sql_db_connectivity(SQL_DATABASE_MANGER) == expected_bool
     if init:
         await SQL_DATABASE_MANGER.close()
 
