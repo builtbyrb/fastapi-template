@@ -51,6 +51,10 @@ async def get_redis_client() -> redis.Redis:
     return REDIS_MANGER.client
 
 
+RedisClientDep = Annotated[redis.Redis, Depends(get_redis_client)]
+SqlSessionDep = Annotated[AsyncSession, Depends(get_sql_db_session)]
+
+
 async def get_database_providers(
     sql_session: SqlSessionDep,
     redis_client: RedisClientDep,
@@ -59,8 +63,6 @@ async def get_database_providers(
 
 
 DatabaseProvidersDep = Annotated[DatabaseProviders, Depends(get_database_providers)]
-RedisClientDep = Annotated[redis.Redis, Depends(get_redis_client)]
-SqlSessionDep = Annotated[AsyncSession, Depends(get_sql_db_session)]
 
 
 class SqlDatabaseManager:

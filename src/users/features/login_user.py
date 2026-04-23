@@ -84,6 +84,28 @@ async def authenticate_user_service(
     return await run_in_threadpool(authenticate_user, user, params.password)
 
 
+class OAuth2PasswordRequestFormStrictTypedData(BaseModel):
+    grant_type: str = Field(pattern="^password$")
+    username: UserEmail
+    password: str
+    scope: str = ""
+    client_id: str | None = None
+    client_secret: str | None = None
+
+
+class OAuth2PasswordRequestFormStrictTyped:
+    def __init__(
+        self,
+        data: Annotated[OAuth2PasswordRequestFormStrictTypedData, Form()],
+    ) -> None:
+        self.grant_type = data.grant_type
+        self.username = data.username
+        self.password = data.password
+        self.scopes = data.scope.split()
+        self.client_id = data.client_id
+        self.client_secret = data.client_secret
+
+
 @dataclass(frozen=True, kw_only=True)
 class UserLoginServiceParams:
     sql_session: AsyncSession
@@ -123,28 +145,6 @@ async def user_login_service(
     await params.sql_session.commit()
 
     return result
-
-
-class OAuth2PasswordRequestFormStrictTypedData(BaseModel):
-    grant_type: str = Field(pattern="^password$")
-    username: UserEmail
-    password: str
-    scope: str = ""
-    client_id: str | None = None
-    client_secret: str | None = None
-
-
-class OAuth2PasswordRequestFormStrictTyped:
-    def __init__(
-        self,
-        data: Annotated[OAuth2PasswordRequestFormStrictTypedData, Form()],
-    ) -> None:
-        self.grant_type = data.grant_type
-        self.username = data.username
-        self.password = data.password
-        self.scopes = data.scope.split()
-        self.client_id = data.client_id
-        self.client_secret = data.client_secret
 
 
 FormDataDep = Annotated[OAuth2PasswordRequestFormStrictTyped, Depends()]

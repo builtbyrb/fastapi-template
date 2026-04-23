@@ -17,7 +17,50 @@ if TYPE_CHECKING:
     from src.users.storage import User
 
 
+# region -------------------------- Model -------------------------
+class RefreshToken(Base):
+    __tablename__ = "refresh_tokens"
+
+    jti: Mapped[UUID] = mapped_column(
+        primary_key=True,
+    )
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"),
+        index=True,
+    )
+
+    user_agent: Mapped[UserAgent] = mapped_column(TEXT)
+    ip: Mapped[IpAnyAddress] = mapped_column(TEXT)
+    expires_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+    )
+    user: Mapped[User] = relationship("User", back_populates="refresh_tokens")
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+    )
+
+
+# endregion
+
+
 # region -------------------------- Types -------------------------
+class RefreshTokenUserIdGetter(BaseModel):
+    user_id: UUID
+
+    @property
+    def identifier(self) -> str:
+        return str(self.user_id)
+
+
+class RefreshTokenJtiGetter(BaseModel):
+    jti: UUID
+
+    @property
+    def identifier(self) -> str:
+        return str(self.jti)
+
+
 class RefreshTokenReadByJtiPort(Protocol):
     async def get_by_jti(
         self, sql_session: Any, getter: RefreshTokenJtiGetter
@@ -42,22 +85,6 @@ class RefreshTokenDeleteAllByUserIdPort(Protocol):
     ) -> list[RefreshToken]: ...
 
 
-class RefreshTokenUserIdGetter(BaseModel):
-    user_id: UUID
-
-    @property
-    def identifier(self) -> str:
-        return str(self.user_id)
-
-
-class RefreshTokenJtiGetter(BaseModel):
-    jti: UUID
-
-    @property
-    def identifier(self) -> str:
-        return str(self.jti)
-
-
 # endregion
 
 
@@ -76,33 +103,6 @@ class RefreshTokenNotFoundException(RefreshTokenException):
             message=f"Refresh Token {context.refresh_token} not found",
             context=context,
         )
-
-
-# endregion
-
-
-# region -------------------------- Model -------------------------
-class RefreshToken(Base):
-    __tablename__ = "refresh_tokens"
-
-    jti: Mapped[UUID] = mapped_column(
-        primary_key=True,
-    )
-    user_id: Mapped[UUID] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"),
-        index=True,
-    )
-
-    user_agent: Mapped[UserAgent] = mapped_column(TEXT)
-    ip: Mapped[IpAnyAddress] = mapped_column(TEXT)
-    expires_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-    )
-    user: Mapped[User] = relationship("User", back_populates="refresh_tokens")
-
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
-    )
 
 
 # endregion

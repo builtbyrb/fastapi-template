@@ -129,6 +129,21 @@ class OpenApiHeaderResponseDict(TypedDict):
 type OpenApiHeadersResponseDict = dict[str, OpenApiHeaderResponseDict]
 
 
+class OpenApiHeaderResponse(BaseModel):
+    name: str
+    header_type: OpenApiSchemaType = "string"
+    description: str
+
+    @property
+    def header_dict(self) -> OpenApiHeadersResponseDict:
+        return {
+            self.name: {
+                "description": self.description,
+                "schema": {"type": self.header_type},
+            }
+        }
+
+
 class OpenApiResponse(BaseModel):
     status_code: int
     description: str
@@ -150,21 +165,6 @@ class OpenApiResponse(BaseModel):
             }
 
         return {self.status_code: response_dict}
-
-
-class OpenApiHeaderResponse(BaseModel):
-    name: str
-    header_type: OpenApiSchemaType = "string"
-    description: str
-
-    @property
-    def header_dict(self) -> OpenApiHeadersResponseDict:
-        return {
-            self.name: {
-                "description": self.description,
-                "schema": {"type": self.header_type},
-            }
-        }
 
 
 # endregion

@@ -67,7 +67,7 @@ ignore = [
     "SLF001", # Private member access - Allow within the same package
     "FA102",  # Missing __future__ annotations - PEP 604 is standard in 3.10+
     "UP046",  # Generic subclass usage
-    "TC"
+    "TC",
 ]
 
 # Auto-fix behavior

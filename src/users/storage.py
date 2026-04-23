@@ -46,16 +46,6 @@ class UserNotFoundException(UserException):
         )
 
 
-class UserReadPort(Protocol):
-    async def get_model(self, sql_session: Any, getter: UserGetter) -> User: ...
-
-
-class UserGetByUniqueFieldsPort(Protocol):
-    async def get_by_unique_fields(
-        self, sql_session: Any, unique_fields: UserUniqueFields
-    ) -> User | None: ...
-
-
 class User(Base):
     __tablename__ = "users"
 
@@ -107,6 +97,16 @@ class User(Base):
     @property
     def identifier(self) -> str:
         return self.email
+
+
+class UserReadPort(Protocol):
+    async def get_model(self, sql_session: Any, getter: UserGetter) -> User: ...
+
+
+class UserGetByUniqueFieldsPort(Protocol):
+    async def get_by_unique_fields(
+        self, sql_session: Any, unique_fields: UserUniqueFields
+    ) -> User | None: ...
 
 
 class SQLAlchemyUserRepo:

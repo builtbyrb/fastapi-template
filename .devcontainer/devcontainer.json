@@ -33,10 +33,11 @@
         "python.languageServer": "Pylance",
         "python.analysis.diagnosticMode": "workspace",
         "python.analysis.typeCheckingMode": "standard",
+        "python.analysis.indexing": true,
         "python.analysis.autoImportCompletions": true,
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.analysis.enablePytestSupport": true,
-        "python.analysis.ignore": [
+        "python.analysis.exclude": [
           "**/venv",
           "**/.venv",
           "**/env",
@@ -148,7 +149,7 @@
     },
     "remoteEnv": {
       "PROJECT_NAME": "Python + uv",
-      "PYTHON_VERSION": "3.14",
+      "PYTHON_VERSION": "3.13",
       "UV_INIT_BARE": "false",
       "INSTALL_IPYKERNEL": "false"
     },
