@@ -1,6 +1,8 @@
+import contextlib
+
 import pytest
 import redis.asyncio as redis
-from sqlalchemy import URL
+from sqlalchemy import URL, text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from src.database.database import (
@@ -84,13 +86,37 @@ async def test_sql_manager_session_returns_inactive_session_when_close() -> None
 
 
 @pytest.mark.asyncio
-async def test_sql_manager_session_rollback_when_exception() -> None:
-    await SQL_DATABASE_MANGER.init()
-    with pytest.raises(RuntimeError):
-        async with SQL_DATABASE_MANGER.sql_session() as _session:
+@pytest.mark.usefixtures("setup_test_table")
+async def test_connect_rollback_when_exception() -> None:
+    with contextlib.suppress(RuntimeError):
+        async with SQL_DATABASE_MANGER.connect() as conn:
+            await conn.execute(
+                text("INSERT INTO test_items (name) VALUES ('Test Connect')")
+            )
             raise RuntimeError
 
-    await SQL_DATABASE_MANGER.close()
+    async with SQL_DATABASE_MANGER.connect() as check_conn:
+        result = await check_conn.execute(text("SELECT COUNT(*) FROM test_items"))
+        count = result.scalar()
+
+    assert count == 0
+
+
+@pytest.mark.asyncio
+@pytest.mark.usefixtures("setup_test_table")
+async def test_sql_session_rollback_when_exception() -> None:
+    with contextlib.suppress(RuntimeError):
+        async with SQL_DATABASE_MANGER.sql_session() as session:
+            await session.execute(
+                text("INSERT INTO test_items (name) VALUES ('Test Session')")
+            )
+            raise RuntimeError
+
+    async with SQL_DATABASE_MANGER.sql_session() as check_session:
+        result = await check_session.execute(text("SELECT COUNT(*) FROM test_items"))
+        count = result.scalar()
+
+    assert count == 0
 
 
 @pytest.mark.asyncio

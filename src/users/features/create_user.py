@@ -69,7 +69,7 @@ class UserCreateServiceParams:
     create: UserCreate
 
 
-async def user_create_service(params: UserCreateServiceParams) -> UserOut:
+async def create_user_service(params: UserCreateServiceParams) -> UserOut:
     sql_session = params.sql_session
     unique_fields = RequiredUserUniqueFields(
         email=params.create.email, username=params.create.username
@@ -112,7 +112,7 @@ router = APIRouter()
 async def create_user(
     user_create: Annotated[UserCreate, Body()], sql_session: SqlSessionDep
 ) -> UserOut:
-    return await user_create_service(
+    return await create_user_service(
         UserCreateServiceParams(
             sql_session=sql_session,
             user_repo=SQL_ALCHEMY_USER_REPO,
