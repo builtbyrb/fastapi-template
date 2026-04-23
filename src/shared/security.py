@@ -27,13 +27,13 @@ def datetime_to_timestamp(date: datetime.datetime) -> int:
     return int(date.timestamp())
 
 
-type TimeStampDatetime = Annotated[
+type TimestampDatetime = Annotated[
     datetime.datetime, PlainSerializer(datetime_to_timestamp, return_type=int)
 ]
 
 
 class BaseJwtTokenClaims(BaseModel):
-    exp: TimeStampDatetime
+    exp: TimestampDatetime
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -48,12 +48,6 @@ class CreateTokenParams:
     config: TokenConfig
 
 
-@dataclass(kw_only=True, frozen=True)
-class DecodeTokenParams:
-    token: str
-    config: TokenConfig
-
-
 def create_token(
     params: CreateTokenParams,
 ) -> str:
@@ -62,6 +56,12 @@ def create_token(
         params.config.secret_key,
         params.config.algorithm,
     )
+
+
+@dataclass(kw_only=True, frozen=True)
+class DecodeTokenParams:
+    token: str
+    config: TokenConfig
 
 
 @overload
