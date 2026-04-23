@@ -52,6 +52,12 @@ PROD_CHAIN: list[Processor] = [
     structlog.processors.JSONRenderer(),
 ]
 
+CHAIN = DEV_CHAIN if APP_ENV_SETTINGS.ENVIRONMENT == Environment.DEV else PROD_CHAIN
+
+FORMATTER = structlog.stdlib.ProcessorFormatter(
+    foreign_pre_chain=[*SHARED_PRE_CHAIN, *FOREIGN_PRE_CHAIN],
+    processors=CHAIN,
+)
 
 LOGGERS_TO_CLEAR = [
     "uvicorn",
@@ -124,14 +130,7 @@ def setup_async_uncaught_exception_handler() -> None:
 
 
 def setup_logging() -> None:
-    chain = (
-        DEV_CHAIN if APP_ENV_SETTINGS.ENVIRONMENT == Environment.DEV else PROD_CHAIN
-    )
-
-    formatter = structlog.stdlib.ProcessorFormatter(
-        foreign_pre_chain=[*SHARED_PRE_CHAIN, *FOREIGN_PRE_CHAIN],
-        processors=chain,
-    )
-
+    setup_sync_uncaught_exception_handler()
+    setup_async_uncaught_exception_handler()
     clear_logger_handler(LOGGERS_TO_CLEAR)
-    config_logging(formatter)
+    config_logging(FORMATTER)
