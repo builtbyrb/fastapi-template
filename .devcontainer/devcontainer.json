@@ -127,7 +127,8 @@
           ".vscode",
           ".vscode-insiders"
         ],
-        "remote.autoForwardPortsSource": "hybrid"
+        "remote.autoForwardPortsSource": "hybrid",
+        "remote.SSH.enableAgentForwarding": true
       },
       "extensions": [
         "streetsidesoftware.code-spell-checker",
@@ -146,14 +147,14 @@
         "christian-kohler.path-intellisense",
         "streetsidesoftware.code-spell-checker-french"
       ]
-    },
-    "remoteEnv": {
-      "PROJECT_NAME": "Python + uv",
-      "PYTHON_VERSION": "3.13",
-      "UV_INIT_BARE": "false",
-      "INSTALL_IPYKERNEL": "false"
-    },
-    "postCreateCommand": "make post-create",
-    "mounts": []
-  }
+    }
+  },
+  "remoteEnv": {
+    "PROJECT_NAME": "Python + uv",
+    "PYTHON_VERSION": "3.13",
+    "UV_INIT_BARE": "false",
+    "INSTALL_IPYKERNEL": "false"
+  },
+  "postCreateCommand": "make post-create",
+  "mounts": []
 }

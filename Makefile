@@ -13,7 +13,7 @@ init:
 		else \
 			uv init --python ${PYTHON_VERSION}; \
 		fi; \
-	fi) > /tmp/init.log 2>&1*
+	fi) > /tmp/init.log 2>&1
 	@echo "✓ Initialization complete (log: /tmp/init.log)"
 
 # Ensure ipykernel is installed as a dev dependency (optional)
