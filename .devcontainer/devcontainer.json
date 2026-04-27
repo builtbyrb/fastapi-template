@@ -156,5 +156,7 @@
     "INSTALL_IPYKERNEL": "false"
   },
   "postCreateCommand": "make post-create",
-  "mounts": []
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/dev/.ssh,type=bind"
+  ]
 }
