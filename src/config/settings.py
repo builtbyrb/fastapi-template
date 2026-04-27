@@ -4,7 +4,7 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-ENV_FILE = (".env.prod", ".env.stag", ".env")
+ENV_FILE = (".env.prod", ".env.stag", ".env.local")
 
 
 class Environment(StrEnum):

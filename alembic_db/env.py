@@ -22,6 +22,7 @@ setup_logging()
 target_metadata = Base.metadata
 
 url = PG_BOUNCER_URL.render_as_string(hide_password=False)
+print(url)
 
 
 def run_migrations_offline() -> None:

@@ -21,12 +21,12 @@ dependencies = [
     "user-agents>=2.2.0",
     "uvicorn[standard]>=0.42.0",
     "uvloop>=0.22.1",
+    "httpx>=0.28.1",
 ]
 
 [dependency-groups]
 dev = [
     "asgi-lifespan>=2.1.0",
-    "httpx>=0.28.1",
     "import-linter[ui]>=2.11",
     "locust>=2.43.3",
     "pre-commit>=4.5.1",

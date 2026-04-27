@@ -5,10 +5,8 @@
   "workspaceFolder": "/workspace",
   "remoteUser": "vscode",
   "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers-extra/features/uv:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2.16.1": {
-      "enableNonRootDocker": "true"
-    },
     "ghcr.io/devcontainers-extra/features/curl-apt-get:1": {},
     "ghcr.io/devcontainers/features/common-utils:2.5.7": {
       "installZsh": true
@@ -128,7 +126,7 @@
           ".vscode",
           ".vscode-insiders"
         ],
-        "remote.autoForwardPortsSource": "hybrid",
+        "remote.autoForwardPortsSource": "process",
         "remote.SSH.enableAgentForwarding": true
       },
       "extensions": [
@@ -157,7 +155,5 @@
     "INSTALL_IPYKERNEL": "false"
   },
   "postCreateCommand": "make post-create",
-  "mounts": [
-    "source=${localEnv:HOME}/.ssh,target=/home/dev/.ssh,type=bind"
-  ]
+  "mounts": []
 }
