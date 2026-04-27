@@ -173,7 +173,7 @@ def create_sqlalchemy_url(params: CreateSqlalchemyUrlParams) -> URL:
 
 POSTGRES_URL = create_sqlalchemy_url(CreateSqlalchemyUrlParams())
 PG_BOUNCER_URL = create_sqlalchemy_url(
-    CreateSqlalchemyUrlParams(
+    params=CreateSqlalchemyUrlParams(
         host=APP_ENV_SETTINGS.PG_BOUNCER_HOST, port=APP_ENV_SETTINGS.PG_BOUNCER_PORT
     )
 )

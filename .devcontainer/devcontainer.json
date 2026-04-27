@@ -37,7 +37,7 @@
         "python.analysis.autoImportCompletions": true,
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.analysis.enablePytestSupport": true,
-        "python.analysis.exclude": [
+        "python.analysis.ignore": [
           "**/venv",
           "**/.venv",
           "**/env",
@@ -46,6 +46,7 @@
           "**/__pycache__",
           "**/.*"
         ],
+        "python.testing.pytestEnabled": true,
         // Language Specific Formatters & Linters
         "[python]": {
           "editor.defaultFormatter": "charliermarsh.ruff",
