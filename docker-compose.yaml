@@ -1,0 +1,6 @@
+include:
+  - docker-compose-networks.yaml
+  - docker-compose-db.yaml
+  - docker-compose-app.yaml
+  - docker-compose-proxy.yaml
+  - docker-compose-logs.yaml

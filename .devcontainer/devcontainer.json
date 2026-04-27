@@ -144,7 +144,8 @@
         "charliermarsh.ruff",
         "tamasfe.even-better-toml",
         "christian-kohler.path-intellisense",
-        "streetsidesoftware.code-spell-checker-french"
+        "streetsidesoftware.code-spell-checker-french",
+        "ms-vscode-remote.remote-ssh"
       ]
     }
   },
