@@ -1,4 +1,4 @@
-FROM python:3.13-slim AS py-builder
+FROM python:3.14-slim AS py-builder
 
 ARG ENVIRONMENT
 
@@ -17,7 +17,7 @@ RUN uv export --no-dev --format requirements.txt --output-file ./requirements.tx
 
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r ./requirements.txt
 
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 LABEL org.opencontainers.image.source="https://github.com/builtbyrb/fastapi-template"
 
