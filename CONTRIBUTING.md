@@ -13,7 +13,7 @@
 
 ### Prerequisites
 
-- Python 3.13 or higher
+- Python 3.14 or higher
 - Docker and VSCode with Dev Containers extension
 
 ### Setup Steps
@@ -115,7 +115,7 @@ def test_health(status): ...
 **✅ Good:**
 ```python
 @pytest.mark.parametrize(
-    ("status", "expected_value"), 
+    ("status", "expected_value"),
     [(False, "unhealthy"), (True, "healthy")],
     ids=["unhealthy_when_false", "healthy_when_true"]
 )
@@ -151,13 +151,13 @@ def test_user_creation_errors(invalid_payload): ...
 **✅ Good:**
 ```python
 @pytest.mark.parametrize(
-    ("invalid_payload", "expected_exception"), 
+    ("invalid_payload", "expected_exception"),
     [
-        ({}, MissingFieldsError), 
+        ({}, MissingFieldsError),
         ({"name": ""}, EmptyNameError)
     ],
     ids=[
-        "raises_missing_fields_error_when_payload_is_empty", 
+        "raises_missing_fields_error_when_payload_is_empty",
         "raises_empty_name_error_when_name_is_blank"
     ]
 )

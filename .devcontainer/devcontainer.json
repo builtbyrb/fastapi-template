@@ -15,7 +15,6 @@
   "customizations": {
     "vscode": {
       "settings": {
-        // General Editor & Window Settings
         "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
         "editor.fontLigatures": true,
         "editor.formatOnSave": true,
@@ -25,7 +24,6 @@
           "**/.ruff_cache": true
         },
         "files.eol": "\n",
-        // Python Analysis / Linter
         "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
         "python.venvPath": ".",
         "python.languageServer": "Pylance",
@@ -45,7 +43,6 @@
           "**/.*"
         ],
         "python.testing.pytestEnabled": true,
-        // Language Specific Formatters & Linters
         "[python]": {
           "editor.defaultFormatter": "charliermarsh.ruff",
           "editor.formatOnSave": true,
@@ -57,7 +54,7 @@
         "[json]": {
           "editor.defaultFormatter": "vscode.json-language-features",
           "editor.formatOnSave": true,
-          "editor.tabSize": 2,
+          "editor.tabSize": 4,
           "editor.insertSpaces": true,
           "editor.codeActionsOnSave": {
             "source.formatDocument": "explicit"
@@ -66,7 +63,7 @@
         "[jsonc]": {
           "editor.defaultFormatter": "vscode.json-language-features",
           "editor.formatOnSave": true,
-          "editor.tabSize": 2,
+          "editor.tabSize": 4,
           "editor.insertSpaces": true,
           "editor.codeActionsOnSave": {
             "source.formatDocument": "explicit"
@@ -112,7 +109,6 @@
           "editor.tabSize": 2,
           "editor.formatOnSave": true
         },
-        // Extensions / Plugins
         "ruff.nativeServer": true,
         "ruff.configurationPreference": "filesystemFirst",
         "redhat.telemetry.enabled": false,
@@ -151,7 +147,7 @@
   },
   "remoteEnv": {
     "PROJECT_NAME": "Python + uv",
-    "PYTHON_VERSION": "3.13",
+    "PYTHON_VERSION": "3.14",
     "UV_INIT_BARE": "false",
     "INSTALL_IPYKERNEL": "false"
   },
