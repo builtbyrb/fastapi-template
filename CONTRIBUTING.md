@@ -1,3 +1,67 @@
+## Table of Contents
+
+- [Development Setup](#development-setup)
+- [Making Changes](#making-changes)
+- [Pull Request Process](#pull-request-process)
+- [Code Standards](#code-standards)
+- [Testing Requirements](#testing-requirements)
+- [Documentation Guidelines](#documentation-guidelines)
+- [Common Issues](#common-issues)
+- [Getting Help](#getting-help)
+
+## Development Setup
+
+### Prerequisites
+
+- Python 3.13 or higher
+- Docker and VSCode with Dev Containers extension
+
+### Setup Steps
+
+#### Option 1: Using Dev Container (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/a5chin/python-uv.git
+cd python-uv
+
+# Open in VSCode
+code .
+
+# When prompted, click "Reopen in Container"
+```
+
+#### Option 2: Local Setup
+
+```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clone the repository
+git clone https://github.com/a5chin/python-uv.git
+cd python-uv
+
+# Install dependencies
+uv sync
+
+# Install pre-commit hooks
+uv run pre-commit install
+```
+### Verify Your Setup
+
+```bash
+# Run tests
+uv run nox -s test
+
+# Run linters
+uv run nox -s lint -- --ruff --ty
+
+# Format code
+uv run nox -s fmt
+```
+
+If all commands complete successfully, you're ready to contribute!
+
 ## 📝 How to add a new rule here?
 
 If you wish to add a new convention to this file, please adhere to the following format to keep the documentation clear, structured, and easy to read. A single convention topic can contain multiple specific rules.

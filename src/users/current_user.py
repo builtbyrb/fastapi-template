@@ -23,7 +23,7 @@ from src.users.subdomains.access_token.features.is_token_blacklisted import (
 )
 from src.users.subdomains.access_token.settings import ACCESS_TOKEN_ENV_SETTINGS
 from src.users.subdomains.access_token.storage import (
-    REDIS_ACCESS_TOKEN_JTI_REPO,
+    REDIS_BLACKLIST_ACCESS_TOKEN_JTI_REPO,
 )
 from src.users.tokens import UserJwtTokenClaims
 from src.users.validations import UserEmailGetter, UserOut
@@ -75,7 +75,7 @@ async def get_current_user(
         GetCurrentUserServiceParams(
             providers=providers,
             user_repo=SQL_ALCHEMY_USER_REPO,
-            access_token_jti_repo=REDIS_ACCESS_TOKEN_JTI_REPO,
+            access_token_jti_repo=REDIS_BLACKLIST_ACCESS_TOKEN_JTI_REPO,
             token=token,
         )
     )

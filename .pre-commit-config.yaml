@@ -1,21 +1,64 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+        name: End of file fixer
+        description: "Ensure files end with a newline"
+
+      - id: check-json
+        name: Check JSON
+        description: "Check that JSON files are valid"
+
+      - id: check-toml
+        name: Check TOML
+        description: "Check that TOML files are valid"
+
+      - id: check-xml
+        name: Check XML
+        description: "Check that XML files are valid"
+
+      - id: check-yaml
+        name: Check YAML
+        description: "Check that YAML files are valid"
+
+      - id: detect-private-key
+        name: Detect private key
+        description: "Detect private keys in files"
+
+      - id: trailing-whitespace
+        name: Trailing whitespace
+        description: "Remove trailing whitespace from files"
+
   - repo: https://github.com/seddonym/import-linter
     rev: v2.11
     hooks:
       - id: import-linter
 
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    hooks:
-      - id: check-yaml
-      - id: check-added-large-files
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.15.10
     hooks:
-      - id: ruff-check
+      - id: ruff
+        name: Ruff check
+        description: "Run 'ruff check' for extremely fast Python linting"
         args: [ --fix ]
+
       - id: ruff-format
+        name: Ruff format
+        description: "Run 'ruff format' for extremely fast Python formatting"
+
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright check
+        entry: uv run pyright
+        language: python
+        types: [ python ]
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.10
+    hooks:
+      - id: actionlint
 
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v4.13.9
@@ -24,3 +67,6 @@ repos:
       - id: commitizen-branch
         stages:
           - pre-push
+
+ci:
+  autoupdate_schedule: weekly

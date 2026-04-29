@@ -8,8 +8,10 @@
 # GLOBAL SETTINGS
 # ------------------------------------------------------------------------------
 src = ["src"]
-line-length = 85
+line-length = 88
 indent-width = 4
+
+target-version = "py313"
 
 # Directories excluded from scanning
 exclude = [
@@ -40,11 +42,9 @@ exclude = [
     "site-packages",
     "venv",
     "alembic_db",
+    "__pypackages__",
 ]
 
-# ------------------------------------------------------------------------------
-# FORMATTER (Replacement for Black)
-# ------------------------------------------------------------------------------
 [format]
 quote-style = "double"
 indent-style = "space"
@@ -53,20 +53,17 @@ skip-magic-trailing-comma = false
 docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
-# ------------------------------------------------------------------------------
-# LINTER RULES
-# ------------------------------------------------------------------------------
 [lint]
 select = ["ALL"] # Enable every rule by default
 
 ignore = [
-    "D",      # pydocstyle (Docstrings) - Often too verbose for backend APIs
-    "COM812", # Missing trailing comma - Conflicts with Ruff formatter
-    "N818",   # Exception name suffix - Allows custom naming conventions
-    "ANN401", # Dynamically typed expressions (Any) - Necessary in some generic contexts
-    "SLF001", # Private member access - Allow within the same package
-    "FA102",  # Missing __future__ annotations - PEP 604 is standard in 3.10+
-    "UP046",  # Generic subclass usage
+    "D",
+    "COM812",
+    "N818",
+    "ANN401",
+    "SLF001",
+    "FA102",
+    "UP046",
     "TC",
 ]
 
@@ -78,10 +75,6 @@ unfixable = [
 
 # Regex for allowed dummy variables (e.g., _, _unused)
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-
-# ------------------------------------------------------------------------------
-# LINTER PLUGINS CONFIGURATION
-# ------------------------------------------------------------------------------
 
 # ISORT: Import sorting
 [lint.isort]
@@ -111,9 +104,6 @@ runtime-evaluated-base-classes = [
 ]
 runtime-evaluated-decorators = ["pydantic.validate_call", "attrs.define"]
 
-# ------------------------------------------------------------------------------
-# PER-FILE OVERRIDES
-# ------------------------------------------------------------------------------
 [lint.per-file-ignores]
 # Rules for Test files
 "tests/**/*.py" = [
@@ -122,8 +112,3 @@ runtime-evaluated-decorators = ["pydantic.validate_call", "attrs.define"]
     "S105",    # Allow hardcoded passwords
     "S106",    # Allow hardcoded password assignments
 ]
-
-# Rules for common Type-Checking heavy files
-"**/dependencies.py" = ["TC"]
-"**/router.py" = ["TC"]
-"**/models.py" = ["TC"]
