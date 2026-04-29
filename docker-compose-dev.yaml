@@ -108,7 +108,7 @@ services:
   vector:
     container_name: vector
     restart: unless-stopped
-    image: timberio/vector:0.54.0-alpine
+    image: timberio/vector:0.55.0-alpine
     environment:
       - VECTOR_CONFIG=/etc/vector/vector_dev.toml
     networks:
