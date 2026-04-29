@@ -2,7 +2,7 @@ services:
   postgredb:
     container_name: postgredb
     restart: unless-stopped
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
