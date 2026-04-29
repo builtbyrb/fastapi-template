@@ -59,7 +59,7 @@ services:
   redis:
     container_name: redis
     restart: unless-stopped
-    image: redis:7-alpine
+    image: redis:8-alpine
     environment:
       - REDIS_ARGS=--appendonly yes
     networks:
