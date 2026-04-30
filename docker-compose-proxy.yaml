@@ -28,7 +28,7 @@ services:
   traefik:
     container_name: traefik
     restart: unless-stopped
-    image: traefik:v3.6.14
+    image: traefik:v3.6.15
     command:
       - "--ping=true"
       - "--api.insecure=true"
